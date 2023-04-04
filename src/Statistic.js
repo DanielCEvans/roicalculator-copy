@@ -1,15 +1,6 @@
 import React from "react";
-import {
-  Card,
-  Typography,
-  theme,
-  Button,
-  Statistic,
-  Icon,
-  Box,
-} from "@hero-design/react/lib";
+import { Card, Typography, theme, Statistic } from "@hero-design/react/lib";
 import styled from "styled-components";
-import { AiOutlineDollarCircle } from "react-icons/ai";
 import { BsHourglassSplit } from "react-icons/bs";
 import { AiOutlinePrinter } from "react-icons/ai";
 import { BsCurrencyDollar } from "react-icons/bs";
@@ -23,7 +14,6 @@ function StatisticCard(props) {
   return (
     <Card
       style={{
-        // width: 350,
         backgroundColor: props.backgroundColor,
         borderColor: props.borderColor,
       }}

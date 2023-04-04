@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Disclaimer from "./Disclaimer";
 import {
   Box,
@@ -274,42 +273,10 @@ const Calculator = function (props) {
 
     // else, execute calculations and send user to 'return' page
     props.runCalculations();
-    // const navigate = useNavigate();
-    // navigate("/return");
   };
 
-  const validateInput = (e) => {};
-
-  // country validation
-  // if user focuses on country select but doesn't select a country
-  // error validation will appear
-  // if (e.target.id === "country") {
-  //   props.country
-  //     ? console.log("user has selected input")
-  //     : console.log("no input selected");
-  // }
-  // if (!props.inputName) {
-  //   props.setErrors({ ...props.errors, [e.target.id]: true });
-  // } else {
-  //   props.setErrors({ ...props.errors, [e.target.id]: false });
-  // }
-  // console.log(props.errors);
   return (
     <>
-      {/* <Box
-        id="main-content"
-        sx={{
-          p: "large",
-          // display: "flex",
-          // justifyContent: "center",
-          backgroundColor: "grey-light-85",
-          // height: "100%",
-          // width: "100%",
-          // This is a hacky solution!!
-          // ml: "130px",
-        }}
-      > */}
-      {/* <Box> */}
       <PageHeader title="Return on Investment Calculator" />
       <Box
         sx={{
@@ -504,16 +471,6 @@ const Calculator = function (props) {
             }}
             min={0}
           />
-          {/* <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                }}
-                style={{
-                  marginTop: theme.space.xxxxlarge,
-                  marginBottom: theme.space.xxxxlarge,
-                }}
-              > */}
           <Typography.Text
             tagName="label"
             htmlFor="growthRate"
@@ -576,7 +533,6 @@ const Calculator = function (props) {
               }}
             />
           </Box>
-          {/* </Box> */}
           <Typography.Text
             tagName="label"
             htmlFor="hrBurdenedRate"
@@ -813,7 +769,6 @@ const Calculator = function (props) {
               marginBottom: theme.space.medium,
             }}
           />
-          {/* <Link to="/results" onClick={handleSubmit}> */}
           <Button
             variant="filled"
             intent="primary"
@@ -822,12 +777,9 @@ const Calculator = function (props) {
             type="submit"
             onClick={handleSubmit}
           />
-          {/* </Link> */}
         </form>
       </Box>
       <Disclaimer />
-      {/* </Box> */}
-      {/* </Box> */}
     </>
   );
 };

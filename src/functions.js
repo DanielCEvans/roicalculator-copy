@@ -19,32 +19,10 @@ export default function calculateROI(formData, onboardsPerYear) {
     };
   }
 
-  // if (!formData.casualEmployees) {
-  //   formData = {
-  //     ...formData,
-  //     casualEmployees: 0,
-  //   };
-  // }
-
-  // const partTimeCasualEmployees = formData.partTimeCasualEmployees
-  //   ? formData.partTimeCasualEmployees
-  //   : 0;
-  // const casualEmployees = formData.casualEmployees
-  //   ? formData.casualEmployees
-  //   : 0;
-  // const orgSize =
-  //   formData.fullTimeEmployees +
-  //   formData.partTimeCasualEmployees +
-  //   formData.casualEmployees;
-
   formData = {
     ...formData,
     orgSize: formData.fullTimeEmployees + formData.partTimeCasualEmployees,
   };
-
-  // The slider component returns an integer between 0 and 100.
-  // Need to convert this value into a growth rate which is used for calculations
-  // const growthRate = formData.growthRate / 100 + 1;
 
   const growthRate = onboardsPerYear / formData.orgSize + 1;
   formData = {
@@ -52,60 +30,41 @@ export default function calculateROI(formData, onboardsPerYear) {
     growthRate: growthRate,
   };
 
-  // const orgSizeYear2 = formData.orgSize * formData.growthRate;
   formData = {
     ...formData,
     orgSizeYear2: formData.orgSize * formData.growthRate,
   };
-  // const orgSizeYear3 = orgSizeYear2 * formData.growthRate;
   formData = {
     ...formData,
     orgSizeYear3: formData.orgSizeYear2 * formData.growthRate,
   };
-  // const adminsYear2 = formData.admins * formData.growthRate;
   formData = {
     ...formData,
     adminsYear2: formData.admins * formData.growthRate,
   };
-  // const adminsYear3 = adminsYear2 * formData.growthRate;
   formData = {
     ...formData,
     adminsYear3: formData.adminsYear2 * formData.growthRate,
   };
-  // const fullTimeEmployeesYear2 = formData.fullTimeEmployees * formData.growthRate;
   formData = {
     ...formData,
     fullTimeEmployeesYear2: formData.fullTimeEmployees * formData.growthRate,
   };
-  // const fullTimeEmployeesYear3 = fullTimeEmployeesYear2 * formData.growthRate;
   formData = {
     ...formData,
     fullTimeEmployeesYear3:
       formData.fullTimeEmployeesYear2 * formData.growthRate,
   };
-  // const partTimeEmployeesYear2 = formData.partTimeCasualEmployees * formData.growthRate;
   formData = {
     ...formData,
     partTimeEmployeesYear2:
       formData.partTimeCasualEmployees * formData.growthRate,
   };
-  // const partTimeEmployeesYear3 = partTimeEmployeesYear2 * formData.growthRate;
   formData = {
     ...formData,
     partTimeEmployeesYear3:
       formData.partTimeEmployeesYear2 * formData.growthRate,
   };
-  // const casualEmployeesYear2 = formData.casualEmployees * formData.growthRate;
-  // formData = {
-  //   ...formData,
-  //   casualEmployeesYear2: formData.casualEmployees * formData.growthRate,
-  // };
-  // const casualEmployeesYear3 = casualEmployeesYear2 * formData.growthRate;
-  // formData = {
-  //   ...formData,
-  //   casualEmployeesYear3: formData.casualEmployeesYear2 * formData.growthRate,
-  // };
-
   // At the moment, going to assume these values have not been input and will use the default
   // The default values need to be set in react somehow?
 
@@ -115,13 +74,6 @@ export default function calculateROI(formData, onboardsPerYear) {
       hrBurdenedRate: mapping[formData.country]["hr_hourly_rate"],
     };
   }
-  // else {
-  //   // why 1880? number of work hours in a year?
-  //   formData = {
-  //     ...formData,
-  //     hrBurdenedRate: formData.hrBurdenedRate / 1880,
-  //   };
-  // }
 
   if (!formData.employeeBurdenedRate) {
     formData = {
@@ -129,13 +81,6 @@ export default function calculateROI(formData, onboardsPerYear) {
       employeeBurdenedRate: mapping[formData.country]["employee_hourly_rate"],
     };
   }
-  // else {
-  //   // why 1880? number of work hours in a year?
-  //   formData = {
-  //     ...formData,
-  //     employeeBurdenedRate: formData.employeeBurdenedRate / 1880,
-  //   };
-  // }
 
   if (!formData.costsSavedOnTech) {
     formData = {
@@ -189,8 +134,6 @@ export default function calculateROI(formData, onboardsPerYear) {
       hoursSpentOnEmploymentTasks: 0,
     };
   }
-
-  console.log(formData);
 
   // **********************
   // Where the calculations begin

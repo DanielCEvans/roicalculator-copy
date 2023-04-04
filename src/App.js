@@ -2,42 +2,20 @@ import "./App.css";
 import { ThemeProvider } from "styled-components";
 import { theme, Grid, Box } from "@hero-design/react";
 import { Route, Routes } from "react-router-dom";
-import Calculator from "./Calculator";
 import Return from "./Return";
 import SideBar from "./Sidebar";
 import About from "./About";
-import VerticalExample from "./InPageNavigation";
 import { useState } from "react";
 import calculateROI from "./functions";
 import CalculatorPage from "./CalculatorPage";
 
 const App = function () {
-  // const [country, setCountry] = useState("");
-  // const [plan, setPlan] = useState("");
-  // const [admins, setAdmins] = useState("");
-  // const [fullTimeEmployees, setFullTimeEmployees] = useState("");
-  // const [partTimeEmployees, setPartTimeEmployees] = useState("");
-  // const [casualEmployees, setCasualEmployees] = useState("");
-  // const [growthRate, setGrowthRate] = useState(26.3);
-  // const [costsSavedOnTech, setCostsSavedOnTech] = useState("");
-  // const [annualServicesSpend, setAnnualServicesSpend] = useState("");
-  // const [pagesPerYear, setPagesPerEmp] = useState("");
-  // const [implementationType, setImplementationType] = useState("");
-
-  // // any default values that require the mapping will have to be set during the calculation of the ROI as the country will not be known on the first render
-  // const [hrBurdenedRate, setHrBurdenedRate] = useState("");
-  // const [employeeBurdenedRate, setEmployeeBurdenedRate] = useState("");
-  // const [hoursSpentOnEmploymentTasks, setHoursSpentOnEmploymentTasks] =
-  //   useState(0);
-
   const [formData, setFormData] = useState({
     country: "",
     plan: "",
     admins: "",
     fullTimeEmployees: "",
     partTimeCasualEmployees: "",
-    // casualEmployees: "",
-    // growthRate: 26.3,
     costsSavedOnTech: "",
     annualServicesSpend: "",
     pagesPerYear: 0,
@@ -101,24 +79,6 @@ const App = function () {
   }
 
   const runCalculations = function () {
-    // Pass required form data to calcate function
-    // const formData = {
-    //   country,
-    //   plan,
-    //   admins,
-    //   fullTimeEmployees,
-    //   partTimeEmployees,
-    //   casualEmployees,
-    //   growthRate,
-    //   costsSavedOnTech,
-    //   annualServicesSpend,
-    //   pagesPerYear,
-    //   implementationType,
-    //   hrBurdenedRate,
-    //   employeeBurdenedRate,
-    //   hoursSpentOnEmploymentTasks,
-    // };
-
     // This function could return all the required information to be sent as props to the 'Return' page
     // The data would then be displayed in tables.
     // When the user clicks the calculate button, they could be sent to the 'Return page' or the ROI could be displayed in the top right
@@ -131,42 +91,6 @@ const App = function () {
     setBenefitsTable({ ...benefitsTable });
     setCostsTable({ ...costsTable });
   };
-
-  // const calculatorProps = {
-  //   // these are required to pass down to calculator componenet to display and set input values
-  //   country,
-  //   setCountry,
-  //   plan,
-  //   setPlan,
-  //   admins,
-  //   setAdmins,
-  //   fullTimeEmployees,
-  //   setFullTimeEmployees,
-  //   partTimeEmployees,
-  //   setPartTimeEmployees,
-  //   casualEmployees,
-  //   setCasualEmployees,
-  //   growthRate,
-  //   setGrowthRate,
-  //   costsSavedOnTech,
-  //   setCostsSavedOnTech,
-  //   annualServicesSpend,
-  //   setAnnualServicesSpend,
-  //   pagesPerYear,
-  //   setPagesPerEmp,
-  //   implementationType,
-  //   setImplementationType,
-  //   hrBurdenedRate,
-  //   setHrBurdenedRate,
-  //   employeeBurdenedRate,
-  //   setEmployeeBurdenedRate,
-  //   hoursSpentOnEmploymentTasks,
-  //   setHoursSpentOnEmploymentTasks,
-  //   runCalculations,
-  //   countryPrefix,
-  //   generalErrors,
-  //   setGeneralErrors,
-  // };
 
   const calculatorProps = {
     // these are required to pass down to calculator componenet to display and set input values
@@ -204,7 +128,6 @@ const App = function () {
             sx={{ p: "large", backgroundColor: "grey-light-85" }}
             id="main-content"
           >
-            {/* <CalculatorPage {...calculatorProps} /> */}
             <Routes>
               <Route
                 path="/"

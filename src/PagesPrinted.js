@@ -1,13 +1,6 @@
-import {
-  Box,
-  Typography,
-  Input,
-  theme,
-  Grid,
-  Select,
-} from "@hero-design/react";
+import { Box, Typography, Input, theme, Grid } from "@hero-design/react";
 import React from "react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import StatisticCard from "./Statistic";
 
 const payrollFrequency = [
@@ -47,23 +40,6 @@ const AdminHoursPage = ({
       pagesPerYear: +pagesPerYear,
     });
   }, [printingDetails]);
-
-  // useEffect(() => {
-  //   let { fullTimeEmployees, partTimeEmployees, casualEmployees } = formData;
-  //   // we know at this point that fulltimeemployees will be a number but part time and casual may be undefined
-  //   if (!partTimeEmployees) partTimeEmployees = 0;
-  //   if (!casualEmployees) casualEmployees = 0;
-  //   const totalEmployees =
-  //     fullTimeEmployees + partTimeEmployees + casualEmployees;
-
-  //   const pagesPerYearloyee =
-  //     printingDetails.pagesPrintedEachYear / totalEmployees;
-
-  //   setFormData({
-  //     ...formData,
-  //     pagesPerYear: pagesPerYearloyee,
-  //   });
-  // }, [printingDetails.pagesPrintedEachYear]);
 
   useEffect(() => {
     // Run this code if props.errors has been initialised.

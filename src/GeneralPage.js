@@ -253,8 +253,6 @@ const GeneralPage = ({
 
     // This prevents the errors from being check on the first run - i.e. when the user hasn't even had a chance to fill in the required field
     if (Object.keys(props.generalErrors).length !== 0) {
-      // checkGeneralPageErrors();
-
       const currentGeneralErrors = checkGeneralPageErrors();
       if (!currentGeneralErrors && props.hasCalculated) props.runCalculations();
     }
@@ -394,24 +392,6 @@ const GeneralPage = ({
           }}
           min={0}
         />
-        {/* <Typography.Text
-          tagName="label"
-          htmlFor="casualEmployees"
-          fontWeight="bold"
-        >
-          Number of casual employees (optional)
-        </Typography.Text>
-        <Input
-          type="number"
-          value={formData.casualEmployees}
-          onChange={handleInputChange}
-          id="casualEmployees"
-          style={{
-            marginTop: theme.space.small,
-            marginBottom: theme.space.medium,
-          }}
-          min={0}
-        /> */}
         <Box style={{ marginBottom: theme.space.medium }}>
           <Typography.Text
             tagName="label"

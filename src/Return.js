@@ -3,12 +3,9 @@ import { Box, PageHeader, Table, Typography, theme } from "@hero-design/react";
 import styled from "styled-components";
 import Disclaimer from "./Disclaimer";
 import { useState } from "react";
-import { AiOutlineQuestionCircle } from "react-icons/ai";
 import "./Return.css";
 
 function Return(props) {
-  const [openImplementation, setOpenImplementation] = useState(false);
-
   let currency;
   if (props.country === "AU") {
     currency = "AUD";
@@ -81,7 +78,6 @@ function Return(props) {
       : [];
 
   // Adding green background to ROI row
-
   const TableWrapper = styled(Table)`
     tr.custom-bg {
       background-color: ${theme.colors.palette.grotesqueGreenLight75};

@@ -1,15 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import {
-  Grid,
-  InPageNavigation,
-  Card,
-  Box,
-  PageHeader,
-  Button,
-  Icon,
-  theme,
-} from "@hero-design/react";
+import { Grid, InPageNavigation, Box, Button, theme } from "@hero-design/react";
 import GeneralPage from "./GeneralPage";
 import AdminHoursPage from "./AdminHoursPage";
 import OptionalDetailsPage from "./OptionalDetailsPage";
@@ -37,20 +28,8 @@ function VerticalExample(props) {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
-    // currencyDisplay: "narrowSymbol",
   });
   const [selectedItemId, setSelectedItemId] = useState("general");
-  // const [adminDetails, setAdminDetails] = useState({
-  //   onboardsPerYear: "",
-  //   hoursSpentPerOnboard: "",
-  //   timeSheetsPerMonth: "",
-  //   hoursSpentPerTimesheet: "",
-  //   frequencyOfPayroll: "",
-  //   hoursSpentPerPayroll: "",
-  //   performanceReviewCycles: "",
-  //   hoursSpentPerPerformanceReview: "",
-  //   additionalTasks: "",
-  // });
 
   const onClickItem = (item) => {
     // The user will first arrive at the 'general' page.
@@ -60,12 +39,6 @@ function VerticalExample(props) {
     let currentErrors;
     if (selectedItemId === "general") {
       currentErrors = checkGeneralPageErrors();
-      // console.log(props.formData);
-      // currentErrors.country === false &&
-      //   currentErrors.plan === false &&
-      //   currentErrors.admins === false &&
-      //   currentErrors.fullTimeEmployees === false &&
-      //   setSelectedItemId(item.id);
       if (!currentErrors) setSelectedItemId(item.id);
     }
 
@@ -73,19 +46,6 @@ function VerticalExample(props) {
       currentErrors = checkAdminPageErrors();
       if (!currentErrors) setSelectedItemId(item.id);
     }
-    // if (
-    //   item.id === "adminDetails" ||
-    //   item.id === "additional" ||
-    //   item.id === "pagesPrinted"
-    // ) {
-    //   // Only check errors when user tries to click away from the General tab
-    //   currentErrors = checkGeneralPageErrors();
-    //   currentErrors.country === false &&
-    //     currentErrors.plan === false &&
-    //     currentErrors.admins === false &&
-    //     currentErrors.fullTimeEmployees === false &&
-    //     setSelectedItemId(item.id);
-    // }
 
     // condition which checks if only errors are found on the admin page and if so, sets the selected item state to the adminDetails page
     if (!currentErrors) setSelectedItemId(item.id);
@@ -173,7 +133,6 @@ function VerticalExample(props) {
 
     // if there are current errors, set the errors and return true
     return Object.values(currentGeneralErrors).find((error) => error === true);
-    // return currentErrors;
   };
 
   let savingsBackgroundColor;
@@ -209,22 +168,6 @@ function VerticalExample(props) {
       props.runCalculations();
       if (!props.hasCalculated) props.setHasCalculated(true);
     }
-
-    // currentErrors.country === false &&
-    //   currentErrors.plan === false &&
-    //   currentErrors.admins === false &&
-    //   currentErrors.fullTimeEmployees === false &&
-    //   currentErrors.onboardsPerYear === true &&
-    //   setSelectedItemId("adminDetails");
-    // console.log(currentErrors);
-    // if (!errors) {
-    //   props.runCalculations();
-    //   if (!props.hasCalculated) props.setHasCalculated(true);
-    // }
-    // if (!generalPageErrors && !adminPageErrors) {
-    //   props.runCalculations();
-    //   props.setHasCalculated(true);
-    // }
   };
 
   const handleSeeFullResults = () => {
@@ -259,11 +202,6 @@ function VerticalExample(props) {
             )}
             {selectedItemId === "adminDetails" && (
               <AdminHoursPage
-                // formData={props.formData}
-                // setFormData={props.setFormData}
-                // adminDetails={props.adminDetails}
-                // setAdminDetails={props.setAdminDetails}
-                // errors={props.generalErrors}
                 checkAdminPageErrors={checkAdminPageErrors}
                 {...props}
               />
@@ -333,45 +271,6 @@ function VerticalExample(props) {
           </Grid.Col>
         </Grid.Row>
       </Grid>
-      {/* <Box
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <Button
-          variant="filled"
-          intent="primary"
-          size="medium"
-          text="Calculate"
-          type="submit"
-          onClick={handleSubmit}
-        />
-        <Box
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            width: "600px",
-          }}
-        >
-          <StatisticCard
-            title="ROI"
-            value={props.formData.hoursSpentOnEmploymentTasks.toFixed(2)}
-            backgroundColor={theme.colors.palette.violetLight90}
-            fontColor={theme.colors.palette.violetDark45}
-            type="time"
-          />
-          <StatisticCard
-            title="Savings"
-            value={props.formData.hoursSpentOnEmploymentTasks.toFixed(2)}
-            backgroundColor={theme.colors.palette.violetLight90}
-            fontColor={theme.colors.palette.violetDark45}
-            type="time"
-            sx={{ p: "large" }}
-          />
-        </Box>
-      </Box> */}
     </Box>
   );
 }

@@ -8,7 +8,7 @@ import {
   Tooltip,
 } from "@hero-design/react";
 import React from "react";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import StatisticCard from "./Statistic";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 
@@ -27,21 +27,7 @@ const AdminHoursPage = ({
   checkAdminPageErrors,
   hasCalculated,
   runCalculations,
-  // ...props
 }) => {
-  // const [adminDetails, setAdminDetails] = useState({
-  //   onboardsPerYear: "",
-  //   hoursSpentPerOnboard: "",
-  //   timeSheetsPerMonth: "",
-  //   hoursSpentPerTimesheet: "",
-  //   frequencyOfPayroll: "",
-  //   hoursSpentPerPayroll: "",
-  //   performanceReviewCycles: "",
-  //   hoursSpentPerPerformanceReview: "",
-  //   additionalTasks: "",
-  // });
-  // console.log(form);
-
   const handleInputChange = (e) => {
     // this functions needs to update the state values, calculate the total hours per month if possible
     // maybe the total hours per month function can update the setHoursSpentOnEmploymentTasks state

@@ -6,7 +6,6 @@ import {
   Button,
   Modal,
   theme,
-  Slider,
   Input,
   Select,
   Tooltip,
@@ -23,11 +22,6 @@ const implementation = [
 
 const OptionalDetailsPage = ({ formData, setFormData, ...props }) => {
   const [openImplementation, setOpenImplementation] = useState(false);
-  const [openServiceCosts, setOpenServiceCosts] = useState(false);
-  const [openSoftwareCosts, setOpenSoftwareCosts] = useState(false);
-  // const [openEmpoyeeSalary, setOpenEmployeeSalary] = useState(false);
-  // const [openAdminSalary, setOpenAdminSalary] = useState(false);
-  const [openOrgGrowthRate, setOpenOrgGrowthRate] = useState(false);
 
   let currency;
   if (formData.country === "AU") {
@@ -47,7 +41,6 @@ const OptionalDetailsPage = ({ formData, setFormData, ...props }) => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency,
-    // currencyDisplay: "narrowSymbol",
   });
 
   const handleInputChange = (e) => {
@@ -125,7 +118,6 @@ const OptionalDetailsPage = ({ formData, setFormData, ...props }) => {
               />
             </>
           }
-          // style={{ position: "fixed" }}
         />
       )}
       <Select
@@ -148,7 +140,6 @@ const OptionalDetailsPage = ({ formData, setFormData, ...props }) => {
         If left unselected, guided implementation method will be used
       </Typography.Text>
 
-      {/* </Box> */}
       <Typography.Text
         tagName="label"
         htmlFor="hrBurdenedRate"
@@ -156,31 +147,6 @@ const OptionalDetailsPage = ({ formData, setFormData, ...props }) => {
       >
         Average hourly rate of HR/Payroll administrator
       </Typography.Text>
-      {/* <Button.Link
-        text="Need help with admin salary?"
-        size="small"
-        sx={{
-          marginLeft: "10px",
-          cursor: "pointer",
-          textDecoration: "none",
-        }}
-        onClick={() => setOpenAdminSalary((value) => !value)}
-      />
-      {openAdminSalary && (
-        <Modal
-          title="Average HR/Payroll Admin Salary"
-          open
-          variant="primary"
-          onClose={() => setOpenAdminSalary(false)}
-          body="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-          footer={
-            <>
-              <Button text="Close" onClick={() => setOpenAdminSalary(false)} />
-            </>
-          }
-          style={{ position: "fixed" }}
-        />
-      )} */}
       <Input
         type="number"
         value={formData.hrBurdenedRate}
@@ -212,34 +178,6 @@ const OptionalDetailsPage = ({ formData, setFormData, ...props }) => {
       >
         Average hourly rate of an employee
       </Typography.Text>
-      {/* <Button.Link
-        text="Need help with employee salary?"
-        size="small"
-        sx={{
-          marginLeft: "10px",
-          cursor: "pointer",
-          textDecoration: "none",
-        }}
-        onClick={() => setOpenEmployeeSalary((value) => !value)}
-      />
-      {openEmpoyeeSalary && (
-        <Modal
-          title="Average Employee Salary"
-          open
-          variant="primary"
-          onClose={() => setOpenEmployeeSalary(false)}
-          body="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-          footer={
-            <>
-              <Button
-                text="Close"
-                onClick={() => setOpenEmployeeSalary(false)}
-              />
-            </>
-          }
-          style={{ position: "fixed" }}
-        />
-      )} */}
       <Input
         type="number"
         value={formData.employeeBurdenedRate}
@@ -336,69 +274,6 @@ const OptionalDetailsPage = ({ formData, setFormData, ...props }) => {
           mapping[formData.country]["annual_services_spend"]
         )} will be used - determined from research`}
       </Typography.Text>
-      {/* <Typography.Text
-        tagName="label"
-        htmlFor="growthRate"
-        fontWeight="bold"
-        // This might not be the best solution?
-        // sx={{ width: "30%" }}
-      >
-        Organisation annual growth rate
-      </Typography.Text>
-      <Button.Link
-        text="Need help with organisation growth rate?"
-        size="small"
-        sx={{
-          marginLeft: "10px",
-          marginRight: "10px",
-          cursor: "pointer",
-          textDecoration: "none",
-        }}
-        onClick={() => setOpenOrgGrowthRate((value) => !value)}
-      />
-      {openOrgGrowthRate && (
-        <Modal
-          title="Annual Organisation Growth Rate"
-          open
-          variant="primary"
-          onClose={() => setOpenOrgGrowthRate(false)}
-          body="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum."
-          footer={
-            <>
-              <Button
-                text="Close"
-                onClick={() => setOpenOrgGrowthRate(false)}
-              />
-            </>
-          }
-          style={{ position: "fixed" }}
-        />
-      )} */}
-
-      {/* <Box
-        style={{
-          // border: "1px solid #dadbde",
-          padding: theme.space.small,
-          marginTop: theme.space.medium,
-          marginBottom: theme.space.medium,
-          borderRadius: "4px",
-        }}
-      >
-        <Slider
-          min={0}
-          max={100}
-          step={1}
-          value={formData.growthRate}
-          onChange={handleInputChange}
-          alwaysShowTooltip
-          customTooltipText={`${formData.growthRate} %`}
-          id="growthRate"
-          style={{
-            marginTop: theme.space.large,
-            marginBottom: theme.space.medium,
-          }}
-        />
-      </Box> */}
     </Box>
   );
 };
