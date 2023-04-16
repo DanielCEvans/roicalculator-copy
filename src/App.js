@@ -3,11 +3,11 @@ import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { theme, Box } from "@hero-design/react";
-import SideBar from "./Sidebar";
-import CalculatorPage from "./CalculatorPage";
-import ResultsPage from "./ResultsPage";
-import AboutPage from "./AboutPage";
-import calculateROI from "./functions";
+import SideBar from "./components/Sidebar";
+import CalculatorPage from "./pages/Calculator/CalculatorPage";
+import ResultsPage from "./pages/Results/ResultsPage";
+import AboutPage from "./pages/About/AboutPage";
+import calculateROI from "./utils/functions";
 
 const App = () => {
   const [formData, setFormData] = useState({

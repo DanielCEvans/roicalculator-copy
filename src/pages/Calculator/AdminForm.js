@@ -8,7 +8,7 @@ import {
   Select,
   Tooltip,
 } from "@hero-design/react";
-import StatisticCard from "./Statistic";
+import StatisticCard from "../../components/Statistic";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 
 const payrollFrequency = [

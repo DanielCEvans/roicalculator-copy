@@ -5,7 +5,7 @@ import GeneralForm from "./GeneralForm";
 import AdminForm from "./AdminForm";
 import PrintingForm from "./PrintingForm";
 import AdditionalForm from "./AdditionalForm";
-import StatisticCard from "./Statistic";
+import StatisticCard from "../../components/Statistic";
 
 const PageNavigation = (props) => {
   const navigate = useNavigate();

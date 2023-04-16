@@ -1,4 +1,4 @@
-const mapping = require("./data.json");
+const mapping = require("../data/data.json");
 
 // Have main calculation function which calls other functions in this file
 // and returns all information required for the result tables

@@ -6,7 +6,7 @@ import {
   theme,
   Divider,
 } from "@hero-design/react";
-import Disclaimer from "./Disclaimer";
+import Disclaimer from "../../components/Disclaimer";
 
 const AboutPage = ({ country }) => {
   let reportLandingPage;

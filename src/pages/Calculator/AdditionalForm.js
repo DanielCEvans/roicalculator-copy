@@ -11,7 +11,7 @@ import {
 } from "@hero-design/react";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 
-const mapping = require("./data.json");
+const mapping = require("../../data/data.json");
 
 const implementation = [
   { value: "guided", text: "Guided Implementation" },

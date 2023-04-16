@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { Box, PageHeader, Table, Typography, theme } from "@hero-design/react";
 import styled from "styled-components";
-import Disclaimer from "./Disclaimer";
+import Disclaimer from "../../components/Disclaimer";
 
 const ResultsPage = (props) => {
   let currency;

@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { Box, Typography, Input, theme, Grid } from "@hero-design/react";
-import StatisticCard from "./Statistic";
+import StatisticCard from "../../components/Statistic";
 
 const PrintingForm = ({
   formData,
