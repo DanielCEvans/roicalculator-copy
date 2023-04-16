@@ -1,4 +1,3 @@
-import React from "react";
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -20,7 +19,7 @@ const implementation = [
   { value: "self", text: "Self Implementation" },
 ];
 
-const OptionalDetailsPage = ({ formData, setFormData, ...props }) => {
+const AdditionalForm = ({ formData, setFormData, ...props }) => {
   const [openImplementation, setOpenImplementation] = useState(false);
 
   let currency;
@@ -278,4 +277,4 @@ const OptionalDetailsPage = ({ formData, setFormData, ...props }) => {
   );
 };
 
-export default OptionalDetailsPage;
+export default AdditionalForm;

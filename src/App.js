@@ -1,15 +1,15 @@
 import "./App.css";
-import { ThemeProvider } from "styled-components";
-import { theme, Grid, Box } from "@hero-design/react";
-import { Route, Routes } from "react-router-dom";
-import Return from "./Return";
-import SideBar from "./Sidebar";
-import About from "./About";
 import { useState } from "react";
-import calculateROI from "./functions";
+import { Route, Routes } from "react-router-dom";
+import { ThemeProvider } from "styled-components";
+import { theme, Box } from "@hero-design/react";
+import SideBar from "./Sidebar";
 import CalculatorPage from "./CalculatorPage";
+import ResultsPage from "./ResultsPage";
+import AboutPage from "./AboutPage";
+import calculateROI from "./functions";
 
-const App = function () {
+const App = () => {
   const [formData, setFormData] = useState({
     country: "",
     plan: "",
@@ -136,7 +136,7 @@ const App = function () {
               <Route
                 path="/results"
                 element={
-                  <Return
+                  <ResultsPage
                     totalTable={totalTable}
                     benefitsTable={benefitsTable}
                     costsTable={costsTable}
@@ -146,7 +146,7 @@ const App = function () {
               />
               <Route
                 path="/about"
-                element={<About country={formData.country} />}
+                element={<AboutPage country={formData.country} />}
               />
             </Routes>
           </Box>

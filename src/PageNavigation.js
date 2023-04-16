@@ -1,14 +1,13 @@
-import React from "react";
 import { useState } from "react";
-import { Grid, InPageNavigation, Box, Button, theme } from "@hero-design/react";
-import GeneralPage from "./GeneralPage";
-import AdminHoursPage from "./AdminHoursPage";
-import OptionalDetailsPage from "./OptionalDetailsPage";
-import StatisticCard from "./Statistic";
-import PagesPrinted from "./PagesPrinted";
 import { useNavigate } from "react-router-dom";
+import { Grid, InPageNavigation, Box, Button, theme } from "@hero-design/react";
+import GeneralForm from "./GeneralForm";
+import AdminForm from "./AdminForm";
+import PrintingForm from "./PrintingForm";
+import AdditionalForm from "./AdditionalForm";
+import StatisticCard from "./Statistic";
 
-function VerticalExample(props) {
+const PageNavigation = (props) => {
   const navigate = useNavigate();
   let currency;
   if (props.formData.country === "AU") {
@@ -195,22 +194,20 @@ function VerticalExample(props) {
           </Grid.Col>
           <Grid.Col span={[12, 20, 20, 20, 20]}>
             {selectedItemId === "general" && (
-              <GeneralPage
+              <GeneralForm
                 {...props}
                 checkGeneralPageErrors={checkGeneralPageErrors}
               />
             )}
             {selectedItemId === "adminDetails" && (
-              <AdminHoursPage
+              <AdminForm
                 checkAdminPageErrors={checkAdminPageErrors}
                 {...props}
               />
             )}
-            {selectedItemId === "additional" && (
-              <OptionalDetailsPage {...props} />
-            )}
+            {selectedItemId === "additional" && <AdditionalForm {...props} />}
             {selectedItemId === "pagesPrinted" && (
-              <PagesPrinted
+              <PrintingForm
                 formData={props.formData}
                 setFormData={props.setFormData}
                 printingDetails={props.printingDetails}
@@ -273,6 +270,6 @@ function VerticalExample(props) {
       </Grid>
     </Box>
   );
-}
+};
 
-export default VerticalExample;
+export default PageNavigation;

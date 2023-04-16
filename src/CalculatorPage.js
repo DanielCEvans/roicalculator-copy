@@ -1,12 +1,12 @@
-import React from "react";
 import { PageHeader } from "@hero-design/react/lib";
-import VerticalExample from "./InPageNavigation";
+import PageNavigation from "./PageNavigation";
 import Disclaimer from "./Disclaimer";
+
 const CalculatorPage = (props) => {
   return (
     <>
       <PageHeader title="Return On Investment Calculator" />
-      <VerticalExample {...props} />
+      <PageNavigation {...props} />
       <Disclaimer />
     </>
   );

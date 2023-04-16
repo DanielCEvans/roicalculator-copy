@@ -1,16 +1,14 @@
-import React from "react";
 import { Card, Typography, theme, Statistic } from "@hero-design/react/lib";
 import styled from "styled-components";
-import { BsHourglassSplit } from "react-icons/bs";
+import { BsHourglassSplit, BsCurrencyDollar } from "react-icons/bs";
 import { AiOutlinePrinter } from "react-icons/ai";
-import { BsCurrencyDollar } from "react-icons/bs";
 
 const StyledContentWrapper = styled.div`
   padding: 0;
   margin: 0;
 `;
 
-function StatisticCard(props) {
+const StatisticCard = (props) => {
   return (
     <Card
       style={{
@@ -60,6 +58,6 @@ function StatisticCard(props) {
       </Card.Content>
     </Card>
   );
-}
+};
 
 export default StatisticCard;

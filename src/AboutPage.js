@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Box,
   PageHeader,
@@ -9,7 +8,7 @@ import {
 } from "@hero-design/react";
 import Disclaimer from "./Disclaimer";
 
-function About({ country }) {
+const AboutPage = ({ country }) => {
   let reportLandingPage;
   if (country === "AU") {
     reportLandingPage = "https://employmenthero.com/roi-of-employment-hero/";
@@ -276,6 +275,6 @@ function About({ country }) {
       <Disclaimer />
     </>
   );
-}
+};
 
-export default About;
+export default AboutPage;

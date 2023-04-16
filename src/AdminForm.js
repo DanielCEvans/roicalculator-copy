@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   Box,
   Typography,
@@ -7,8 +8,6 @@ import {
   Select,
   Tooltip,
 } from "@hero-design/react";
-import React from "react";
-import { useEffect } from "react";
 import StatisticCard from "./Statistic";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 
@@ -18,7 +17,7 @@ const payrollFrequency = [
   { value: "monthly", text: "Monthly" },
 ];
 
-const AdminHoursPage = ({
+const AdminForm = ({
   formData,
   setFormData,
   adminDetails,
@@ -377,4 +376,4 @@ const AdminHoursPage = ({
   );
 };
 
-export default AdminHoursPage;
+export default AdminForm;

@@ -1,11 +1,10 @@
-import React from "react";
 import { useNavigate } from "react-router-dom";
 import { SideBar } from "@hero-design/react";
-import * as BsIcons from "react-icons/bs";
-import * as AiIcons from "react-icons/ai";
 import CompanyLogo from "./CompanyLogo";
+import { BsCalculatorFill } from "react-icons/bs";
+import { AiOutlineDollar, AiOutlineInfoCircle } from "react-icons/ai";
 
-function SideBarExample(props) {
+const SideBarExample = (props) => {
   const navigate = useNavigate();
   const redirectTo = (url) => {
     navigate(url);
@@ -26,20 +25,20 @@ function SideBarExample(props) {
     body: [
       {
         id: "calculator",
-        icon: <BsIcons.BsCalculatorFill />,
+        icon: <BsCalculatorFill />,
         text: "Calculator",
         url: "/",
         dataAttrs: { "data-walk-identifier": "calculator-item" },
       },
       {
         id: "results",
-        icon: <AiIcons.AiOutlineDollar />,
+        icon: <AiOutlineDollar />,
         text: "Results",
         url: "/results",
       },
       {
         id: "about",
-        icon: <AiIcons.AiOutlineInfoCircle />,
+        icon: <AiOutlineInfoCircle />,
         text: "About",
         url: "/about",
       },
@@ -68,6 +67,6 @@ function SideBarExample(props) {
       />
     </>
   );
-}
+};
 
 export default SideBarExample;

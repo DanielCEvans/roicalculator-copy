@@ -1,11 +1,9 @@
-import React from "react";
+import { useMemo } from "react";
 import { Box, PageHeader, Table, Typography, theme } from "@hero-design/react";
 import styled from "styled-components";
 import Disclaimer from "./Disclaimer";
-import { useState } from "react";
-import "./Return.css";
 
-function Return(props) {
+const ResultsPage = (props) => {
   let currency;
   if (props.country === "AU") {
     currency = "AUD";
@@ -25,7 +23,7 @@ function Return(props) {
     style: "currency",
     currency,
   });
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       {
         accessor: "columnType",
@@ -270,6 +268,6 @@ function Return(props) {
       <Disclaimer />
     </>
   );
-}
+};
 
-export default Return;
+export default ResultsPage;

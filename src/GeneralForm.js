@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import {
   Box,
   theme,
@@ -7,9 +8,6 @@ import {
   Button,
   Modal,
 } from "@hero-design/react/lib";
-import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
 
 const countries = [
   { value: "AU", text: "Australia", name: "country" },
@@ -222,7 +220,7 @@ const plans = {
   ],
 };
 
-const GeneralPage = ({
+const GeneralForm = ({
   formData,
   setFormData,
   checkGeneralPageErrors,
@@ -424,4 +422,4 @@ const GeneralPage = ({
   );
 };
 
-export default GeneralPage;
+export default GeneralForm;

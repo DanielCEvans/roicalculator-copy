@@ -1,15 +1,8 @@
-import { Box, Typography, Input, theme, Grid } from "@hero-design/react";
-import React from "react";
 import { useEffect } from "react";
+import { Box, Typography, Input, theme, Grid } from "@hero-design/react";
 import StatisticCard from "./Statistic";
 
-const payrollFrequency = [
-  { value: "weekly", text: "Weekly" },
-  { value: "fortnightly", text: "Fortnightly" },
-  { value: "monthly", text: "Monthly" },
-];
-
-const AdminHoursPage = ({
+const PrintingForm = ({
   formData,
   setFormData,
   printingDetails,
@@ -239,4 +232,4 @@ const AdminHoursPage = ({
   );
 };
 
-export default AdminHoursPage;
+export default PrintingForm;

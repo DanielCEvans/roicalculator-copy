@@ -1,7 +1,6 @@
-import React from "react";
-import logo from "./eh logo.png";
+import logo from "./ehLogo.png";
 
-function CompanyLogo() {
+const CompanyLogo = () => {
   return (
     <>
       <img
@@ -15,6 +14,6 @@ function CompanyLogo() {
       />
     </>
   );
-}
+};
 
 export default CompanyLogo;
