@@ -11,35 +11,33 @@ import {
 import StatisticCard from "../../components/Statistic";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 
+import useStore from "../../context/store";
+
 const payrollFrequency = [
   { value: "weekly", text: "Weekly" },
   { value: "fortnightly", text: "Fortnightly" },
   { value: "monthly", text: "Monthly" },
 ];
 
-const AdminForm = ({
-  formData,
-  setFormData,
-  adminDetails,
-  setAdminDetails,
-  adminErrors,
-  checkAdminPageErrors,
-  hasCalculated,
-  runCalculations,
-}) => {
-  const handleInputChange = (e) => {
+const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
+  const {
+    formData,
+    setFormData,
+    adminDetails,
+    setAdminDetails,
+    adminErrors,
+    hasCalculated,
+  } = useStore();
+
+  const handleInputChange = (e, selectElement) => {
     // this functions needs to update the state values, calculate the total hours per month if possible
     // maybe the total hours per month function can update the setHoursSpentOnEmploymentTasks state
 
-    // This is required because the select input type in react automatically returns the value
-    // There is only one select element so we that it is
+    // This is required because of the select input type
     if (typeof e === "string") {
-      setAdminDetails({ ...adminDetails, frequencyOfPayroll: e });
+      setAdminDetails(selectElement, e);
     } else {
-      setAdminDetails({
-        ...adminDetails,
-        [e.target.id]: +e.target.value,
-      });
+      setAdminDetails(e.target.id, +e.target.value);
     }
   };
 
@@ -75,10 +73,7 @@ const AdminForm = ({
 
     // I might need to divide the total hours per month by the number of admins to get the total hours per month
     // per admin which is used when calculating the employment team financial gains!!!
-    setFormData({
-      ...formData,
-      hoursSpentOnEmploymentTasks: +totalHoursPerMonth,
-    });
+    setFormData("hoursSpentOnEmploymentTasks", +totalHoursPerMonth);
   }, [adminDetails]);
 
   useEffect(() => {
@@ -92,7 +87,7 @@ const AdminForm = ({
 
       const currentErrors = checkAdminPageErrors();
 
-      // NEED TO MAKE SURE THAT THE CALCULATIONS ARE BEING RUN WITH THE MOVE UP TO DATE HOURS SPENT PER MONTH ON EMPLOYMENT TASKS FIGURE!!!
+      // NEED TO MAKE SURE THAT THE CALCULATIONS ARE BEING RUN WITH THE MOST UP TO DATE HOURS SPENT PER MONTH ON EMPLOYMENT TASKS FIGURE!!!
       if (!currentErrors && hasCalculated) runCalculations();
     }
   }, [formData.hoursSpentOnEmploymentTasks, adminDetails.onboardsPerYear]);
@@ -232,7 +227,10 @@ const AdminForm = ({
             <Select
               options={payrollFrequency}
               value={adminDetails.frequencyOfPayroll}
-              onChange={handleInputChange}
+              // onChange={handleInputChange}
+              onChange={(value) =>
+                handleInputChange(value, "frequencyOfPayroll")
+              }
               placeholder="Select..."
               id="frequencyOfPayroll"
               style={{

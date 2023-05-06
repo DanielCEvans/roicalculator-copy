@@ -9,6 +9,8 @@ import {
   Modal,
 } from "@hero-design/react/lib";
 
+import useStore from "../../context/store";
+
 const countries = [
   { value: "AU", text: "Australia", name: "country" },
   { value: "NZ", text: "New Zealand" },
@@ -220,25 +222,20 @@ const plans = {
   ],
 };
 
-const GeneralForm = ({
-  formData,
-  setFormData,
-  checkGeneralPageErrors,
-  ...props
-}) => {
+const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
+  const { formData, setFormData, generalErrors, hasCalculated } = useStore();
+
   const [openEmployee, setOpenEmployee] = useState(false);
+
   const handleInputChange = (e, selectElement) => {
     // this functions needs to update the state values, calculate the total hours per month if possible
     // maybe the total hours per month function can update the setHoursSpentOnEmploymentTasks state
 
     // This is required because of the select input type
     if (typeof e === "string") {
-      setFormData({ ...formData, [selectElement]: e });
+      setFormData(selectElement, e);
     } else {
-      setFormData({
-        ...formData,
-        [e.target.id]: +e.target.value,
-      });
+      setFormData(e.target.id, +e.target.value);
     }
   };
 
@@ -250,9 +247,9 @@ const GeneralForm = ({
     // This means that if an error message is displayed, it will disappear when a user enters a valid value
 
     // This prevents the errors from being check on the first run - i.e. when the user hasn't even had a chance to fill in the required field
-    if (Object.keys(props.generalErrors).length !== 0) {
+    if (Object.keys(generalErrors).length !== 0) {
       const currentGeneralErrors = checkGeneralPageErrors();
-      if (!currentGeneralErrors && props.hasCalculated) props.runCalculations();
+      if (!currentGeneralErrors && hasCalculated) runCalculations();
     }
   }, [formData]);
 
@@ -272,7 +269,7 @@ const GeneralForm = ({
             tagName="label"
             htmlFor="country"
             fontWeight="bold"
-            intent={props.generalErrors.country ? "danger" : null}
+            intent={generalErrors.country ? "danger" : null}
           >
             Country
           </Typography.Text>
@@ -286,9 +283,9 @@ const GeneralForm = ({
             style={{
               marginTop: theme.space.small,
             }}
-            invalid={props.generalErrors.country}
+            invalid={generalErrors.country}
           />
-          {props.generalErrors.country && (
+          {generalErrors.country && (
             <Typography.Text fontSize={12} intent="danger">
               Required
             </Typography.Text>
@@ -299,7 +296,7 @@ const GeneralForm = ({
             tagName="label"
             htmlFor="plan"
             fontWeight="bold"
-            intent={props.generalErrors.plan ? "danger" : null}
+            intent={generalErrors.plan ? "danger" : null}
           >
             Plan
           </Typography.Text>
@@ -312,9 +309,9 @@ const GeneralForm = ({
             style={{
               marginTop: theme.space.small,
             }}
-            invalid={props.generalErrors.plan}
+            invalid={generalErrors.plan}
           />
-          {props.generalErrors.plan && (
+          {generalErrors.plan && (
             <Typography.Text fontSize={12} intent="danger">
               Required
             </Typography.Text>
@@ -325,7 +322,7 @@ const GeneralForm = ({
             tagName="label"
             htmlFor="fullTimeEmployees"
             fontWeight="bold"
-            intent={props.generalErrors.fullTimeEmployees ? "danger" : null}
+            intent={generalErrors.fullTimeEmployees ? "danger" : null}
           >
             Number of full time employees
           </Typography.Text>
@@ -337,10 +334,10 @@ const GeneralForm = ({
             style={{
               marginTop: theme.space.small,
             }}
-            invalid={props.generalErrors.fullTimeEmployees}
+            invalid={generalErrors.fullTimeEmployees}
             min={0}
           />
-          {props.generalErrors.fullTimeEmployees && (
+          {generalErrors.fullTimeEmployees && (
             <Typography.Text fontSize={12} intent="danger">
               Required
             </Typography.Text>
@@ -395,7 +392,7 @@ const GeneralForm = ({
             tagName="label"
             htmlFor="admins"
             fontWeight="bold"
-            intent={props.generalErrors.admins ? "danger" : null}
+            intent={generalErrors.admins ? "danger" : null}
           >
             Number of people overseeing the employment function (including HR
             and Payroll)
@@ -408,10 +405,10 @@ const GeneralForm = ({
             style={{
               marginTop: theme.space.small,
             }}
-            invalid={props.generalErrors.admins}
+            invalid={generalErrors.admins}
             min={0}
           />
-          {props.generalErrors.admins && (
+          {generalErrors.admins && (
             <Typography.Text fontSize={12} intent="danger">
               Required
             </Typography.Text>

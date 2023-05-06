@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Grid, InPageNavigation, Box, Button, theme } from "@hero-design/react";
 import GeneralForm from "./GeneralForm";
@@ -6,19 +5,50 @@ import AdminForm from "./AdminForm";
 import PrintingForm from "./PrintingForm";
 import AdditionalForm from "./AdditionalForm";
 import StatisticCard from "../../components/Statistic";
+import calculateROI from "../../utils/functions";
+import useStore from "../../context/store";
 
-const PageNavigation = (props) => {
+const PageNavigation = () => {
   const navigate = useNavigate();
+
+  const {
+    formData,
+    adminDetails,
+    generalErrors,
+    setGeneralErrors,
+    adminErrors,
+    setAdminErrors,
+    hasCalculated,
+    setHasCalculated,
+    totalTable,
+    setTotalTable,
+    setBenefitsTable,
+    setCostsTable,
+    setSidebarSelectedItemId,
+    formSelectedItemId,
+    setFormSelectedItemId,
+  } = useStore();
+
+  const runCalculations = () => {
+    const { totalTable, benefitsTable, costsTable } = calculateROI(
+      formData,
+      adminDetails
+    );
+    setTotalTable(totalTable);
+    setBenefitsTable(benefitsTable);
+    setCostsTable(costsTable);
+  };
+
   let currency;
-  if (props.formData.country === "AU") {
+  if (formData.country === "AU") {
     currency = "AUD";
-  } else if (props.formData.country === "NZ") {
+  } else if (formData.country === "NZ") {
     currency = "NZD";
-  } else if (props.formData.country === "UK") {
+  } else if (formData.country === "UK") {
     currency = "GBP";
-  } else if (props.formData.country === "SG") {
+  } else if (formData.country === "SG") {
     currency = "SGD";
-  } else if (props.formData.country === "MY") {
+  } else if (formData.country === "MY") {
     currency = "MYR";
   } else {
     currency = "AUD";
@@ -28,7 +58,6 @@ const PageNavigation = (props) => {
     style: "currency",
     currency,
   });
-  const [selectedItemId, setSelectedItemId] = useState("general");
 
   const onClickItem = (item) => {
     // The user will first arrive at the 'general' page.
@@ -36,18 +65,18 @@ const PageNavigation = (props) => {
     // If the user tries to calculate immediately without filling in requried fields, error messages will be shown
     // Only check for errors
     let currentErrors;
-    if (selectedItemId === "general") {
+    if (formSelectedItemId === "general") {
       currentErrors = checkGeneralPageErrors();
-      if (!currentErrors) setSelectedItemId(item.id);
+      if (!currentErrors) setFormSelectedItemId(item.id);
     }
 
-    if (selectedItemId === "adminDetails") {
+    if (formSelectedItemId === "adminDetails") {
       currentErrors = checkAdminPageErrors();
-      if (!currentErrors) setSelectedItemId(item.id);
+      if (!currentErrors) setFormSelectedItemId(item.id);
     }
 
     // condition which checks if only errors are found on the admin page and if so, sets the selected item state to the adminDetails page
-    if (!currentErrors) setSelectedItemId(item.id);
+    if (!currentErrors) setFormSelectedItemId(item.id);
   };
 
   const items = {
@@ -69,15 +98,15 @@ const PageNavigation = (props) => {
   };
 
   const checkAdminPageErrors = () => {
-    let currentAdminErrors = { ...props.adminErrors };
+    let currentAdminErrors = { ...adminErrors };
 
-    if (!props.adminDetails.onboardsPerYear) {
+    if (!adminDetails.onboardsPerYear) {
       currentAdminErrors = { ...currentAdminErrors, onboardsPerYear: true };
     } else {
       currentAdminErrors = { ...currentAdminErrors, onboardsPerYear: false };
     }
 
-    if (!props.formData.hoursSpentOnEmploymentTasks) {
+    if (!formData.hoursSpentOnEmploymentTasks) {
       currentAdminErrors = {
         ...currentAdminErrors,
         hoursSpentOnEmploymentTasks: true,
@@ -89,34 +118,34 @@ const PageNavigation = (props) => {
       };
     }
 
-    props.setAdminErrors({ ...currentAdminErrors });
+    setAdminErrors(currentAdminErrors);
 
     // if there are current errors, set the errors and return true
     return Object.values(currentAdminErrors).find((error) => error === true);
   };
 
   const checkGeneralPageErrors = () => {
-    let currentGeneralErrors = { ...props.generalErrors };
+    let currentGeneralErrors = { ...generalErrors };
 
-    if (!props.formData.country) {
+    if (!formData.country) {
       currentGeneralErrors = { ...currentGeneralErrors, country: true };
     } else {
       currentGeneralErrors = { ...currentGeneralErrors, country: false };
     }
 
-    if (!props.formData.plan) {
+    if (!formData.plan) {
       currentGeneralErrors = { ...currentGeneralErrors, plan: true };
     } else {
       currentGeneralErrors = { ...currentGeneralErrors, plan: false };
     }
 
-    if (!props.formData.admins) {
+    if (!formData.admins) {
       currentGeneralErrors = { ...currentGeneralErrors, admins: true };
     } else {
       currentGeneralErrors = { ...currentGeneralErrors, admins: false };
     }
 
-    if (!props.formData.fullTimeEmployees) {
+    if (!formData.fullTimeEmployees) {
       currentGeneralErrors = {
         ...currentGeneralErrors,
         fullTimeEmployees: true,
@@ -128,25 +157,25 @@ const PageNavigation = (props) => {
       };
     }
 
-    props.setGeneralErrors({ ...currentGeneralErrors });
+    setGeneralErrors(currentGeneralErrors);
 
     // if there are current errors, set the errors and return true
     return Object.values(currentGeneralErrors).find((error) => error === true);
   };
 
   let savingsBackgroundColor;
-  if (!props.totalTable.year1NetBenefits) {
+  if (!totalTable.year1NetBenefits) {
     savingsBackgroundColor = "white";
-  } else if (props.totalTable.year1NetBenefits > 0) {
+  } else if (totalTable.year1NetBenefits > 0) {
     savingsBackgroundColor = theme.colors.palette.grotesqueGreenLight75;
   } else {
     savingsBackgroundColor = theme.colors.palette.pinkLight75;
   }
 
   let savingsFontColour;
-  if (!props.totalTable.year1NetBenefits) {
+  if (!totalTable.year1NetBenefits) {
     savingsFontColour = theme.colors.palette.violetDark45;
-  } else if (props.totalTable.year1NetBenefits > 0) {
+  } else if (totalTable.year1NetBenefits > 0) {
     savingsFontColour = theme.colors.palette.grotesqueGreenDark45;
   } else {
     savingsFontColour = theme.colors.palette.pinkDark45;
@@ -160,17 +189,17 @@ const PageNavigation = (props) => {
     const adminErrors = checkAdminPageErrors();
 
     if (!generalErrors && adminErrors) {
-      setSelectedItemId("adminDetails");
+      setFormSelectedItemId("adminDetails");
     }
 
     if (!generalErrors && !adminErrors) {
-      props.runCalculations();
-      if (!props.hasCalculated) props.setHasCalculated(true);
+      runCalculations();
+      if (!hasCalculated) setHasCalculated(true);
     }
   };
 
   const handleSeeFullResults = () => {
-    props.setSelectedItemId("results");
+    setSidebarSelectedItemId("results");
     navigate("/results");
   };
 
@@ -189,31 +218,27 @@ const PageNavigation = (props) => {
             <InPageNavigation
               items={items}
               onClickItem={onClickItem}
-              selectedItemId={selectedItemId}
+              formSelectedItemId={formSelectedItemId}
             />
           </Grid.Col>
           <Grid.Col span={[12, 20, 20, 20, 20]}>
-            {selectedItemId === "general" && (
+            {formSelectedItemId === "general" && (
               <GeneralForm
-                {...props}
                 checkGeneralPageErrors={checkGeneralPageErrors}
+                runCalculations={runCalculations}
               />
             )}
-            {selectedItemId === "adminDetails" && (
+            {formSelectedItemId === "adminDetails" && (
               <AdminForm
                 checkAdminPageErrors={checkAdminPageErrors}
-                {...props}
+                runCalculations={runCalculations}
               />
             )}
-            {selectedItemId === "additional" && <AdditionalForm {...props} />}
-            {selectedItemId === "pagesPrinted" && (
-              <PrintingForm
-                formData={props.formData}
-                setFormData={props.setFormData}
-                printingDetails={props.printingDetails}
-                setPrintingDetails={props.setPrintingDetails}
-                {...props}
-              />
+            {formSelectedItemId === "additional" && (
+              <AdditionalForm runCalculations={runCalculations} />
+            )}
+            {formSelectedItemId === "pagesPrinted" && (
+              <PrintingForm runCalculations={runCalculations} />
             )}
           </Grid.Col>
         </Grid.Row>
@@ -230,7 +255,7 @@ const PageNavigation = (props) => {
               onClick={handleSubmit}
             />
             <Button
-              disabled={!props.hasCalculated}
+              disabled={!hasCalculated}
               variant="outlined"
               intent="primary"
               size="medium"
@@ -244,8 +269,8 @@ const PageNavigation = (props) => {
               title="Return On Investment"
               subtitle="3 Year Total"
               value={
-                props.totalTable.threeYearTotalROI
-                  ? `${props.totalTable.threeYearTotalROI.toFixed(0)}%`
+                totalTable.threeYearTotalROI
+                  ? `${totalTable.threeYearTotalROI.toFixed(0)}%`
                   : "0%"
               }
               backgroundColor="white"
@@ -257,8 +282,8 @@ const PageNavigation = (props) => {
               title="Net Savings"
               subtitle="Year 1"
               value={
-                props.totalTable.year1NetBenefits
-                  ? `${formatter.format(props.totalTable.year1NetBenefits)}`
+                totalTable.year1NetBenefits
+                  ? `${formatter.format(totalTable.year1NetBenefits)}`
                   : "$0.00"
               }
               backgroundColor={savingsBackgroundColor}

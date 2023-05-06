@@ -1,14 +1,18 @@
 import { useEffect } from "react";
 import { Box, Typography, Input, theme, Grid } from "@hero-design/react";
 import StatisticCard from "../../components/Statistic";
+import useStore from "../../context/store";
 
-const PrintingForm = ({
-  formData,
-  setFormData,
-  printingDetails,
-  setPrintingDetails,
-  ...props
-}) => {
+const PrintingForm = ({ runCalculations }) => {
+  const {
+    formData,
+    setFormData,
+    printingDetails,
+    setPrintingDetails,
+    hasCalculated,
+  } = useStore();
+
+  console.log(formData);
   const handleInputChange = (e) => {
     // this functions needs to update the state values, calculate the total hours per month if possible
     // maybe the total hours per month function can update the setHoursSpentOnEmploymentTasks state
@@ -16,10 +20,7 @@ const PrintingForm = ({
     // This is required because the select input type in react automatically returns the value
     // There is only one select element so we that it is 'frequencyOfPayroll'
 
-    setPrintingDetails({
-      ...printingDetails,
-      [e.target.id]: +e.target.value,
-    });
+    setPrintingDetails(e.target.id, +e.target.value);
   };
   useEffect(() => {
     const pagesPerYear =
@@ -27,15 +28,13 @@ const PrintingForm = ({
       printingDetails.leaveFormsPerYear * printingDetails.pagesPerLeaveForm +
       printingDetails.reviewsPerYear * printingDetails.pagesPerReview +
       printingDetails.otherPrintingTasks;
+    console.log(pagesPerYear);
 
-    setFormData({
-      ...formData,
-      pagesPerYear: +pagesPerYear,
-    });
+    setFormData("pagesPerYear", pagesPerYear);
   }, [printingDetails]);
 
   useEffect(() => {
-    // Run this code if props.errors has been initialised.
+    // Run this code if errors has been initialised.
     // This means it is not the first render and the user has either input some values, tried to submit a calculation, or tried to change a page in the InPageNavigation
 
     // When the formData state changes for this General Page, the errors will be updated AFTER the state of formData has been updated.
@@ -46,7 +45,7 @@ const PrintingForm = ({
     // const currentErrors = checkAdminPageErrors();
 
     // NEED TO MAKE SURE THAT THE CALCULATIONS ARE BEING RUN WITH THE MOVE UP TO DATE HOURS SPENT PER MONTH ON EMPLOYMENT TASKS FIGURE!!!
-    props.hasCalculated && props.runCalculations();
+    hasCalculated && runCalculations();
   }, [formData.pagesPerYear]);
 
   return (

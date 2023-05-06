@@ -5,7 +5,7 @@ const mapping = require("../data/data.json");
 
 // Code should not execute here unless all mandatory form fields have been entered
 
-export default function calculateROI(formData, onboardsPerYear) {
+export default function calculateROI(formData, adminDetails) {
   const NUMBER_OF_YEARS = 3;
   // Values which are derived from input form data
 
@@ -24,7 +24,7 @@ export default function calculateROI(formData, onboardsPerYear) {
     orgSize: formData.fullTimeEmployees + formData.partTimeCasualEmployees,
   };
 
-  const growthRate = onboardsPerYear / formData.orgSize + 1;
+  const growthRate = adminDetails.onboardsPerYear / formData.orgSize + 1;
   formData = {
     ...formData,
     growthRate: growthRate,
@@ -284,7 +284,7 @@ export default function calculateROI(formData, onboardsPerYear) {
   let costSavedInServicesAndTechnologyYear2;
   let costSavedInServicesAndTechnologyYear3;
   for (let year = 0; year < NUMBER_OF_YEARS; year++) {
-    if (year == 0) {
+    if (year === 0) {
       costSavedInServicesAndTechnologyYear1 = costSavedInServiceProviders * 0.8;
     } else {
       // could this be done recursively?
@@ -517,5 +517,5 @@ export default function calculateROI(formData, onboardsPerYear) {
     threeYearTotalCost,
   };
 
-  return [totalTable, benefitsTable, costsTable];
+  return { totalTable, benefitsTable, costsTable };
 }

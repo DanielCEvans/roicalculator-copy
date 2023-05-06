@@ -3,15 +3,17 @@ import { SideBar } from "@hero-design/react";
 import CompanyLogo from "./CompanyLogo";
 import { BsCalculatorFill } from "react-icons/bs";
 import { AiOutlineDollar, AiOutlineInfoCircle } from "react-icons/ai";
+import useStore from "../context/store";
 
-const SideBarExample = (props) => {
+const SideBarExample = () => {
+  const { sidebarSelectedItemId, setSidebarSelectedItemId } = useStore();
   const navigate = useNavigate();
   const redirectTo = (url) => {
     navigate(url);
   };
 
   const onClickSideBarItem = (item) => {
-    props.setSelectedItemId(item.id);
+    setSidebarSelectedItemId(item.id);
     redirectTo(item.url);
   };
 
@@ -57,7 +59,7 @@ const SideBarExample = (props) => {
     <>
       <SideBar
         items={items}
-        selectedItemId={props.selectedItemId}
+        selectedItemId={sidebarSelectedItemId}
         onClickItem={onClickSideBarItem}
         style={{
           position: "sticky",

@@ -7,18 +7,20 @@ import {
   Divider,
 } from "@hero-design/react";
 import Disclaimer from "../../components/Disclaimer";
+import useStore from "../../context/store";
 
-const AboutPage = ({ country }) => {
+const AboutPage = () => {
+  const { formData } = useStore();
   let reportLandingPage;
-  if (country === "AU") {
+  if (formData.country === "AU") {
     reportLandingPage = "https://employmenthero.com/roi-of-employment-hero/";
-  } else if (country === "NZ") {
+  } else if (formData.country === "NZ") {
     reportLandingPage = "https://employmenthero.com/nz/roi-of-employment-hero/";
-  } else if (country === "UK") {
+  } else if (formData.country === "UK") {
     reportLandingPage = "https://employmenthero.com/uk/roi-of-employment-hero/";
-  } else if (country === "SG") {
+  } else if (formData.country === "SG") {
     reportLandingPage = "https://employmenthero.com/sg/roi-of-employment-hero/";
-  } else if (country === "MY") {
+  } else if (formData.country === "MY") {
     reportLandingPage = "https://employmenthero.com/my/roi-of-employment-hero/";
   } else {
     reportLandingPage = "https://employmenthero.com/roi-of-employment-hero/";

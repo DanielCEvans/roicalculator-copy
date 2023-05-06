@@ -10,6 +10,7 @@ import {
   Tooltip,
 } from "@hero-design/react";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
+import useStore from "../../context/store";
 
 const mapping = require("../../data/data.json");
 
@@ -19,22 +20,30 @@ const implementation = [
   { value: "self", text: "Self Implementation" },
 ];
 
-const AdditionalForm = ({ formData, setFormData, ...props }) => {
+const AdditionalForm = ({ runCalculations }) => {
+  const { formData, setFormData, hasCalculated } = useStore();
   const [openImplementation, setOpenImplementation] = useState(false);
 
   let currency;
+  let countryPrefix;
   if (formData.country === "AU") {
     currency = "AUD";
+    countryPrefix = "A$";
   } else if (formData.country === "NZ") {
     currency = "NZD";
+    countryPrefix = "NZ$";
   } else if (formData.country === "UK") {
     currency = "GBP";
+    countryPrefix = "£";
   } else if (formData.country === "SG") {
     currency = "SGD";
+    countryPrefix = "SGD";
   } else if (formData.country === "MY") {
     currency = "MYR";
+    countryPrefix = "MYR";
   } else {
     currency = "AUD";
+    countryPrefix = "$";
   }
 
   const formatter = new Intl.NumberFormat("en-US", {
@@ -48,15 +57,12 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
 
     // This is required because of the select input type
     if (typeof e === "string") {
-      setFormData({ ...formData, implementationType: e });
+      setFormData("implementationType", e);
     } else if (typeof e === "number") {
       // this is for the slider component
-      setFormData({ ...formData, growthRate: e });
+      setFormData("growthRate", e);
     } else {
-      setFormData({
-        ...formData,
-        [e.target.id]: +e.target.value,
-      });
+      setFormData(e.target.id, +e.target.value);
     }
   };
 
@@ -72,7 +78,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
     // const currentErrors = checkAdminPageErrors();
 
     // NEED TO MAKE SURE THAT THE CALCULATIONS ARE BEING RUN WITH THE MOVE UP TO DATE HOURS SPENT PER MONTH ON EMPLOYMENT TASKS FIGURE!!!
-    props.hasCalculated && props.runCalculations();
+    hasCalculated && runCalculations();
   }, [formData]);
 
   return (
@@ -151,7 +157,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         value={formData.hrBurdenedRate}
         onChange={handleInputChange}
         id="hrBurdenedRate"
-        prefix={<span>{props.countryPrefix}</span>}
+        prefix={<span>{countryPrefix}</span>}
         style={{
           marginTop: theme.space.small,
           marginBottom: "2px",
@@ -164,7 +170,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         intent="subdued"
         style={{ marginBottom: theme.space.medium }}
       >
-        {`If left blank, hourly rate of ${props.countryPrefix}${mapping[
+        {`If left blank, hourly rate of ${countryPrefix}${mapping[
           formData.country
         ]["hr_hourly_rate"].toFixed(
           2
@@ -182,7 +188,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         value={formData.employeeBurdenedRate}
         onChange={handleInputChange}
         id="employeeBurdenedRate"
-        prefix={<span>{props.countryPrefix}</span>}
+        prefix={<span>{countryPrefix}</span>}
         style={{
           marginTop: theme.space.small,
           marginBottom: "2px",
@@ -195,7 +201,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         intent="subdued"
         style={{ marginBottom: theme.space.medium }}
       >
-        {`If left blank, hourly rate of ${props.countryPrefix}${mapping[
+        {`If left blank, hourly rate of ${countryPrefix}${mapping[
           formData.country
         ]["employee_hourly_rate"].toFixed(
           2
@@ -220,7 +226,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         value={formData.costsSavedOnTech}
         onChange={handleInputChange}
         id="costsSavedOnTech"
-        prefix={<span>{props.countryPrefix}</span>}
+        prefix={<span>{countryPrefix}</span>}
         style={{
           marginTop: theme.space.small,
           marginBottom: "2px",
@@ -256,7 +262,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         value={formData.annualServicesSpend}
         onChange={handleInputChange}
         id="annualServicesSpend"
-        prefix={<span>{props.countryPrefix}</span>}
+        prefix={<span>{countryPrefix}</span>}
         style={{
           marginTop: theme.space.small,
           marginBottom: "2px",
