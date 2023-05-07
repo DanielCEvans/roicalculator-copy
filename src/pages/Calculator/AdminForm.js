@@ -10,7 +10,6 @@ import {
 } from "@hero-design/react";
 import StatisticCard from "../../components/Statistic";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
-
 import useStore from "../../context/store";
 
 const payrollFrequency = [
@@ -18,6 +17,37 @@ const payrollFrequency = [
   { value: "fortnightly", text: "Fortnightly" },
   { value: "monthly", text: "Monthly" },
 ];
+
+const payrollCycles = {
+  weekly: 4,
+  fortnightly: 2,
+  monthly: 1,
+};
+
+const calculateHoursSpentOnEmploymentTasks = (details) => {
+  const {
+    onboardsPerYear,
+    hoursSpentPerOnboard,
+    timeSheetsPerMonth,
+    hoursSpentPerTimesheet,
+    frequencyOfPayroll,
+    hoursSpentPerPayroll,
+    performanceReviewCycles,
+    hoursSpentPerPerformanceReview,
+    additionalTasks,
+  } = details;
+
+  const numberOfPayrollCycles = payrollCycles[frequencyOfPayroll] || 0;
+
+  const totalHoursPerMonth =
+    (onboardsPerYear * hoursSpentPerOnboard) / 12 +
+    timeSheetsPerMonth * hoursSpentPerTimesheet +
+    numberOfPayrollCycles * hoursSpentPerPayroll +
+    (performanceReviewCycles * hoursSpentPerPerformanceReview) / 12 +
+    additionalTasks;
+
+  return +totalHoursPerMonth;
+};
 
 const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
   const {
@@ -30,11 +60,8 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
   } = useStore();
 
   const handleInputChange = (e, selectElement) => {
-    // this functions needs to update the state values, calculate the total hours per month if possible
-    // maybe the total hours per month function can update the setHoursSpentOnEmploymentTasks state
-
     // This is required because of the select input type
-    if (typeof e === "string") {
+    if (selectElement) {
       setAdminDetails(selectElement, e);
     } else {
       setAdminDetails(e.target.id, +e.target.value);
@@ -42,52 +69,14 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
   };
 
   useEffect(() => {
-    // When adminDetails changes, this function will run and set the number of hours spent per month on employment tasks
-    // console.log(adminDetails);
-    // this function will need to calculate the monthly hours and set the state
-    // Because the state is at the app level, this triggers an entire re-render of the application
-    // which takes the user back to the General page.
-
-    let numberOfPayrollCycles;
-    if (adminDetails.frequencyOfPayroll === "weekly") {
-      // If payroll done weekly, and there is assumed to be 48 working weeks in a year, convert hours into months
-      // number of payroll cycles per month will be 48/12 which is 4
-      numberOfPayrollCycles = 4;
-    } else if (adminDetails.frequencyOfPayroll === "fortnightly") {
-      // If payroll done fortnightly, and there is assumed to be 24 working fortnights in a year, convert hours into months
-      // number of payroll cycles per month will be 24/12 which is 2
-      numberOfPayrollCycles = 2;
-    } else if (adminDetails.frequencyOfPayroll === "monthly") {
-      numberOfPayrollCycles = 1;
-    } else {
-      numberOfPayrollCycles = 0;
-    }
-    let totalHoursPerMonth =
-      (adminDetails.onboardsPerYear * adminDetails.hoursSpentPerOnboard) / 12 +
-      adminDetails.timeSheetsPerMonth * adminDetails.hoursSpentPerTimesheet +
-      numberOfPayrollCycles * adminDetails.hoursSpentPerPayroll +
-      (adminDetails.performanceReviewCycles *
-        adminDetails.hoursSpentPerPerformanceReview) /
-        12 +
-      adminDetails.additionalTasks;
-
-    // I might need to divide the total hours per month by the number of admins to get the total hours per month
-    // per admin which is used when calculating the employment team financial gains!!!
-    setFormData("hoursSpentOnEmploymentTasks", +totalHoursPerMonth);
+    const hoursSpentOnEmploymentTasks =
+      calculateHoursSpentOnEmploymentTasks(adminDetails);
+    setFormData("hoursSpentOnEmploymentTasks", hoursSpentOnEmploymentTasks);
   }, [adminDetails]);
 
   useEffect(() => {
-    // Run this code if props.errors has been initialised.
-    // This means it is not the first render and the user has either input some values, tried to submit a calculation, or tried to change a page in the InPageNavigation
-
-    // When the formData state changes for this General Page, the errors will be updated AFTER the state of formData has been updated.
-    // This means that if an error message is displayed, it will disappear when a user enters a valid value
     if (Object.keys(adminErrors).length !== 0) {
-      // checkGeneralPageErrors();
-
       const currentErrors = checkAdminPageErrors();
-
-      // NEED TO MAKE SURE THAT THE CALCULATIONS ARE BEING RUN WITH THE MOST UP TO DATE HOURS SPENT PER MONTH ON EMPLOYMENT TASKS FIGURE!!!
       if (!currentErrors && hasCalculated) runCalculations();
     }
   }, [formData.hoursSpentOnEmploymentTasks, adminDetails.onboardsPerYear]);
@@ -228,9 +217,7 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
               options={payrollFrequency}
               value={adminDetails.frequencyOfPayroll}
               // onChange={handleInputChange}
-              onChange={(value) =>
-                handleInputChange(value, "frequencyOfPayroll")
-              }
+              onChange={(e) => handleInputChange(e, "frequencyOfPayroll")}
               placeholder="Select..."
               id="frequencyOfPayroll"
               style={{

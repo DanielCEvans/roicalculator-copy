@@ -7,6 +7,7 @@ import AdditionalForm from "./AdditionalForm";
 import StatisticCard from "../../components/Statistic";
 import calculateROI from "../../utils/functions";
 import useStore from "../../context/store";
+import { countryFormatter } from "../../utils/countryFormatter";
 
 const PageNavigation = () => {
   const navigate = useNavigate();
@@ -14,9 +15,7 @@ const PageNavigation = () => {
   const {
     formData,
     adminDetails,
-    generalErrors,
     setGeneralErrors,
-    adminErrors,
     setAdminErrors,
     hasCalculated,
     setHasCalculated,
@@ -39,25 +38,7 @@ const PageNavigation = () => {
     setCostsTable(costsTable);
   };
 
-  let currency;
-  if (formData.country === "AU") {
-    currency = "AUD";
-  } else if (formData.country === "NZ") {
-    currency = "NZD";
-  } else if (formData.country === "UK") {
-    currency = "GBP";
-  } else if (formData.country === "SG") {
-    currency = "SGD";
-  } else if (formData.country === "MY") {
-    currency = "MYR";
-  } else {
-    currency = "AUD";
-  }
-
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-  });
+  const formatter = countryFormatter(formData.country);
 
   const onClickItem = (item) => {
     // The user will first arrive at the 'general' page.
@@ -98,88 +79,42 @@ const PageNavigation = () => {
   };
 
   const checkAdminPageErrors = () => {
-    let currentAdminErrors = { ...adminErrors };
-
-    if (!adminDetails.onboardsPerYear) {
-      currentAdminErrors = { ...currentAdminErrors, onboardsPerYear: true };
-    } else {
-      currentAdminErrors = { ...currentAdminErrors, onboardsPerYear: false };
-    }
-
-    if (!formData.hoursSpentOnEmploymentTasks) {
-      currentAdminErrors = {
-        ...currentAdminErrors,
-        hoursSpentOnEmploymentTasks: true,
-      };
-    } else {
-      currentAdminErrors = {
-        ...currentAdminErrors,
-        hoursSpentOnEmploymentTasks: false,
-      };
-    }
+    const currentAdminErrors = {
+      onboardsPerYear: !adminDetails.onboardsPerYear,
+      hoursSpentOnEmploymentTasks: !formData.hoursSpentOnEmploymentTasks,
+    };
 
     setAdminErrors(currentAdminErrors);
 
     // if there are current errors, set the errors and return true
-    return Object.values(currentAdminErrors).find((error) => error === true);
+    return Object.values(currentAdminErrors).some((error) => error);
   };
 
   const checkGeneralPageErrors = () => {
-    let currentGeneralErrors = { ...generalErrors };
-
-    if (!formData.country) {
-      currentGeneralErrors = { ...currentGeneralErrors, country: true };
-    } else {
-      currentGeneralErrors = { ...currentGeneralErrors, country: false };
-    }
-
-    if (!formData.plan) {
-      currentGeneralErrors = { ...currentGeneralErrors, plan: true };
-    } else {
-      currentGeneralErrors = { ...currentGeneralErrors, plan: false };
-    }
-
-    if (!formData.admins) {
-      currentGeneralErrors = { ...currentGeneralErrors, admins: true };
-    } else {
-      currentGeneralErrors = { ...currentGeneralErrors, admins: false };
-    }
-
-    if (!formData.fullTimeEmployees) {
-      currentGeneralErrors = {
-        ...currentGeneralErrors,
-        fullTimeEmployees: true,
-      };
-    } else {
-      currentGeneralErrors = {
-        ...currentGeneralErrors,
-        fullTimeEmployees: false,
-      };
-    }
+    const currentGeneralErrors = {
+      country: !formData.country,
+      plan: !formData.plan,
+      admins: !formData.admins,
+      fullTimeEmployees: !formData.fullTimeEmployees,
+    };
 
     setGeneralErrors(currentGeneralErrors);
 
     // if there are current errors, set the errors and return true
-    return Object.values(currentGeneralErrors).find((error) => error === true);
+    return Object.values(currentGeneralErrors).some((error) => error);
   };
 
-  let savingsBackgroundColor;
-  if (!totalTable.year1NetBenefits) {
-    savingsBackgroundColor = "white";
-  } else if (totalTable.year1NetBenefits > 0) {
-    savingsBackgroundColor = theme.colors.palette.grotesqueGreenLight75;
-  } else {
-    savingsBackgroundColor = theme.colors.palette.pinkLight75;
-  }
+  const savingsBackgroundColor = !totalTable.year1NetBenefits
+    ? "white"
+    : totalTable.year1NetBenefits > 0
+    ? theme.colors.palette.grotesqueGreenLight75
+    : theme.colors.palette.pinkLight75;
 
-  let savingsFontColour;
-  if (!totalTable.year1NetBenefits) {
-    savingsFontColour = theme.colors.palette.violetDark45;
-  } else if (totalTable.year1NetBenefits > 0) {
-    savingsFontColour = theme.colors.palette.grotesqueGreenDark45;
-  } else {
-    savingsFontColour = theme.colors.palette.pinkDark45;
-  }
+  const savingsFontColour = !totalTable.year1NetBenefits
+    ? theme.colors.palette.violetDark45
+    : totalTable.year1NetBenefits > 0
+    ? theme.colors.palette.grotesqueGreenDark45
+    : theme.colors.palette.pinkDark45;
 
   const handleSubmit = (e) => {
     // Preventing default form behaviour, is this required considering I don't really have a form?
@@ -194,7 +129,7 @@ const PageNavigation = () => {
 
     if (!generalErrors && !adminErrors) {
       runCalculations();
-      if (!hasCalculated) setHasCalculated(true);
+      if (!hasCalculated) setHasCalculated();
     }
   };
 

@@ -3,29 +3,13 @@ import { Box, PageHeader, Table, Typography, theme } from "@hero-design/react";
 import styled from "styled-components";
 import Disclaimer from "../../components/Disclaimer";
 import useStore from "../../context/store";
+import { countryFormatter } from "../../utils/countryFormatter";
 
 const ResultsPage = () => {
   const { formData, totalTable, benefitsTable, costsTable } = useStore();
 
-  let currency;
-  if (formData.country === "AU") {
-    currency = "AUD";
-  } else if (formData.country === "NZ") {
-    currency = "NZD";
-  } else if (formData.country === "UK") {
-    currency = "GBP";
-  } else if (formData.country === "SG") {
-    currency = "SGD";
-  } else if (formData.country === "MY") {
-    currency = "MYR";
-  } else {
-    currency = "AUD";
-  }
+  const formatter = countryFormatter(formData.country);
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-  });
   const columns = useMemo(
     () => [
       {

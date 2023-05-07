@@ -11,7 +11,6 @@ const useStore = create((set) => ({
     annualServicesSpend: "",
     pagesPerYear: 0,
     implementationType: "",
-    // any default values that require the mapping will have to be set during the calculation of the ROI as the country will not be known on the first render
     hrBurdenedRate: "",
     employeeBurdenedRate: "",
     hoursSpentOnEmploymentTasks: 0,
@@ -78,10 +77,10 @@ const useStore = create((set) => ({
     })),
 
   hasCalculated: false,
-  setHasCalculated: (hasCalculated) =>
+  setHasCalculated: () =>
     set((state) => ({
       ...state,
-      hasCalculated,
+      hasCalculated: true,
     })),
 
   totalTable: {},

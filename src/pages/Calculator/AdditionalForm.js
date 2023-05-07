@@ -11,6 +11,10 @@ import {
 } from "@hero-design/react";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
 import useStore from "../../context/store";
+import {
+  countryFormatter,
+  countryPrefixFormatter,
+} from "../../utils/countryFormatter";
 
 const mapping = require("../../data/data.json");
 
@@ -24,43 +28,13 @@ const AdditionalForm = ({ runCalculations }) => {
   const { formData, setFormData, hasCalculated } = useStore();
   const [openImplementation, setOpenImplementation] = useState(false);
 
-  let currency;
-  let countryPrefix;
-  if (formData.country === "AU") {
-    currency = "AUD";
-    countryPrefix = "A$";
-  } else if (formData.country === "NZ") {
-    currency = "NZD";
-    countryPrefix = "NZ$";
-  } else if (formData.country === "UK") {
-    currency = "GBP";
-    countryPrefix = "£";
-  } else if (formData.country === "SG") {
-    currency = "SGD";
-    countryPrefix = "SGD";
-  } else if (formData.country === "MY") {
-    currency = "MYR";
-    countryPrefix = "MYR";
-  } else {
-    currency = "AUD";
-    countryPrefix = "$";
-  }
+  const formatter = countryFormatter(formData.country);
+  const countryPrefix = countryPrefixFormatter(formData.country);
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-  });
-
-  const handleInputChange = (e) => {
-    // this functions needs to update the state values, calculate the total hours per month if possible
-    // maybe the total hours per month function can update the setHoursSpentOnEmploymentTasks state
-
+  const handleInputChange = (e, selectElement) => {
     // This is required because of the select input type
-    if (typeof e === "string") {
-      setFormData("implementationType", e);
-    } else if (typeof e === "number") {
-      // this is for the slider component
-      setFormData("growthRate", e);
+    if (selectElement) {
+      setFormData(selectElement, e);
     } else {
       setFormData(e.target.id, +e.target.value);
     }
@@ -128,7 +102,7 @@ const AdditionalForm = ({ runCalculations }) => {
       <Select
         options={implementation}
         value={formData.implementationType}
-        onChange={handleInputChange}
+        onChange={(e) => handleInputChange(e, "implementationType")}
         placeholder="Select..."
         id="implementationType"
         style={{

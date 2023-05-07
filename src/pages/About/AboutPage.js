@@ -11,20 +11,19 @@ import useStore from "../../context/store";
 
 const AboutPage = () => {
   const { formData } = useStore();
-  let reportLandingPage;
-  if (formData.country === "AU") {
-    reportLandingPage = "https://employmenthero.com/roi-of-employment-hero/";
-  } else if (formData.country === "NZ") {
-    reportLandingPage = "https://employmenthero.com/nz/roi-of-employment-hero/";
-  } else if (formData.country === "UK") {
-    reportLandingPage = "https://employmenthero.com/uk/roi-of-employment-hero/";
-  } else if (formData.country === "SG") {
-    reportLandingPage = "https://employmenthero.com/sg/roi-of-employment-hero/";
-  } else if (formData.country === "MY") {
-    reportLandingPage = "https://employmenthero.com/my/roi-of-employment-hero/";
-  } else {
-    reportLandingPage = "https://employmenthero.com/roi-of-employment-hero/";
-  }
+
+  const reportLandingPage =
+    formData.country === "AU"
+      ? "https://employmenthero.com/roi-of-employment-hero/"
+      : formData.country === "NZ"
+      ? "https://employmenthero.com/nz/roi-of-employment-hero/"
+      : formData.country === "UK"
+      ? "https://employmenthero.com/uk/roi-of-employment-hero/"
+      : formData.country === "SG"
+      ? "https://employmenthero.com/sg/roi-of-employment-hero/"
+      : formData.country === "MY"
+      ? "https://employmenthero.com/my/roi-of-employment-hero/"
+      : "https://employmenthero.com/roi-of-employment-hero/";
 
   return (
     <>

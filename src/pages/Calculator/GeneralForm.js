@@ -8,231 +8,18 @@ import {
   Button,
   Modal,
 } from "@hero-design/react/lib";
+import countries from "../../data/countries.json";
+import plans from "../../data/plans.json";
 
 import useStore from "../../context/store";
 
-const countries = [
-  { value: "AU", text: "Australia", name: "country" },
-  { value: "NZ", text: "New Zealand" },
-  { value: "UK", text: "United Kingdom" },
-  { value: "MY", text: "Malaysia" },
-  { value: "SG", text: "Singapore" },
-];
-
-const plans = {
-  AU: [
-    { value: "Standard HR", text: "Standard HR" },
-    { value: "Premium HR", text: "Premium HR" },
-    { value: "Platinum HR", text: "Platinum HR" },
-    { value: "Standard Payroll", text: "Standard Payroll" },
-    { value: "Premium Payroll", text: "Premium Payroll" },
-    {
-      value: "Standard HR and Learning Plus",
-      text: "Standard HR and Learning Plus",
-    },
-    {
-      value: "Premium HR and Learning Plus",
-      text: "Premium HR and Learning Plus",
-    },
-    {
-      value: "Platinum HR and Learning Plus",
-      text: "Platinum HR and Learning Plus",
-    },
-    {
-      value: "Standard HR and Standard Payroll",
-      text: "Standard HR and Standard Payroll",
-    },
-    {
-      value: "Standard HR and Premium Payroll",
-      text: "Standard HR and Premium Payroll",
-    },
-    {
-      value: "Premium HR and Standard Payroll",
-      text: "Premium HR and Standard Payroll",
-    },
-    {
-      value: "Premium HR and Premium Payroll",
-      text: "Premium HR and Premium Payroll",
-    },
-    {
-      value: "Platinum HR and Standard Payroll",
-      text: "Platinum HR and Standard Payroll",
-    },
-    {
-      value: "Platinum HR and Premium Payroll",
-      text: "Platinum HR and Premium Payroll",
-    },
-    {
-      value: "Standard HR, Standard Payroll, and Learning Plus",
-      text: "Standard HR, Standard Payroll, and Learning Plus",
-    },
-    {
-      value: "Standard HR, Premium Payroll, and Learning Plus",
-      text: "Standard HR, Premium Payroll, and Learning Plus",
-    },
-    {
-      value: "Premium HR, Standard Payroll, and Learning Plus",
-      text: "Premium HR, Standard Payroll, and Learning Plus",
-    },
-    {
-      value: "Premium HR, Premium Payroll, and Learning Plus",
-      text: "Premium HR, Premium Payroll, and Learning Plus",
-    },
-    {
-      value: "Platinum HR, Standard Payroll, and Learning Plus",
-      text: "Platinum HR, Standard Payroll, and Learning Plus",
-    },
-    {
-      value: "Platinum HR, Premium Payroll, and Learning Plus",
-      text: "Platinum HR, Premium Payroll, and Learning Plus",
-    },
-  ],
-  UK: [
-    { value: "Standard HR", text: "Standard HR" },
-    { value: "Premium HR", text: "Premium HR" },
-    { value: "Platinum HR", text: "Platinum HR" },
-    { value: "Standard Payroll", text: "Standard Payroll" },
-    { value: "Premium Payroll", text: "Premium Payroll" },
-    {
-      value: "Standard HR and Learning Plus",
-      text: "Standard HR and Learning Plus",
-    },
-    {
-      value: "Premium HR and Learning Plus",
-      text: "Premium HR and Learning Plus",
-    },
-    {
-      value: "Platinum HR and Learning Plus",
-      text: "Platinum HR and Learning Plus",
-    },
-    {
-      value: "Standard HR and Standard Payroll",
-      text: "Standard HR and Standard Payroll",
-    },
-    {
-      value: "Standard HR and Premium Payroll",
-      text: "Standard HR and Premium Payroll",
-    },
-    {
-      value: "Premium HR and Standard Payroll",
-      text: "Premium HR and Standard Payroll",
-    },
-    {
-      value: "Premium HR and Premium Payroll",
-      text: "Premium HR and Premium Payroll",
-    },
-    {
-      value: "Platinum HR and Standard Payroll",
-      text: "Platinum HR and Standard Payroll",
-    },
-    {
-      value: "Platinum HR and Premium Payroll",
-      text: "Platinum HR and Premium Payroll",
-    },
-    {
-      value: "Standard HR, Standard Payroll, and Learning Plus",
-      text: "Standard HR, Standard Payroll, and Learning Plus",
-    },
-    {
-      value: "Standard HR, Premium Payroll, and Learning Plus",
-      text: "Standard HR, Premium Payroll, and Learning Plus",
-    },
-    {
-      value: "Premium HR, Standard Payroll, and Learning Plus",
-      text: "Premium HR, Standard Payroll, and Learning Plus",
-    },
-    {
-      value: "Premium HR, Premium Payroll, and Learning Plus",
-      text: "Premium HR, Premium Payroll, and Learning Plus",
-    },
-    {
-      value: "Platinum HR, Standard Payroll, and Learning Plus",
-      text: "Platinum HR, Standard Payroll, and Learning Plus",
-    },
-    {
-      value: "Platinum HR, Premium Payroll, and Learning Plus",
-      text: "Platinum HR, Premium Payroll, and Learning Plus",
-    },
-  ],
-  NZ: [
-    { value: "Premium HR", text: "Premium HR" },
-    { value: "Platinum HR", text: "Platinum HR" },
-    { value: "Standard Payroll", text: "Standard Payroll" },
-    { value: "Premium Payroll", text: "Premium Payroll" },
-    {
-      value: "Premium HR and Standard Payroll",
-      text: "Premium HR and Standard Payroll",
-    },
-    {
-      value: "Premium HR and Premium Payroll",
-      text: "Premium HR and Premium Payroll",
-    },
-    {
-      value: "Platinum HR and Standard Payroll",
-      text: "Platinum HR and Standard Payroll",
-    },
-    {
-      value: "Platinum HR and Premium Payroll",
-      text: "Platinum HR and Premium Payroll",
-    },
-  ],
-  MY: [
-    { value: "Premium HR", text: "Premium HR" },
-    { value: "Platinum HR", text: "Platinum HR" },
-    { value: "Standard Payroll", text: "Standard Payroll" },
-    { value: "Premium Payroll", text: "Premium Payroll" },
-    {
-      value: "Premium HR and Standard Payroll",
-      text: "Premium HR and Standard Payroll",
-    },
-    {
-      value: "Premium HR and Premium Payroll",
-      text: "Premium HR and Premium Payroll",
-    },
-    {
-      value: "Platinum HR and Standard Payroll",
-      text: "Platinum HR and Standard Payroll",
-    },
-    {
-      value: "Platinum HR and Premium Payroll",
-      text: "Platinum HR and Premium Payroll",
-    },
-  ],
-  SG: [
-    { value: "Premium HR", text: "Premium HR" },
-    { value: "Platinum HR", text: "Platinum HR" },
-    { value: "Standard Payroll", text: "Standard Payroll" },
-    { value: "Premium Payroll", text: "Premium Payroll" },
-    {
-      value: "Premium HR and Standard Payroll",
-      text: "Premium HR and Standard Payroll",
-    },
-    {
-      value: "Premium HR and Premium Payroll",
-      text: "Premium HR and Premium Payroll",
-    },
-    {
-      value: "Platinum HR and Standard Payroll",
-      text: "Platinum HR and Standard Payroll",
-    },
-    {
-      value: "Platinum HR and Premium Payroll",
-      text: "Platinum HR and Premium Payroll",
-    },
-  ],
-};
-
 const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
   const { formData, setFormData, generalErrors, hasCalculated } = useStore();
-
   const [openEmployee, setOpenEmployee] = useState(false);
 
   const handleInputChange = (e, selectElement) => {
-    // this functions needs to update the state values, calculate the total hours per month if possible
-    // maybe the total hours per month function can update the setHoursSpentOnEmploymentTasks state
-
     // This is required because of the select input type
-    if (typeof e === "string") {
+    if (selectElement) {
       setFormData(selectElement, e);
     } else {
       setFormData(e.target.id, +e.target.value);
@@ -240,9 +27,6 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
   };
 
   useEffect(() => {
-    // Run this code if props.errors has been initialised.
-    // This means it is not the first render and the user has either input some values, tried to submit a calculation, or tried to change a page in the InPageNavigation
-
     // When the formData state changes for this General Page, the errors will be updated AFTER the state of formData has been updated.
     // This means that if an error message is displayed, it will disappear when a user enters a valid value
 
