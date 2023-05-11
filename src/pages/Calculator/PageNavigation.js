@@ -28,37 +28,7 @@ const PageNavigation = () => {
     setFormSelectedItemId,
   } = useStore();
 
-  const runCalculations = () => {
-    const { totalTable, benefitsTable, costsTable } = calculateROI(
-      formData,
-      adminDetails
-    );
-    setTotalTable(totalTable);
-    setBenefitsTable(benefitsTable);
-    setCostsTable(costsTable);
-  };
-
   const formatter = countryFormatter(formData.country);
-
-  const onClickItem = (item) => {
-    // The user will first arrive at the 'general' page.
-    // Need to make sure the required fields on that page have been filled prior to the user leaving the page
-    // If the user tries to calculate immediately without filling in requried fields, error messages will be shown
-    // Only check for errors
-    let currentErrors;
-    if (formSelectedItemId === "general") {
-      currentErrors = checkGeneralPageErrors();
-      if (!currentErrors) setFormSelectedItemId(item.id);
-    }
-
-    if (formSelectedItemId === "adminDetails") {
-      currentErrors = checkAdminPageErrors();
-      if (!currentErrors) setFormSelectedItemId(item.id);
-    }
-
-    // condition which checks if only errors are found on the admin page and if so, sets the selected item state to the adminDetails page
-    if (!currentErrors) setFormSelectedItemId(item.id);
-  };
 
   const items = {
     "": [
@@ -78,6 +48,37 @@ const PageNavigation = () => {
     ],
   };
 
+  // This function will calculate the ROI when the user clicks the 'Calculate' button
+  // The required fields for calculating the ROI are checked prior to this function being called
+  const runCalculations = () => {
+    const { totalTable, benefitsTable, costsTable } = calculateROI(
+      formData,
+      adminDetails
+    );
+    setTotalTable(totalTable);
+    setBenefitsTable(benefitsTable);
+    setCostsTable(costsTable);
+  };
+
+  // This function will change the forms in the InpageNavigation component
+  // If the form has required fields, this function will check that they have been filled before changing the forms
+  const onClickItem = (item) => {
+    let currentErrors;
+    if (formSelectedItemId === "general") {
+      currentErrors = checkGeneralPageErrors();
+      if (!currentErrors) setFormSelectedItemId(item.id);
+    }
+
+    if (formSelectedItemId === "adminDetails") {
+      currentErrors = checkAdminPageErrors();
+      if (!currentErrors) setFormSelectedItemId(item.id);
+    }
+
+    // condition which checks if only errors are found on the admin page and if so, sets the selected item state to the adminDetails page
+    if (!currentErrors) setFormSelectedItemId(item.id);
+  };
+
+  // This function will check if any errors are found on the admin page
   const checkAdminPageErrors = () => {
     const currentAdminErrors = {
       onboardsPerYear: !adminDetails.onboardsPerYear,
@@ -89,6 +90,7 @@ const PageNavigation = () => {
     return Object.values(currentAdminErrors).some((error) => error);
   };
 
+  // This function will check if any errors are found on the general page
   const checkGeneralPageErrors = () => {
     const currentGeneralErrors = {
       country: !formData.country,
@@ -102,20 +104,7 @@ const PageNavigation = () => {
     return Object.values(currentGeneralErrors).some((error) => error);
   };
 
-  const savingsBackgroundColor = !totalTable.year1NetBenefits
-    ? "white"
-    : totalTable.year1NetBenefits > 0
-    ? theme.colors.palette.grotesqueGreenLight75
-    : theme.colors.palette.pinkLight75;
-
-  const savingsFontColour = !totalTable.year1NetBenefits
-    ? theme.colors.palette.violetDark45
-    : totalTable.year1NetBenefits > 0
-    ? theme.colors.palette.grotesqueGreenDark45
-    : theme.colors.palette.pinkDark45;
-
   const handleSubmit = (e) => {
-    // Preventing default form behaviour, is this required considering I don't really have a form?
     e.preventDefault();
     // If the user tries to calculate immediately without filling in requried fields, error messages will be shown
     const generalErrors = checkGeneralPageErrors();
@@ -136,6 +125,17 @@ const PageNavigation = () => {
     navigate("/results");
   };
 
+  const savingsBackgroundColor = !totalTable.year1NetBenefits
+    ? "white"
+    : totalTable.year1NetBenefits > 0
+    ? theme.colors.palette.grotesqueGreenLight75
+    : theme.colors.palette.pinkLight75;
+
+  const savingsFontColour = !totalTable.year1NetBenefits
+    ? theme.colors.palette.violetDark45
+    : totalTable.year1NetBenefits > 0
+    ? theme.colors.palette.grotesqueGreenDark45
+    : theme.colors.palette.pinkDark45;
   return (
     <Box
       sx={{

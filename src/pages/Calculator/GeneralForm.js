@@ -28,9 +28,9 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
 
   useEffect(() => {
     // When the formData state changes for this General Page, the errors will be updated AFTER the state of formData has been updated.
-    // This means that if an error message is displayed, it will disappear when a user enters a valid value
+    // This means that if an error message is displayed, it will disappear when a user enters a valid value which is the desired behaviour
 
-    // This prevents the errors from being check on the first run - i.e. when the user hasn't even had a chance to fill in the required field
+    // This prevents the errors from being checked on the first render - i.e. when the user hasn't even had a chance to fill in the required fields
     if (Object.keys(generalErrors).length !== 0) {
       const currentGeneralErrors = checkGeneralPageErrors();
       if (!currentGeneralErrors && hasCalculated) runCalculations();
@@ -38,7 +38,6 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
   }, [formData]);
 
   return (
-    // This Box holds the form for the General information
     <Box
       sx={{
         backgroundColor: "white",

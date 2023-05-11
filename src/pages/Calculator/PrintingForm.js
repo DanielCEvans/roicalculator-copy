@@ -33,11 +33,14 @@ const PrintingForm = ({ runCalculations }) => {
       otherPrintingTasks
     );
   };
+
+  // This will update the pagesPerYear value in the formData state whenever the printingDetails form values change
   useEffect(() => {
     const pagesPerYear = calculatePagesPerYear(printingDetails);
     setFormData("pagesPerYear", pagesPerYear);
   }, [printingDetails]);
 
+  // None of these inputs are required so no errors need to be checked
   useEffect(() => {
     hasCalculated && runCalculations();
   }, [formData.pagesPerYear]);

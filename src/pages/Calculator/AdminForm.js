@@ -24,6 +24,7 @@ const payrollCycles = {
   monthly: 1,
 };
 
+// This function will return the total hours spent per month on employment tasks based on user input values of the Admin form.
 const calculateHoursSpentOnEmploymentTasks = (details) => {
   const {
     onboardsPerYear,
@@ -68,13 +69,19 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
     }
   };
 
+  // When any of the values in the Admin form change, the total hours spent on employment
+  // tasks will be calculated and the value will be set in the formData state.
   useEffect(() => {
     const hoursSpentOnEmploymentTasks =
       calculateHoursSpentOnEmploymentTasks(adminDetails);
     setFormData("hoursSpentOnEmploymentTasks", hoursSpentOnEmploymentTasks);
   }, [adminDetails]);
 
+  // This code will run if the total hours spent on employment tasks changes or the onboards per year changes.
+  // This allows for the calculations to be run any time the user changes any inputs which leads to a better UX.
   useEffect(() => {
+    // This check prevents the error messages from showing without the user having an opportunity to enter values.
+    // e.g. without this check, the error messages would show when the user first lands on the admin form page.
     if (Object.keys(adminErrors).length !== 0) {
       const currentErrors = checkAdminPageErrors();
       if (!currentErrors && hasCalculated) runCalculations();

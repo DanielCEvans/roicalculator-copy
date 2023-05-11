@@ -11,7 +11,7 @@ const App = () => {
   return (
     <>
       <ThemeProvider theme={theme}>
-        {/* This Box displays the entire app and has a display of flex. It contains the sidebar which has some css applied to it,
+        {/* This Box displays the entire app. It contains the sidebar which has some css applied to it,
         and another Box which displays the main content of the app; */}
         <Box style={{ display: "flex" }} id="app">
           <SideBar />
