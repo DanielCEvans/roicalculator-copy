@@ -38,12 +38,12 @@ const PrintingForm = ({ runCalculations }) => {
   useEffect(() => {
     const pagesPerYear = calculatePagesPerYear(printingDetails);
     setFormData("pagesPerYear", pagesPerYear);
-  }, [printingDetails]);
+  }, [printingDetails, setFormData]);
 
   // None of these inputs are required so no errors need to be checked
   useEffect(() => {
     hasCalculated && runCalculations();
-  }, [formData.pagesPerYear]);
+  }, [formData.pagesPerYear, hasCalculated, runCalculations]);
 
   return (
     <Box

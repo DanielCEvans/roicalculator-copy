@@ -44,7 +44,7 @@ const AdditionalForm = ({ runCalculations }) => {
   // This allows for a better UX as the user can see the results change as they change the inputs
   useEffect(() => {
     hasCalculated && runCalculations();
-  }, [formData]);
+  }, [formData, hasCalculated, runCalculations]);
 
   return (
     <Box

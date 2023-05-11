@@ -75,7 +75,7 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
     const hoursSpentOnEmploymentTasks =
       calculateHoursSpentOnEmploymentTasks(adminDetails);
     setFormData("hoursSpentOnEmploymentTasks", hoursSpentOnEmploymentTasks);
-  }, [adminDetails]);
+  }, [adminDetails, setFormData]);
 
   // This code will run if the total hours spent on employment tasks changes or the onboards per year changes.
   // This allows for the calculations to be run any time the user changes any inputs which leads to a better UX.
@@ -86,7 +86,14 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
       const currentErrors = checkAdminPageErrors();
       if (!currentErrors && hasCalculated) runCalculations();
     }
-  }, [formData.hoursSpentOnEmploymentTasks, adminDetails.onboardsPerYear]);
+  }, [
+    formData.hoursSpentOnEmploymentTasks,
+    adminDetails.onboardsPerYear,
+    adminErrors,
+    checkAdminPageErrors,
+    runCalculations,
+    hasCalculated,
+  ]);
 
   return (
     <Box
