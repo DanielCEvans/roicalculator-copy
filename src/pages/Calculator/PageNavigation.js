@@ -84,9 +84,8 @@ const PageNavigation = () => {
       hoursSpentOnEmploymentTasks: !formData.hoursSpentOnEmploymentTasks,
     };
 
+    // Set the errors and return true if any errors found
     setAdminErrors(currentAdminErrors);
-
-    // if there are current errors, set the errors and return true
     return Object.values(currentAdminErrors).some((error) => error);
   };
 
@@ -98,9 +97,8 @@ const PageNavigation = () => {
       fullTimeEmployees: !formData.fullTimeEmployees,
     };
 
+    // Set the errors and return true if any errors found
     setGeneralErrors(currentGeneralErrors);
-
-    // if there are current errors, set the errors and return true
     return Object.values(currentGeneralErrors).some((error) => error);
   };
 
