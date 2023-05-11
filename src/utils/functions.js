@@ -9,7 +9,7 @@ export default function calculateROI(formData, adminDetails) {
     return onboardsPerYear / orgSize + 1;
   }
   // fulTimeEmployees will always be a number as it is a required field and the onChange funciton returns a number
-  // partTimeCasualEmployees and casual employees however may be empty string as these fields aren't required and
+  // partTimeCasualEmployees however may be empty string as these fields aren't required and
   // the default state is an empty string "" to avoid displaying '0' when the user first sees the form
   const partTimeCasualEmployees = formData.partTimeCasualEmployees || 0;
   const orgSizeYear1 = formData.fullTimeEmployees + partTimeCasualEmployees;
@@ -79,9 +79,6 @@ export default function calculateROI(formData, adminDetails) {
   // **********************
   // BENEFIT 1
   // **********************
-  // Hours saved per month per hr admin if the total hours spent per month (determined from form) / number of admins
-  // mulptied by these values which i can't remember where they came from?
-  // these figures come from the report - average time saved
   function calculateBenefit1(formData) {
     const TIME_SAVED_YEAR_ONE = 0.39;
     const TIME_SAVED_YEAR_TWO = 0.405;
@@ -211,7 +208,6 @@ export default function calculateROI(formData, adminDetails) {
     const avgReductionInPaper = [0.492, 0.563, 0.653];
     const costSavedInPrinting = [];
 
-    console.log(researchData[formData.country]["printing_costs"]);
     for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
       const employeeDocs =
         formData.pagesPerYear * formData[`orgSizeYear${year}`];
