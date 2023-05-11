@@ -2,27 +2,14 @@ import { useMemo } from "react";
 import { Box, PageHeader, Table, Typography, theme } from "@hero-design/react";
 import styled from "styled-components";
 import Disclaimer from "../../components/Disclaimer";
+import useStore from "../../context/store";
+import { countryFormatter } from "../../utils/countryFormatter";
 
-const ResultsPage = (props) => {
-  let currency;
-  if (props.country === "AU") {
-    currency = "AUD";
-  } else if (props.country === "NZ") {
-    currency = "NZD";
-  } else if (props.country === "UK") {
-    currency = "GBP";
-  } else if (props.country === "SG") {
-    currency = "SGD";
-  } else if (props.country === "MY") {
-    currency = "MYR";
-  } else {
-    currency = "AUD";
-  }
+const ResultsPage = () => {
+  const { formData, totalTable, benefitsTable, costsTable } = useStore();
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-  });
+  const formatter = countryFormatter(formData.country);
+
   const columns = useMemo(
     () => [
       {
@@ -38,39 +25,39 @@ const ResultsPage = (props) => {
     []
   );
   const totalTableData =
-    Object.keys(props.totalTable).length !== 0
+    Object.keys(totalTable).length !== 0
       ? [
           {
             columnType: "Total Benefits",
             upfront: "",
-            year1: formatter.format(props.totalTable.totalBenefitsYear1),
-            year2: formatter.format(props.totalTable.totalBenefitsYear2),
-            year3: formatter.format(props.totalTable.totalBenefitsYear3),
-            total: formatter.format(props.totalTable.threeYeartotalbenefits),
+            year1: formatter.format(totalTable.totalBenefitsYear1),
+            year2: formatter.format(totalTable.totalBenefitsYear2),
+            year3: formatter.format(totalTable.totalBenefitsYear3),
+            total: formatter.format(totalTable.threeYeartotalbenefits),
           },
           {
             columnType: "Total Costs",
-            upfront: formatter.format(props.totalTable.totalUpfront),
-            year1: formatter.format(props.totalTable.totalCostYear1),
-            year2: formatter.format(props.totalTable.totalCostYear2),
-            year3: formatter.format(props.totalTable.totalCostYear3),
-            total: formatter.format(props.totalTable.threeYearTotalCost),
+            upfront: formatter.format(totalTable.totalUpfront),
+            year1: formatter.format(totalTable.totalCostYear1),
+            year2: formatter.format(totalTable.totalCostYear2),
+            year3: formatter.format(totalTable.totalCostYear3),
+            total: formatter.format(totalTable.threeYearTotalCost),
           },
           {
             columnType: "Net Benefits",
-            upfront: formatter.format(props.totalTable.upfrontNetBenefits),
-            year1: formatter.format(props.totalTable.year1NetBenefits),
-            year2: formatter.format(props.totalTable.year2NetBenefits),
-            year3: formatter.format(props.totalTable.year3NetBenefits),
-            total: formatter.format(props.totalTable.threeYearTotalNetBenefits),
+            upfront: formatter.format(totalTable.upfrontNetBenefits),
+            year1: formatter.format(totalTable.year1NetBenefits),
+            year2: formatter.format(totalTable.year2NetBenefits),
+            year3: formatter.format(totalTable.year3NetBenefits),
+            total: formatter.format(totalTable.threeYearTotalNetBenefits),
           },
           {
             columnType: "ROI",
             upfront: "",
-            year1: `${props.totalTable.year1Roi.toFixed(0)}%`,
-            year2: `${props.totalTable.year2Roi.toFixed(0)}%`,
-            year3: `${props.totalTable.year3Roi.toFixed(0)}%`,
-            total: `${props.totalTable.threeYearTotalROI.toFixed(0)}%`,
+            year1: `${totalTable.year1Roi.toFixed(0)}%`,
+            year2: `${totalTable.year2Roi.toFixed(0)}%`,
+            year3: `${totalTable.year3Roi.toFixed(0)}%`,
+            total: `${totalTable.threeYearTotalROI.toFixed(0)}%`,
           },
         ]
       : [];
@@ -96,115 +83,105 @@ const ResultsPage = (props) => {
   };
 
   const benefitsTableData =
-    Object.keys(props.benefitsTable).length !== 0
+    Object.keys(benefitsTable).length !== 0
       ? [
           {
             columnType: `Employment team financial benefits`,
             upfront: "",
-            year1: formatter.format(props.benefitsTable.year1Benefit1),
-            year2: formatter.format(props.benefitsTable.year2Benefit1),
-            year3: formatter.format(props.benefitsTable.year3Benefit1),
-            total: formatter.format(props.benefitsTable.threeYeartotalbenefit1),
+            year1: formatter.format(benefitsTable.year1Benefit1),
+            year2: formatter.format(benefitsTable.year2Benefit1),
+            year3: formatter.format(benefitsTable.year3Benefit1),
+            total: formatter.format(benefitsTable.threeYeartotalbenefit1),
           },
           {
             columnType: "Organisation financial benefits",
             upfront: "",
             year1: formatter.format(
-              props.benefitsTable.orgOverallFincancialGainsAdjustedYear1
+              benefitsTable.orgOverallFincancialGainsAdjustedYear1
             ),
             year2: formatter.format(
-              props.benefitsTable.orgOverallFincancialGainsAdjustedYear2
+              benefitsTable.orgOverallFincancialGainsAdjustedYear2
             ),
             year3: formatter.format(
-              props.benefitsTable.orgOverallFincancialGainsAdjustedYear3
+              benefitsTable.orgOverallFincancialGainsAdjustedYear3
             ),
-            total: formatter.format(props.benefitsTable.threeYeartotalbenefit2),
+            total: formatter.format(benefitsTable.threeYeartotalbenefit2),
           },
           {
             columnType: "Replacing existing technology financial benefits",
             upfront: "",
             year1: formatter.format(
-              props.benefitsTable.costSavedInServicesAndTechnologyYear1
+              benefitsTable.costSavedInServicesAndTechnologyYear1
             ),
             year2: formatter.format(
-              props.benefitsTable.costSavedInServicesAndTechnologyYear2
+              benefitsTable.costSavedInServicesAndTechnologyYear2
             ),
             year3: formatter.format(
-              props.benefitsTable.costSavedInServicesAndTechnologyYear3
+              benefitsTable.costSavedInServicesAndTechnologyYear3
             ),
-            total: formatter.format(props.benefitsTable.threeYeartotalbenefit3),
+            total: formatter.format(benefitsTable.threeYeartotalbenefit3),
           },
           {
             columnType: "Reduction in printing financial benefits",
             upfront: "",
             year1: formatter.format(
-              props.benefitsTable.reductionPrintingAdjustedYear1
+              benefitsTable.reductionPrintingAdjustedYear1
             ),
             year2: formatter.format(
-              props.benefitsTable.reductionPrintingAdjustedYear2
+              benefitsTable.reductionPrintingAdjustedYear2
             ),
             year3: formatter.format(
-              props.benefitsTable.reductionPrintingAdjustedYear3
+              benefitsTable.reductionPrintingAdjustedYear3
             ),
-            total: formatter.format(props.benefitsTable.threeYeartotalbenefit4),
+            total: formatter.format(benefitsTable.threeYeartotalbenefit4),
           },
           {
             columnType: "Total financial benefits",
             upfront: "",
-            year1: formatter.format(props.benefitsTable.totalBenefitsYear1),
-            year2: formatter.format(props.benefitsTable.totalBenefitsYear2),
-            year3: formatter.format(props.benefitsTable.totalBenefitsYear3),
-            total: formatter.format(props.benefitsTable.threeYeartotalbenefits),
+            year1: formatter.format(benefitsTable.totalBenefitsYear1),
+            year2: formatter.format(benefitsTable.totalBenefitsYear2),
+            year3: formatter.format(benefitsTable.totalBenefitsYear3),
+            total: formatter.format(benefitsTable.threeYeartotalbenefits),
           },
         ]
       : [];
 
   const costsTableData =
-    Object.keys(props.costsTable).length !== 0
+    Object.keys(costsTable).length !== 0
       ? [
           {
             columnType: "Employment Hero subscription costs",
             upfront: "",
-            year1: formatter.format(props.costsTable.subscriptionCostYear1),
-            year2: formatter.format(props.costsTable.subscriptionCostYear2),
-            year3: formatter.format(props.costsTable.subscriptionCostYear3),
-            total: formatter.format(props.costsTable.subscriptionCostYearTotal),
+            year1: formatter.format(costsTable.subscriptionCostYear1),
+            year2: formatter.format(costsTable.subscriptionCostYear2),
+            year3: formatter.format(costsTable.subscriptionCostYear3),
+            total: formatter.format(costsTable.subscriptionCostYearTotal),
           },
           {
             columnType: "External implementation costs",
-            upfront: formatter.format(
-              props.costsTable.upfrontImplementationCost
-            ),
+            upfront: formatter.format(costsTable.upfrontImplementationCost),
             year1: "",
             year2: "",
             year3: "",
-            total: formatter.format(props.costsTable.upfrontImplementationCost),
+            total: formatter.format(costsTable.upfrontImplementationCost),
           },
           {
             columnType: "Internal implementation costs",
             upfront: formatter.format(
-              props.costsTable.internalImplementationCostUpfront
+              costsTable.internalImplementationCostUpfront
             ),
-            year1: formatter.format(
-              props.costsTable.internalImplementationCostYear1
-            ),
-            year2: formatter.format(
-              props.costsTable.internalImplementationCostYear2
-            ),
-            year3: formatter.format(
-              props.costsTable.internalImplementationCostYear3
-            ),
-            total: formatter.format(
-              props.costsTable.internalImplementationCostTotal
-            ),
+            year1: formatter.format(costsTable.internalImplementationCostYear1),
+            year2: formatter.format(costsTable.internalImplementationCostYear2),
+            year3: formatter.format(costsTable.internalImplementationCostYear3),
+            total: formatter.format(costsTable.internalImplementationCostTotal),
           },
           {
             columnType: "Total financial costs",
             upfront: "",
-            year1: formatter.format(props.costsTable.totalCostYear1),
-            year2: formatter.format(props.costsTable.totalCostYear2),
-            year3: formatter.format(props.costsTable.totalCostYear3),
-            total: formatter.format(props.costsTable.threeYearTotalCost),
+            year1: formatter.format(costsTable.totalCostYear1),
+            year2: formatter.format(costsTable.totalCostYear2),
+            year3: formatter.format(costsTable.totalCostYear3),
+            total: formatter.format(costsTable.threeYearTotalCost),
           },
         ]
       : [];

@@ -10,8 +10,13 @@ import {
   Tooltip,
 } from "@hero-design/react";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
+import useStore from "../../context/store";
+import {
+  countryFormatter,
+  countryPrefixFormatter,
+} from "../../utils/countryFormatter";
 
-const mapping = require("../../data/data.json");
+const researchData = require("../../data/data.json");
 
 const implementation = [
   { value: "guided", text: "Guided Implementation" },
@@ -19,60 +24,26 @@ const implementation = [
   { value: "self", text: "Self Implementation" },
 ];
 
-const AdditionalForm = ({ formData, setFormData, ...props }) => {
+const AdditionalForm = ({ runCalculations }) => {
+  const { formData, setFormData, hasCalculated } = useStore();
   const [openImplementation, setOpenImplementation] = useState(false);
 
-  let currency;
-  if (formData.country === "AU") {
-    currency = "AUD";
-  } else if (formData.country === "NZ") {
-    currency = "NZD";
-  } else if (formData.country === "UK") {
-    currency = "GBP";
-  } else if (formData.country === "SG") {
-    currency = "SGD";
-  } else if (formData.country === "MY") {
-    currency = "MYR";
-  } else {
-    currency = "AUD";
-  }
+  const formatter = countryFormatter(formData.country);
+  const countryPrefix = countryPrefixFormatter(formData.country);
 
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency,
-  });
-
-  const handleInputChange = (e) => {
-    // this functions needs to update the state values, calculate the total hours per month if possible
-    // maybe the total hours per month function can update the setHoursSpentOnEmploymentTasks state
-
+  const handleInputChange = (e, selectElement) => {
     // This is required because of the select input type
-    if (typeof e === "string") {
-      setFormData({ ...formData, implementationType: e });
-    } else if (typeof e === "number") {
-      // this is for the slider component
-      setFormData({ ...formData, growthRate: e });
+    if (selectElement) {
+      setFormData(selectElement, e);
     } else {
-      setFormData({
-        ...formData,
-        [e.target.id]: +e.target.value,
-      });
+      setFormData(e.target.id, +e.target.value);
     }
   };
 
+  // This will re-run the calculations when any of the inputs on this page change and if the user has already calculated
+  // This allows for a better UX as the user can see the results change as they change the inputs
   useEffect(() => {
-    // Run this code if props.errors has been initialised.
-    // This means it is not the first render and the user has either input some values, tried to submit a calculation, or tried to change a page in the InPageNavigation
-
-    // When the formData state changes for this General Page, the errors will be updated AFTER the state of formData has been updated.
-    // This means that if an error message is displayed, it will disappear when a user enters a valid value
-    // if (Object.keys(adminErrors).length !== 0) {
-    // checkGeneralPageErrors();
-
-    // const currentErrors = checkAdminPageErrors();
-
-    // NEED TO MAKE SURE THAT THE CALCULATIONS ARE BEING RUN WITH THE MOVE UP TO DATE HOURS SPENT PER MONTH ON EMPLOYMENT TASKS FIGURE!!!
-    props.hasCalculated && props.runCalculations();
+    hasCalculated && runCalculations();
   }, [formData]);
 
   return (
@@ -122,7 +93,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
       <Select
         options={implementation}
         value={formData.implementationType}
-        onChange={handleInputChange}
+        onChange={(e) => handleInputChange(e, "implementationType")}
         placeholder="Select..."
         id="implementationType"
         style={{
@@ -151,7 +122,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         value={formData.hrBurdenedRate}
         onChange={handleInputChange}
         id="hrBurdenedRate"
-        prefix={<span>{props.countryPrefix}</span>}
+        prefix={<span>{countryPrefix}</span>}
         style={{
           marginTop: theme.space.small,
           marginBottom: "2px",
@@ -164,7 +135,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         intent="subdued"
         style={{ marginBottom: theme.space.medium }}
       >
-        {`If left blank, hourly rate of ${props.countryPrefix}${mapping[
+        {`If left blank, hourly rate of ${countryPrefix}${researchData[
           formData.country
         ]["hr_hourly_rate"].toFixed(
           2
@@ -182,7 +153,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         value={formData.employeeBurdenedRate}
         onChange={handleInputChange}
         id="employeeBurdenedRate"
-        prefix={<span>{props.countryPrefix}</span>}
+        prefix={<span>{countryPrefix}</span>}
         style={{
           marginTop: theme.space.small,
           marginBottom: "2px",
@@ -195,7 +166,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         intent="subdued"
         style={{ marginBottom: theme.space.medium }}
       >
-        {`If left blank, hourly rate of ${props.countryPrefix}${mapping[
+        {`If left blank, hourly rate of ${countryPrefix}${researchData[
           formData.country
         ]["employee_hourly_rate"].toFixed(
           2
@@ -220,7 +191,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         value={formData.costsSavedOnTech}
         onChange={handleInputChange}
         id="costsSavedOnTech"
-        prefix={<span>{props.countryPrefix}</span>}
+        prefix={<span>{countryPrefix}</span>}
         style={{
           marginTop: theme.space.small,
           marginBottom: "2px",
@@ -234,7 +205,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         style={{ marginBottom: theme.space.medium }}
       >
         {`If left blank, current cost of software of ${formatter.format(
-          mapping[formData.country]["costs_saved_on_tech"]
+          researchData[formData.country]["costs_saved_on_tech"]
         )} will be used - determined from research`}
       </Typography.Text>
       <Box style={{ alignItems: "center", display: "flex" }}>
@@ -256,7 +227,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         value={formData.annualServicesSpend}
         onChange={handleInputChange}
         id="annualServicesSpend"
-        prefix={<span>{props.countryPrefix}</span>}
+        prefix={<span>{countryPrefix}</span>}
         style={{
           marginTop: theme.space.small,
           marginBottom: "2px",
@@ -270,7 +241,7 @@ const AdditionalForm = ({ formData, setFormData, ...props }) => {
         style={{ marginBottom: theme.space.medium }}
       >
         {`If left blank, annual cost of service providers of ${formatter.format(
-          mapping[formData.country]["annual_services_spend"]
+          researchData[formData.country]["annual_services_spend"]
         )} will be used - determined from research`}
       </Typography.Text>
     </Box>

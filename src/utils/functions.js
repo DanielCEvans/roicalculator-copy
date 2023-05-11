@@ -1,389 +1,308 @@
-const mapping = require("../data/data.json");
+const researchData = require("../data/data.json");
 
-// Have main calculation function which calls other functions in this file
-// and returns all information required for the result tables
-
-// Code should not execute here unless all mandatory form fields have been entered
-
-export default function calculateROI(formData, onboardsPerYear) {
+export default function calculateROI(formData, adminDetails) {
   const NUMBER_OF_YEARS = 3;
-  // Values which are derived from input form data
+  const MONTHS_PER_YEAR = 12;
+  const BENEFIT_FACTOR = 0.8;
 
+  function calculateGrowthRate(onboardsPerYear, orgSize) {
+    return onboardsPerYear / orgSize + 1;
+  }
   // fulTimeEmployees will always be a number as it is a required field and the onChange funciton returns a number
-  // partTimeCasualEmployees and casual employees however may be empty string as these fields aren't required and
+  // partTimeCasualEmployees however may be empty string as these fields aren't required and
   // the default state is an empty string "" to avoid displaying '0' when the user first sees the form
-  if (!formData.partTimeCasualEmployees) {
-    formData = {
-      ...formData,
-      partTimeCasualEmployees: 0,
-    };
-  }
+  const partTimeCasualEmployees = formData.partTimeCasualEmployees || 0;
+  const orgSizeYear1 = formData.fullTimeEmployees + partTimeCasualEmployees;
+  const growthRate = calculateGrowthRate(
+    adminDetails.onboardsPerYear,
+    orgSizeYear1
+  );
 
+  const orgSizeYear2 = orgSizeYear1 * growthRate;
+  const orgSizeYear3 = orgSizeYear2 * growthRate;
+
+  const adminsYear2 = formData.admins * growthRate;
+  const adminsYear3 = adminsYear2 * growthRate;
+
+  const fullTimeEmployeesYear2 = formData.fullTimeEmployees * growthRate;
+  const fullTimeEmployeesYear3 = fullTimeEmployeesYear2 * growthRate;
+
+  const partTimeEmployeesYear2 = partTimeCasualEmployees * growthRate;
+  const partTimeEmployeesYear3 = partTimeEmployeesYear2 * growthRate;
+
+  // Add above values to formData object
   formData = {
     ...formData,
-    orgSize: formData.fullTimeEmployees + formData.partTimeCasualEmployees,
+    partTimeCasualEmployees,
+    growthRate,
+    orgSizeYear1,
+    orgSizeYear2,
+    orgSizeYear3,
+    adminsYear2,
+    adminsYear3,
+    fullTimeEmployeesYear2,
+    fullTimeEmployeesYear3,
+    partTimeEmployeesYear2,
+    partTimeEmployeesYear3,
   };
 
-  const growthRate = onboardsPerYear / formData.orgSize + 1;
+  // Add non-mandatory form fields to formData object
   formData = {
     ...formData,
-    growthRate: growthRate,
+    hrBurdenedRate:
+      formData.hrBurdenedRate ||
+      researchData[formData.country]["hr_hourly_rate"],
+    employeeBurdenedRate:
+      formData.employeeBurdenedRate ||
+      researchData[formData.country]["employee_hourly_rate"],
+    costsSavedOnTech:
+      formData.costsSavedOnTech ||
+      researchData[formData.country]["costs_saved_on_tech"],
+    annualServicesSpend:
+      formData.annualServicesSpend ||
+      researchData[formData.country]["annual_services_spend"],
+    pagesPerYear:
+      (formData.pagesPerYear &&
+        formData.pagesPerYear / formData.orgSizeYear1) ||
+      20,
+    implementationType: formData.implementationType || "guided",
   };
 
-  formData = {
-    ...formData,
-    orgSizeYear2: formData.orgSize * formData.growthRate,
-  };
-  formData = {
-    ...formData,
-    orgSizeYear3: formData.orgSizeYear2 * formData.growthRate,
-  };
-  formData = {
-    ...formData,
-    adminsYear2: formData.admins * formData.growthRate,
-  };
-  formData = {
-    ...formData,
-    adminsYear3: formData.adminsYear2 * formData.growthRate,
-  };
-  formData = {
-    ...formData,
-    fullTimeEmployeesYear2: formData.fullTimeEmployees * formData.growthRate,
-  };
-  formData = {
-    ...formData,
-    fullTimeEmployeesYear3:
-      formData.fullTimeEmployeesYear2 * formData.growthRate,
-  };
-  formData = {
-    ...formData,
-    partTimeEmployeesYear2:
-      formData.partTimeCasualEmployees * formData.growthRate,
-  };
-  formData = {
-    ...formData,
-    partTimeEmployeesYear3:
-      formData.partTimeEmployeesYear2 * formData.growthRate,
-  };
-  // At the moment, going to assume these values have not been input and will use the default
-  // The default values need to be set in react somehow?
-
-  if (!formData.hrBurdenedRate) {
-    formData = {
-      ...formData,
-      hrBurdenedRate: mapping[formData.country]["hr_hourly_rate"],
-    };
-  }
-
-  if (!formData.employeeBurdenedRate) {
-    formData = {
-      ...formData,
-      employeeBurdenedRate: mapping[formData.country]["employee_hourly_rate"],
-    };
-  }
-
-  if (!formData.costsSavedOnTech) {
-    formData = {
-      ...formData,
-      costsSavedOnTech: mapping[formData.country]["costs_saved_on_tech"],
-    };
-  }
-
-  if (!formData.annualServicesSpend) {
-    formData = {
-      ...formData,
-      annualServicesSpend: mapping[formData.country]["annual_services_spend"],
-    };
-  }
-
-  // Now the number of pages per employee printed each year is done here to make it less confusing for the user:)
-  if (!formData.pagesPerYear) {
-    formData = {
-      ...formData,
-      // assumed to be 20 from nat's research
-      pagesPerYear: 20,
-    };
-  } else {
-    formData = {
-      ...formData,
-      pagesPerYear: formData.pagesPerYear / formData.orgSize,
-    };
-  }
-
-  if (!formData.implementationType) {
-    formData = {
-      ...formData,
-      // assumed to be guided implementation
-      implementationType: "guided",
-    };
-  }
-
-  let upfrontImplementationCost;
-  if (formData.implementationType === "guided")
-    upfrontImplementationCost =
-      mapping[formData.country][formData.plan]["cost_2"]["upfront"];
-  else if (formData.implementationType === "managed")
-    upfrontImplementationCost =
-      mapping[formData.country][formData.plan]["cost_2"]["managed"];
-  // Assume self guided implementation which is 0 dollars
-  else upfrontImplementationCost = 0;
-
-  if (!formData.hoursSpentOnEmploymentTasks) {
-    formData = {
-      ...formData,
-      hoursSpentOnEmploymentTasks: 0,
-    };
-  }
-
-  // **********************
-  // Where the calculations begin
-  // **********************
+  // This currenlty has to be outside the formData object as it is passed to another object later on?
+  const upfrontImplementationCost =
+    formData.implementationType === "guided"
+      ? researchData[formData.country][formData.plan]["cost_2"]["upfront"]
+      : formData.implementationType === "managed"
+      ? researchData[formData.country][formData.plan]["cost_2"]["managed"]
+      : 0;
 
   // **********************
   // BENEFIT 1
   // **********************
-  let year1Benefit1;
-  let year2Benefit1;
-  let year3Benefit1;
-
-  // If the user has not input anything for total hours spent on employment tasks, then the time saved
-  // per month is dependent upon the plan selected and is pulled from nat's calculated values
-  if (formData.hoursSpentOnEmploymentTasks === 0) {
-    year1Benefit1 =
-      formData.admins *
-      mapping[formData.country][formData.plan]["benefit_1"]["year_0"] *
-      formData.hrBurdenedRate *
-      12 *
-      0.8;
-    year2Benefit1 =
-      formData.adminsYear2 *
-      mapping[formData.country][formData.plan]["benefit_1"]["year_1"] *
-      formData.hrBurdenedRate *
-      12 *
-      0.8;
-    year3Benefit1 =
-      formData.adminsYear3 *
-      mapping[formData.country][formData.plan]["benefit_1"]["year_2"] *
-      formData.hrBurdenedRate *
-      12 *
-      0.8;
-  } else {
-    // If the user DOES input hours spent on employment tasks per month,
-
-    // **********************
-    // WHY ?!?!!?0
-    // **********************
-    // Hours saved per month per hr admin if the total hours spent per month (determined from form) / number of admins
-    // mulptied by these values which i can't remember where they came from?
-    // these figures come from the report - average time saved
-
-    // THIS IS NOW DIFFERENT TO THE ORIGINAL!
+  function calculateBenefit1(formData) {
+    const TIME_SAVED_YEAR_ONE = 0.39;
+    const TIME_SAVED_YEAR_TWO = 0.405;
+    const TIME_SAVED_YEAR_THREE = 0.42;
     const timeSavedYear1 =
-      (formData.hoursSpentOnEmploymentTasks / formData.admins) * 0.39;
-    const timeSavesYear2 =
-      (formData.hoursSpentOnEmploymentTasks / formData.admins) * 0.405;
+      (formData.hoursSpentOnEmploymentTasks / formData.admins) *
+      TIME_SAVED_YEAR_ONE;
+    const timeSavedYear2 =
+      (formData.hoursSpentOnEmploymentTasks / formData.admins) *
+      TIME_SAVED_YEAR_TWO;
     const timeSavedYear3 =
-      (formData.hoursSpentOnEmploymentTasks / formData.admins) * 0.42;
+      (formData.hoursSpentOnEmploymentTasks / formData.admins) *
+      TIME_SAVED_YEAR_THREE;
 
-    year1Benefit1 =
-      formData.admins * timeSavedYear1 * formData.hrBurdenedRate * 12 * 0.8;
-    year2Benefit1 =
-      formData.adminsYear2 *
-      timeSavesYear2 *
+    const year1Benefit1 =
+      formData.admins *
+      timeSavedYear1 *
       formData.hrBurdenedRate *
-      12 *
-      0.8;
-    year3Benefit1 =
+      MONTHS_PER_YEAR *
+      BENEFIT_FACTOR;
+    const year2Benefit1 =
+      formData.adminsYear2 *
+      timeSavedYear2 *
+      formData.hrBurdenedRate *
+      MONTHS_PER_YEAR *
+      BENEFIT_FACTOR;
+    const year3Benefit1 =
       formData.adminsYear3 *
       timeSavedYear3 *
       formData.hrBurdenedRate *
-      12 *
-      0.8;
+      MONTHS_PER_YEAR *
+      BENEFIT_FACTOR;
+
+    return {
+      year1Benefit1: year1Benefit1,
+      year2Benefit1: year2Benefit1,
+      year3Benefit1: year3Benefit1,
+    };
   }
-
   // **********************
-  // BENEFIT 2 - Organisation financial gains
+  // BENEFIT 2
   // **********************
+  const calculateBenefit2 = (formData) => {
+    const EMPLOYMENT_ADMIN_HOURS_PER_DAY = 0.05;
 
-  // **********************
-  // I don't think this is correct! need to calculate HOURS spent each year and also account for number of employees not inclucding admins
-  // **********************
-  const EMPLOYMENT_ADMIN_HOURS_PER_DAY = 0.05;
+    const calcFinancialGainsAdjustment = (
+      fullTime,
+      partTime,
+      year,
+      efficiencyAdjustment
+    ) => {
+      const employmentAdminHoursPerYearFullTime =
+        EMPLOYMENT_ADMIN_HOURS_PER_DAY * 5 * 52.18 * fullTime;
+      const employmentAdminHoursPerYearPartTime =
+        EMPLOYMENT_ADMIN_HOURS_PER_DAY * 2.5 * 52.18 * partTime;
+      const orgReductionAdminReductionTimeSinceEH =
+        researchData[formData.country][formData.plan]["benefit_2"][
+          `year_${year - 1}`
+        ];
 
-  const calcFinancialGainsAdjustment = (
-    fullTime,
-    partTime,
-    // casual,
-    year,
-    efficiencyAdjustment
-  ) => {
-    const employmentAdminHoursPerYearFullTime =
-      EMPLOYMENT_ADMIN_HOURS_PER_DAY * 5 * 52.18 * fullTime;
-    const employmentAdminHoursPerYearPartTime =
-      EMPLOYMENT_ADMIN_HOURS_PER_DAY * 2.5 * 52.18 * partTime;
-    // const employmentAdminHoursPerYearCasual =
-    //   EMPLOYMENT_ADMIN_HOURS_PER_DAY * 2.5 * 52.18 * casual;
-    const orgReductionAdminReductionTimeSinceEH =
-      mapping[formData.country][formData.plan]["benefit_2"][`year_${year}`];
+      const totalHoursSavedPerYear =
+        (employmentAdminHoursPerYearFullTime +
+          employmentAdminHoursPerYearPartTime) *
+        orgReductionAdminReductionTimeSinceEH;
+      const totalHoursSavedAdjusted =
+        efficiencyAdjustment * totalHoursSavedPerYear;
+      const orgOverallFincancialGainsAdjusted =
+        formData.employeeBurdenedRate *
+        totalHoursSavedAdjusted *
+        BENEFIT_FACTOR;
+      return orgOverallFincancialGainsAdjusted;
+    };
 
-    const totalHoursSavedPerYear =
-      (employmentAdminHoursPerYearFullTime +
-        employmentAdminHoursPerYearPartTime) *
-      orgReductionAdminReductionTimeSinceEH;
-    const totalHoursSavedAdjusted =
-      efficiencyAdjustment * totalHoursSavedPerYear;
-    const orgOverallFincancialGainsAdjusted =
-      formData.employeeBurdenedRate * totalHoursSavedAdjusted * 0.8;
-    return orgOverallFincancialGainsAdjusted;
-  };
+    const EFFICIENCY_ADJUSTMENTS = [0.515, 0.575, 0.634];
+    const orgOverallFincancialGainsAdjustedValues = [];
 
-  let efficiencyAdjustment;
-  let orgOverallFincancialGainsAdjustedYear1;
-  let orgOverallFincancialGainsAdjustedYear2;
-  let orgOverallFincancialGainsAdjustedYear3;
+    for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
+      const efficiencyAdjustment = EFFICIENCY_ADJUSTMENTS[year - 1];
+      const fullTimeEmployees =
+        formData[`fullTimeEmployeesYear${year}`] || formData.fullTimeEmployees;
+      const partTimeEmployees =
+        formData[`partTimeEmployeesYear${year}`] ||
+        formData.partTimeCasualEmployees;
 
-  for (let year = 0; year < NUMBER_OF_YEARS; year++) {
-    if (year === 0) {
-      efficiencyAdjustment = 0.515;
-      orgOverallFincancialGainsAdjustedYear1 = calcFinancialGainsAdjustment(
-        formData.fullTimeEmployees,
-        formData.partTimeCasualEmployees,
-        // formData.casualEmployees,
+      const orgOverallFincancialGainsAdjusted = calcFinancialGainsAdjustment(
+        fullTimeEmployees,
+        partTimeEmployees,
         year,
         efficiencyAdjustment
       );
-    } else if (year === 1) {
-      efficiencyAdjustment = 0.575;
-      orgOverallFincancialGainsAdjustedYear2 = calcFinancialGainsAdjustment(
-        formData.fullTimeEmployeesYear2,
-        formData.partTimeEmployeesYear2,
-        // formData.casualEmployeesYear2,
-        year,
-        efficiencyAdjustment
-      );
-    } else {
-      efficiencyAdjustment = 0.634;
-      orgOverallFincancialGainsAdjustedYear3 = calcFinancialGainsAdjustment(
-        formData.fullTimeEmployeesYear3,
-        formData.partTimeEmployeesYear3,
-        // formData.casualEmployeesYear3,
-        year,
-        efficiencyAdjustment
+      orgOverallFincancialGainsAdjustedValues.push(
+        orgOverallFincancialGainsAdjusted
       );
     }
-  }
-
+    return orgOverallFincancialGainsAdjustedValues;
+  };
   // **********************
   // BENEFIT 3
   // **********************
-  const AVG_PERC_SAVED_IN_SERVICE_PROVIDER_COSTS = 0.246;
-  const costSavedInServiceProviders =
-    formData.annualServicesSpend * AVG_PERC_SAVED_IN_SERVICE_PROVIDER_COSTS;
+  const calculateBenefit3 = (formData) => {
+    const AVG_PERC_SAVED_IN_SERVICE_PROVIDER_COSTS = 0.246;
 
-  let costSavedInServicesAndTechnologyYear1;
-  let costSavedInServicesAndTechnologyYear2;
-  let costSavedInServicesAndTechnologyYear3;
-  for (let year = 0; year < NUMBER_OF_YEARS; year++) {
-    if (year == 0) {
-      costSavedInServicesAndTechnologyYear1 = costSavedInServiceProviders * 0.8;
-    } else {
-      // could this be done recursively?
-      costSavedInServicesAndTechnologyYear2 =
-        (costSavedInServiceProviders + formData.costsSavedOnTech) * 0.8;
-      costSavedInServicesAndTechnologyYear3 =
-        costSavedInServicesAndTechnologyYear2;
+    const costSavedInServiceProviders =
+      formData.annualServicesSpend * AVG_PERC_SAVED_IN_SERVICE_PROVIDER_COSTS;
+
+    const costSavedInServicesAndTechnology = [];
+
+    for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
+      if (year === 1) {
+        costSavedInServicesAndTechnology.push(
+          costSavedInServiceProviders * BENEFIT_FACTOR
+        );
+      } else {
+        costSavedInServicesAndTechnology.push(
+          (costSavedInServiceProviders + formData.costsSavedOnTech) *
+            BENEFIT_FACTOR
+        );
+      }
     }
-  }
-
+    return costSavedInServicesAndTechnology;
+  };
   // **********************
   // BENEFIT 4
-  // Can this section be written better? DRY?
   // **********************
+  const calculateBenefit4 = (formData, researchData) => {
+    const PERC_PAPER = 0.684;
+    const avgReductionInPaper = [0.492, 0.563, 0.653];
+    const costSavedInPrinting = [];
 
-  // where does this value come from?
-  const PERC_PAPER = 0.684;
+    for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
+      const employeeDocs =
+        formData.pagesPerYear * formData[`orgSizeYear${year}`];
+      const printingCosts =
+        employeeDocs * researchData[formData.country]["printing_costs"];
+      const totalPrintingCosts = PERC_PAPER * printingCosts;
 
-  const employeeDocs = formData.pagesPerYear * formData.orgSize;
-  const printingCosts =
-    employeeDocs * mapping[formData.country]["printing_costs"];
+      const totalSaved = totalPrintingCosts * avgReductionInPaper[year - 1];
+      const reductionPrintingAdjusted = totalSaved * BENEFIT_FACTOR;
 
-  const totalPrintingCosts = PERC_PAPER * printingCosts;
-  const avgReductionInPaperYear1 = 0.492;
-  const totalSaved = totalPrintingCosts * avgReductionInPaperYear1;
-
-  const reductionPrintingAdjustedYear1 = totalSaved * 0.8;
-
-  const employeeDocsYear2 = formData.pagesPerYear * formData.orgSizeYear2;
-  const printingCostsYear2 = employeeDocsYear2 * 0.5;
-
-  const totalPrintingCostsYear2 = PERC_PAPER * printingCostsYear2;
-  const avgReductionInPaperYear2 = 0.563;
-  const totalSavedYear2 = totalPrintingCostsYear2 * avgReductionInPaperYear2;
-
-  const reductionPrintingAdjustedYear2 = totalSavedYear2 * 0.8;
-
-  const employeeDocsYear3 = formData.pagesPerYear * formData.orgSizeYear3;
-  const printingCostsYear3 = employeeDocsYear3 * 0.5;
-
-  const totalPrintingCostsYear3 = PERC_PAPER * printingCostsYear3;
-  const avgReductionInPaperYear3 = 0.653;
-  const totalSavedYear3 = totalPrintingCostsYear3 * avgReductionInPaperYear3;
-
-  const reductionPrintingAdjustedYear3 = totalSavedYear3 * 0.8;
-
-  // **********************
-  // COSTS
-  // **********************
+      costSavedInPrinting.push(reductionPrintingAdjusted);
+    }
+    return costSavedInPrinting;
+  };
 
   // **********************
   // COST 1 - Subscription Costs
   // **********************
-  const subscriptionCostYear1 =
-    formData.orgSize *
-    mapping[formData.country][formData.plan]["cost_1"]["year_0"] *
-    12;
-  const subscriptionCostYear2 =
-    formData.orgSizeYear2 *
-    mapping[formData.country][formData.plan]["cost_1"]["year_1"] *
-    12;
-  const subscriptionCostYear3 =
-    formData.orgSizeYear3 *
-    mapping[formData.country][formData.plan]["cost_1"]["year_2"] *
-    12;
+  const calculateCost1 = (formData, researchData) => {
+    const subscriptionCosts = [];
 
+    for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
+      const orgSize = formData[`orgSizeYear${year}`];
+      const cost =
+        researchData[formData.country][formData.plan]["cost_1"][
+          `year_${year - 1}`
+        ];
+      const subscriptionCost = orgSize * cost * MONTHS_PER_YEAR;
+
+      subscriptionCosts.push(subscriptionCost);
+    }
+
+    return subscriptionCosts;
+  };
   // **********************
   // COST 2 - Internal Implementation Costs
   // **********************
+  const calculateInternalImplementationCosts = (formData) => {
+    const IMPLEMENTATION_FACTOR = 1.2;
+    const HOURS_SPENT_ON_MAINTENANCE_PER_MONTH = 2;
+    const internalImplementationCosts = [];
+    // Upfront
+    const internalImplementationCostUpfront =
+      formData.plan.includes("HR") && formData.plan.includes("Payroll")
+        ? 20 * formData.admins * formData.hrBurdenedRate * IMPLEMENTATION_FACTOR
+        : 10 *
+          formData.admins *
+          formData.hrBurdenedRate *
+          IMPLEMENTATION_FACTOR;
+    internalImplementationCosts.push(internalImplementationCostUpfront);
+    // Ongoing
+    for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
+      const admins =
+        year === 1 ? formData.admins : formData[`adminsYear${year}`];
+      const internalImplementationCost =
+        HOURS_SPENT_ON_MAINTENANCE_PER_MONTH *
+        formData.hrBurdenedRate *
+        admins *
+        IMPLEMENTATION_FACTOR *
+        MONTHS_PER_YEAR;
 
-  // Upfront
-  let internalImplementationCostUpfront;
-  if (formData.plan.includes("HR") && formData.plan.includes("Payroll"))
-    internalImplementationCostUpfront =
-      20 * formData.admins * formData.hrBurdenedRate * 1.2;
-  else
-    internalImplementationCostUpfront =
-      10 * formData.admins * formData.hrBurdenedRate * 1.2;
+      internalImplementationCosts.push(internalImplementationCost);
+    }
 
-  // Ongoing
-  const HOURS_SPENT_ON_MAINTENANCE_PER_MONTH = 2;
-  const internalImplementationCostYear1 =
-    HOURS_SPENT_ON_MAINTENANCE_PER_MONTH *
-    formData.hrBurdenedRate *
-    formData.admins *
-    1.2 *
-    12;
-  const internalImplementationCostYear2 =
-    HOURS_SPENT_ON_MAINTENANCE_PER_MONTH *
-    formData.hrBurdenedRate *
-    formData.adminsYear2 *
-    1.2 *
-    12;
-  const internalImplementationCostYear3 =
-    HOURS_SPENT_ON_MAINTENANCE_PER_MONTH *
-    formData.hrBurdenedRate *
-    formData.adminsYear3 *
-    1.2 *
-    12;
+    return internalImplementationCosts;
+  };
+
+  // Execture all calculations
+  const { year1Benefit1, year2Benefit1, year3Benefit1 } =
+    calculateBenefit1(formData);
+  const [
+    orgOverallFincancialGainsAdjustedYear1,
+    orgOverallFincancialGainsAdjustedYear2,
+    orgOverallFincancialGainsAdjustedYear3,
+  ] = calculateBenefit2(formData);
+
+  const [
+    costSavedInServicesAndTechnologyYear1,
+    costSavedInServicesAndTechnologyYear2,
+    costSavedInServicesAndTechnologyYear3,
+  ] = calculateBenefit3(formData);
+  const [
+    reductionPrintingAdjustedYear1,
+    reductionPrintingAdjustedYear2,
+    reductionPrintingAdjustedYear3,
+  ] = calculateBenefit4(formData, researchData);
+
+  const [subscriptionCostYear1, subscriptionCostYear2, subscriptionCostYear3] =
+    calculateCost1(formData, researchData);
+  const [
+    internalImplementationCostUpfront,
+    internalImplementationCostYear1,
+    internalImplementationCostYear2,
+    internalImplementationCostYear3,
+  ] = calculateInternalImplementationCosts(formData);
 
   // Total benefits
   const totalBenefitsYear1 =
@@ -517,5 +436,5 @@ export default function calculateROI(formData, onboardsPerYear) {
     threeYearTotalCost,
   };
 
-  return [totalTable, benefitsTable, costsTable];
+  return { totalTable, benefitsTable, costsTable };
 }

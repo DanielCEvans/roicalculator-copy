@@ -10,6 +10,7 @@ import {
 } from "@hero-design/react";
 import StatisticCard from "../../components/Statistic";
 import { AiOutlineQuestionCircle } from "react-icons/ai";
+import useStore from "../../context/store";
 
 const payrollFrequency = [
   { value: "weekly", text: "Weekly" },
@@ -17,82 +18,72 @@ const payrollFrequency = [
   { value: "monthly", text: "Monthly" },
 ];
 
-const AdminForm = ({
-  formData,
-  setFormData,
-  adminDetails,
-  setAdminDetails,
-  adminErrors,
-  checkAdminPageErrors,
-  hasCalculated,
-  runCalculations,
-}) => {
-  const handleInputChange = (e) => {
-    // this functions needs to update the state values, calculate the total hours per month if possible
-    // maybe the total hours per month function can update the setHoursSpentOnEmploymentTasks state
+const payrollCycles = {
+  weekly: 4,
+  fortnightly: 2,
+  monthly: 1,
+};
 
-    // This is required because the select input type in react automatically returns the value
-    // There is only one select element so we that it is
-    if (typeof e === "string") {
-      setAdminDetails({ ...adminDetails, frequencyOfPayroll: e });
+// This function will return the total hours spent per month on employment tasks based on user input values of the Admin form.
+const calculateHoursSpentOnEmploymentTasks = (details) => {
+  const {
+    onboardsPerYear,
+    hoursSpentPerOnboard,
+    timeSheetsPerMonth,
+    hoursSpentPerTimesheet,
+    frequencyOfPayroll,
+    hoursSpentPerPayroll,
+    performanceReviewCycles,
+    hoursSpentPerPerformanceReview,
+    additionalTasks,
+  } = details;
+
+  const numberOfPayrollCycles = payrollCycles[frequencyOfPayroll] || 0;
+
+  const totalHoursPerMonth =
+    (onboardsPerYear * hoursSpentPerOnboard) / 12 +
+    timeSheetsPerMonth * hoursSpentPerTimesheet +
+    numberOfPayrollCycles * hoursSpentPerPayroll +
+    (performanceReviewCycles * hoursSpentPerPerformanceReview) / 12 +
+    additionalTasks;
+
+  return +totalHoursPerMonth;
+};
+
+const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
+  const {
+    formData,
+    setFormData,
+    adminDetails,
+    setAdminDetails,
+    adminErrors,
+    hasCalculated,
+  } = useStore();
+
+  const handleInputChange = (e, selectElement) => {
+    // This is required because of the select input type
+    if (selectElement) {
+      setAdminDetails(selectElement, e);
     } else {
-      setAdminDetails({
-        ...adminDetails,
-        [e.target.id]: +e.target.value,
-      });
+      setAdminDetails(e.target.id, +e.target.value);
     }
   };
 
+  // When any of the values in the Admin form change, the total hours spent on employment
+  // tasks will be calculated and the value will be set in the formData state.
   useEffect(() => {
-    // When adminDetails changes, this function will run and set the number of hours spent per month on employment tasks
-    // console.log(adminDetails);
-    // this function will need to calculate the monthly hours and set the state
-    // Because the state is at the app level, this triggers an entire re-render of the application
-    // which takes the user back to the General page.
-
-    let numberOfPayrollCycles;
-    if (adminDetails.frequencyOfPayroll === "weekly") {
-      // If payroll done weekly, and there is assumed to be 48 working weeks in a year, convert hours into months
-      // number of payroll cycles per month will be 48/12 which is 4
-      numberOfPayrollCycles = 4;
-    } else if (adminDetails.frequencyOfPayroll === "fortnightly") {
-      // If payroll done fortnightly, and there is assumed to be 24 working fortnights in a year, convert hours into months
-      // number of payroll cycles per month will be 24/12 which is 2
-      numberOfPayrollCycles = 2;
-    } else if (adminDetails.frequencyOfPayroll === "monthly") {
-      numberOfPayrollCycles = 1;
-    } else {
-      numberOfPayrollCycles = 0;
-    }
-    let totalHoursPerMonth =
-      (adminDetails.onboardsPerYear * adminDetails.hoursSpentPerOnboard) / 12 +
-      adminDetails.timeSheetsPerMonth * adminDetails.hoursSpentPerTimesheet +
-      numberOfPayrollCycles * adminDetails.hoursSpentPerPayroll +
-      (adminDetails.performanceReviewCycles *
-        adminDetails.hoursSpentPerPerformanceReview) /
-        12 +
-      adminDetails.additionalTasks;
-
-    // I might need to divide the total hours per month by the number of admins to get the total hours per month
-    // per admin which is used when calculating the employment team financial gains!!!
-    setFormData({
-      ...formData,
-      hoursSpentOnEmploymentTasks: +totalHoursPerMonth,
-    });
+    const hoursSpentOnEmploymentTasks =
+      calculateHoursSpentOnEmploymentTasks(adminDetails);
+    setFormData("hoursSpentOnEmploymentTasks", hoursSpentOnEmploymentTasks);
   }, [adminDetails]);
 
+  // This code will run if the total hours spent on employment tasks changes or the onboards per year changes.
+  // This allows for the calculations to be run any time the user changes any inputs which leads to a better UX.
   useEffect(() => {
-    // Run this code if props.errors has been initialised.
-    // This means it is not the first render and the user has either input some values, tried to submit a calculation, or tried to change a page in the InPageNavigation
-
-    // When the formData state changes for this General Page, the errors will be updated AFTER the state of formData has been updated.
-    // This means that if an error message is displayed, it will disappear when a user enters a valid value
+    // This check prevents the error messages from showing without the user having an opportunity to enter values.
+    // e.g. without this check, the error messages would show when the user first lands on the admin form page.
     if (Object.keys(adminErrors).length !== 0) {
-      // checkGeneralPageErrors();
-
       const currentErrors = checkAdminPageErrors();
-
-      // NEED TO MAKE SURE THAT THE CALCULATIONS ARE BEING RUN WITH THE MOVE UP TO DATE HOURS SPENT PER MONTH ON EMPLOYMENT TASKS FIGURE!!!
       if (!currentErrors && hasCalculated) runCalculations();
     }
   }, [formData.hoursSpentOnEmploymentTasks, adminDetails.onboardsPerYear]);
@@ -232,7 +223,8 @@ const AdminForm = ({
             <Select
               options={payrollFrequency}
               value={adminDetails.frequencyOfPayroll}
-              onChange={handleInputChange}
+              // onChange={handleInputChange}
+              onChange={(e) => handleInputChange(e, "frequencyOfPayroll")}
               placeholder="Select..."
               id="frequencyOfPayroll"
               style={{

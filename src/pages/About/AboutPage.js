@@ -7,22 +7,23 @@ import {
   Divider,
 } from "@hero-design/react";
 import Disclaimer from "../../components/Disclaimer";
+import useStore from "../../context/store";
 
-const AboutPage = ({ country }) => {
-  let reportLandingPage;
-  if (country === "AU") {
-    reportLandingPage = "https://employmenthero.com/roi-of-employment-hero/";
-  } else if (country === "NZ") {
-    reportLandingPage = "https://employmenthero.com/nz/roi-of-employment-hero/";
-  } else if (country === "UK") {
-    reportLandingPage = "https://employmenthero.com/uk/roi-of-employment-hero/";
-  } else if (country === "SG") {
-    reportLandingPage = "https://employmenthero.com/sg/roi-of-employment-hero/";
-  } else if (country === "MY") {
-    reportLandingPage = "https://employmenthero.com/my/roi-of-employment-hero/";
-  } else {
-    reportLandingPage = "https://employmenthero.com/roi-of-employment-hero/";
-  }
+const AboutPage = () => {
+  const { formData } = useStore();
+
+  const reportLandingPage =
+    formData.country === "AU"
+      ? "https://employmenthero.com/roi-of-employment-hero/"
+      : formData.country === "NZ"
+      ? "https://employmenthero.com/nz/roi-of-employment-hero/"
+      : formData.country === "UK"
+      ? "https://employmenthero.com/uk/roi-of-employment-hero/"
+      : formData.country === "SG"
+      ? "https://employmenthero.com/sg/roi-of-employment-hero/"
+      : formData.country === "MY"
+      ? "https://employmenthero.com/my/roi-of-employment-hero/"
+      : "https://employmenthero.com/roi-of-employment-hero/";
 
   return (
     <>

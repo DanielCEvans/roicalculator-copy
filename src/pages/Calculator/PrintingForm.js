@@ -1,52 +1,48 @@
 import { useEffect } from "react";
 import { Box, Typography, Input, theme, Grid } from "@hero-design/react";
 import StatisticCard from "../../components/Statistic";
+import useStore from "../../context/store";
 
-const PrintingForm = ({
-  formData,
-  setFormData,
-  printingDetails,
-  setPrintingDetails,
-  ...props
-}) => {
+const PrintingForm = ({ runCalculations }) => {
+  const {
+    formData,
+    setFormData,
+    printingDetails,
+    setPrintingDetails,
+    hasCalculated,
+  } = useStore();
+
   const handleInputChange = (e) => {
-    // this functions needs to update the state values, calculate the total hours per month if possible
-    // maybe the total hours per month function can update the setHoursSpentOnEmploymentTasks state
-
-    // This is required because the select input type in react automatically returns the value
-    // There is only one select element so we that it is 'frequencyOfPayroll'
-
-    setPrintingDetails({
-      ...printingDetails,
-      [e.target.id]: +e.target.value,
-    });
+    setPrintingDetails(e.target.id, +e.target.value);
   };
-  useEffect(() => {
-    const pagesPerYear =
-      printingDetails.contractsPerYear * printingDetails.pagesPerContract +
-      printingDetails.leaveFormsPerYear * printingDetails.pagesPerLeaveForm +
-      printingDetails.reviewsPerYear * printingDetails.pagesPerReview +
-      printingDetails.otherPrintingTasks;
+  const calculatePagesPerYear = (details) => {
+    const {
+      contractsPerYear,
+      pagesPerContract,
+      leaveFormsPerYear,
+      pagesPerLeaveForm,
+      reviewsPerYear,
+      pagesPerReview,
+      otherPrintingTasks,
+    } = details;
 
-    setFormData({
-      ...formData,
-      pagesPerYear: +pagesPerYear,
-    });
+    return (
+      contractsPerYear * pagesPerContract +
+      leaveFormsPerYear * pagesPerLeaveForm +
+      reviewsPerYear * pagesPerReview +
+      otherPrintingTasks
+    );
+  };
+
+  // This will update the pagesPerYear value in the formData state whenever the printingDetails form values change
+  useEffect(() => {
+    const pagesPerYear = calculatePagesPerYear(printingDetails);
+    setFormData("pagesPerYear", pagesPerYear);
   }, [printingDetails]);
 
+  // None of these inputs are required so no errors need to be checked
   useEffect(() => {
-    // Run this code if props.errors has been initialised.
-    // This means it is not the first render and the user has either input some values, tried to submit a calculation, or tried to change a page in the InPageNavigation
-
-    // When the formData state changes for this General Page, the errors will be updated AFTER the state of formData has been updated.
-    // This means that if an error message is displayed, it will disappear when a user enters a valid value
-    // if (Object.keys(adminErrors).length !== 0) {
-    // checkGeneralPageErrors();
-
-    // const currentErrors = checkAdminPageErrors();
-
-    // NEED TO MAKE SURE THAT THE CALCULATIONS ARE BEING RUN WITH THE MOVE UP TO DATE HOURS SPENT PER MONTH ON EMPLOYMENT TASKS FIGURE!!!
-    props.hasCalculated && props.runCalculations();
+    hasCalculated && runCalculations();
   }, [formData.pagesPerYear]);
 
   return (
