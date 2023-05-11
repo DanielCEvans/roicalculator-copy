@@ -35,13 +35,7 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
       const currentGeneralErrors = checkGeneralPageErrors();
       if (!currentGeneralErrors && hasCalculated) runCalculations();
     }
-  }, [
-    formData,
-    checkGeneralPageErrors,
-    generalErrors,
-    hasCalculated,
-    runCalculations,
-  ]);
+  }, [formData]);
 
   return (
     <Box
