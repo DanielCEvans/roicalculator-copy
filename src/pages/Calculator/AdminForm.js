@@ -86,14 +86,7 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
       const currentErrors = checkAdminPageErrors();
       if (!currentErrors && hasCalculated) runCalculations();
     }
-  }, [
-    formData.hoursSpentOnEmploymentTasks,
-    adminDetails.onboardsPerYear,
-    adminErrors,
-    checkAdminPageErrors,
-    runCalculations,
-    hasCalculated,
-  ]);
+  }, [formData.hoursSpentOnEmploymentTasks, adminDetails.onboardsPerYear]);
 
   return (
     <Box
