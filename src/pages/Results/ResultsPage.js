@@ -1,14 +1,15 @@
-import { useMemo } from "react";
+import { useMemo, useContext } from "react";
+import { CountryContext } from "../../utils/countryFormatter";
 import { Box, PageHeader, Table, Typography, theme } from "@hero-design/react";
 import styled from "styled-components";
 import Disclaimer from "../../components/Disclaimer";
 import useStore from "../../context/store";
-import { countryFormatter } from "../../utils/countryFormatter";
 
 const ResultsPage = () => {
   const { formData, totalTable, benefitsTable, costsTable } = useStore();
 
-  const formatter = countryFormatter(formData.country);
+  const countryInfo = useContext(CountryContext);
+  const formatter = countryInfo[formData.country].currencyFormatter;
 
   const columns = useMemo(
     () => [

@@ -1,21 +1,13 @@
-import { useState, useEffect } from "react";
-import {
-  Box,
-  theme,
-  Typography,
-  Select,
-  Input,
-  Button,
-  Modal,
-} from "@hero-design/react/lib";
+import { useEffect, useContext } from "react";
+import { CountryContext } from "../../utils/countryFormatter";
+import { Box, theme, Typography, Select } from "@hero-design/react/lib";
 import countries from "../../data/countries.json";
-import plans from "../../data/plans.json";
+import NumberFormInput from "../../components/NumberFormInput";
 
 import useStore from "../../context/store";
 
 const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
   const { formData, setFormData, generalErrors, hasCalculated } = useStore();
-  const [openEmployee, setOpenEmployee] = useState(false);
 
   const handleInputChange = (e, selectElement) => {
     // This is required because of the select input type
@@ -36,6 +28,8 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
       if (!currentGeneralErrors && hasCalculated) runCalculations();
     }
   }, [formData]);
+
+  const countryInfo = useContext(CountryContext);
 
   return (
     <Box
@@ -84,7 +78,11 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
             Plan
           </Typography.Text>
           <Select
-            options={formData.country ? plans[formData.country] : plans["AU"]}
+            options={
+              formData.country
+                ? countryInfo[formData.country].plans
+                : countryInfo["AU"].plans
+            }
             value={formData.plan}
             onChange={(e) => handleInputChange(e, "plan")}
             placeholder="Select..."
@@ -100,103 +98,36 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
             </Typography.Text>
           )}
         </Box>
-        <Box style={{ marginBottom: theme.space.medium }}>
-          <Typography.Text
-            tagName="label"
-            htmlFor="fullTimeEmployees"
-            fontWeight="bold"
-            intent={generalErrors.fullTimeEmployees ? "danger" : null}
-          >
-            Number of full time employees
-          </Typography.Text>
-          <Input
-            type="number"
-            value={formData.fullTimeEmployees}
-            onChange={handleInputChange}
-            id="fullTimeEmployees"
-            style={{
-              marginTop: theme.space.small,
-            }}
-            invalid={generalErrors.fullTimeEmployees}
-            min={0}
-          />
-          {generalErrors.fullTimeEmployees && (
-            <Typography.Text fontSize={12} intent="danger">
-              Required
-            </Typography.Text>
-          )}
-        </Box>
-        <Typography.Text
-          tagName="label"
-          htmlFor="partTimeCasualEmployees"
-          fontWeight="bold"
-        >
-          Number of part time and casual employees (optional)
-        </Typography.Text>
 
-        <Button.Link
-          text="How do part time and casual employee numbers affect the ROI?"
-          size="small"
-          sx={{
-            marginLeft: "10px",
-            cursor: "pointer",
-            textDecoration: "none",
-          }}
-          onClick={() => setOpenEmployee((value) => !value)}
+        <NumberFormInput
+          title="Number of full time employees"
+          htmlFor="fullTimeEmployees"
+          value={formData.fullTimeEmployees}
+          id="fullTimeEmployees"
+          handleInputChange={handleInputChange}
+          intent={generalErrors.fullTimeEmployees && "danger"}
+          invalid={generalErrors.fullTimeEmployees}
         />
-        {openEmployee && (
-          <Modal
-            title="Part time and Casual Employees"
-            open
-            variant="primary"
-            onClose={() => setOpenEmployee(false)}
-            body="When determining the financial gains from the enhanced efficiency of all employees within the organisation by using Employment Hero's products, the total hours spent per year on employment administration across the entire organisation is first calculated. Our research indicates that on average, 5% of each hour is spent on employment administration. We multiply this percentage by the hours worked by each employee per week, the number of employees in the organisation (excluding HR and Payroll), and the number of weeks in a year. To estimate the return on investment accurately, we differentiate between full time, part time, and casual employees, assuming full time employees work 5 days a week and part time and casual employees work 2.5 days a week."
-            footer={
-              <>
-                <Button text="Close" onClick={() => setOpenEmployee(false)} />
-              </>
-            }
-            style={{ position: "fixed" }}
-          />
-        )}
-        <Input
-          type="number"
+        <NumberFormInput
+          title="Number of part time and casual employees (optional)"
+          htmlFor="partTimeCasualEmployees"
           value={formData.partTimeCasualEmployees}
-          onChange={handleInputChange}
           id="partTimeCasualEmployees"
-          style={{
-            marginTop: theme.space.small,
-            marginBottom: theme.space.medium,
-          }}
-          min={0}
+          handleInputChange={handleInputChange}
+          buttonText="How do part time and casual employee numbers affect the ROI?"
+          modalTitle="Part time and Casual Employees"
+          modalBody="When determining the financial gains from the enhanced efficiency of all employees within the organisation by using Employment Hero's products, the total hours spent per year on employment administration across the entire organisation is first calculated. Our research indicates that on average, 5% of each hour is spent on employment administration. We multiply this percentage by the hours worked by each employee per week, the number of employees in the organisation (excluding HR and Payroll), and the number of weeks in a year. To estimate the return on investment accurately, we differentiate between full time, part time, and casual employees, assuming full time employees work 5 days a week and part time and casual employees work 2.5 days a week."
         />
-        <Box style={{ marginBottom: theme.space.medium }}>
-          <Typography.Text
-            tagName="label"
-            htmlFor="admins"
-            fontWeight="bold"
-            intent={generalErrors.admins ? "danger" : null}
-          >
-            Number of people overseeing the employment function (including HR
-            and Payroll)
-          </Typography.Text>
-          <Input
-            type="number"
-            value={formData.admins}
-            onChange={handleInputChange}
-            id="admins"
-            style={{
-              marginTop: theme.space.small,
-            }}
-            invalid={generalErrors.admins}
-            min={0}
-          />
-          {generalErrors.admins && (
-            <Typography.Text fontSize={12} intent="danger">
-              Required
-            </Typography.Text>
-          )}
-        </Box>
+        <NumberFormInput
+          title="Number of people overseeing the employment function (including HR
+            and Payroll)"
+          htmlFor="admins"
+          value={formData.admins}
+          id="admins"
+          handleInputChange={handleInputChange}
+          intent={generalErrors.admins && "danger"}
+          invalid={generalErrors.admins}
+        />
       </form>
     </Box>
   );

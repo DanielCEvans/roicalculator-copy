@@ -8,22 +8,31 @@ import {
 } from "@hero-design/react";
 import Disclaimer from "../../components/Disclaimer";
 import useStore from "../../context/store";
+import { useContext } from "react";
+import { CountryContext } from "../../utils/countryFormatter";
+
+const AboutText = ({ header, text, fontWeight }) => {
+  return (
+    <>
+      <Typography.Title level={5}>{header}</Typography.Title>
+      <Typography.Text
+        fontSize={14}
+        fontWeight={fontWeight ? fontWeight : "regular"}
+        intent="body"
+        style={{ marginBottom: theme.space.medium }}
+      >
+        {text}
+      </Typography.Text>
+    </>
+  );
+};
 
 const AboutPage = () => {
   const { formData } = useStore();
 
-  const reportLandingPage =
-    formData.country === "AU"
-      ? "https://employmenthero.com/roi-of-employment-hero/"
-      : formData.country === "NZ"
-      ? "https://employmenthero.com/nz/roi-of-employment-hero/"
-      : formData.country === "UK"
-      ? "https://employmenthero.com/uk/roi-of-employment-hero/"
-      : formData.country === "SG"
-      ? "https://employmenthero.com/sg/roi-of-employment-hero/"
-      : formData.country === "MY"
-      ? "https://employmenthero.com/my/roi-of-employment-hero/"
-      : "https://employmenthero.com/roi-of-employment-hero/";
+  const countryInfo = useContext(CountryContext);
+
+  const reportLandingPage = countryInfo[formData.country].reportLandingPage;
 
   return (
     <>
@@ -47,16 +56,9 @@ const AboutPage = () => {
           Benefits
         </Typography.Title>
         <Divider marginY="medium" />
-        <Typography.Title level={5}>
-          Employment team financial benefits
-        </Typography.Title>
-        <Typography.Text
-          fontSize={14}
-          fontWeight="regular"
-          intent="body"
-          style={{ marginBottom: theme.space.medium }}
-        >
-          The financial gains each year from the improved efficiency of the
+        <AboutText
+          header="Employment team financial benefits"
+          text="The financial gains each year from the improved efficiency of the
           employment team is calculated by multiplying the number of employees
           working on employment admin (HR and Payroll), by the average hours
           saved per month by admins from using Employment Hero, by the average
@@ -65,18 +67,11 @@ const AboutPage = () => {
           manager their employment function. Our research found that on average,
           Employment Hero reduced the number of hours spent by the employment
           team each month by 39% in the first year, 40.5% the second year, and
-          42% in the third year.
-        </Typography.Text>
-        <Typography.Title level={5}>
-          Organisation financial benefits
-        </Typography.Title>
-        <Typography.Text
-          fontSize={14}
-          fontWeight="regular"
-          intent="body"
-          style={{ marginBottom: theme.space.medium }}
-        >
-          The yearly financial gains from the improved efficiency to the entire
+          42% in the third year."
+        />
+        <AboutText
+          header="Organisation financial benefits"
+          text="The yearly financial gains from the improved efficiency to the entire
           organisation is determined by first calculating the time spent on
           employment admin. Our research found that 5% hourly is spent on
           employment admin. This figure is multiplied by the number of days
@@ -90,36 +85,20 @@ const AboutPage = () => {
           employees, minus 20% to account for the differences in ways
           organisations manager their employment function. Note that the average
           reduction in employment admin and the efficiency gains of the
-          organisation were both determined from the research.
-        </Typography.Text>
-
-        <Typography.Title level={5}>
-          Replacing existing technology financial benefits
-        </Typography.Title>
-        <Typography.Text
-          fontSize={14}
-          fontWeight="regular"
-          intent="body"
-          style={{ marginBottom: theme.space.medium }}
-        >
-          The financial benefits of replacing existing technology is calculated
+          organisation were both determined from the research."
+        />
+        <AboutText
+          header="Replacing existing technology financial benefits"
+          text="The financial benefits of replacing existing technology is calculated
           by multiplying the annual costs of service providers used, by the
           average percentage saved on providers, plus the annual cost of current
           software being replaced, minus 20% to account for differences in
           service providers and tech used. Our research found that the average
-          percentage saved on providers by using Employment Hero is 25%.
-        </Typography.Text>
-
-        <Typography.Title level={5}>
-          Reduction in printing financial benefits
-        </Typography.Title>
-        <Typography.Text
-          fontSize={14}
-          fontWeight="regular"
-          intent="body"
-          style={{ marginBottom: theme.space.medium }}
-        >
-          The financial benefits from reduction in printing is calculated by
+          percentage saved on providers by using Employment Hero is 25%."
+        />
+        <AboutText
+          header="Reduction in printing financial benefits"
+          text="The financial benefits from reduction in printing is calculated by
           multiplying the pages printed each year by the printing cost per page,
           by the average proportion of employment management conducted on paper,
           by the average reduction in paper and printing materials from using
@@ -128,50 +107,27 @@ const AboutPage = () => {
           proportion of employment management conducted on paper and the average
           reduction in paper and printing materials from using Employment Hero
           were both determined from our research. We estimate that printing
-          costs are $0.5 dollars per page.
-        </Typography.Text>
+          costs are $0.5 dollars per page."
+        />
         <Divider marginY="medium" />
         <Typography.Title level={3}>Costs</Typography.Title>
         <Divider marginY="medium" />
-        <Typography.Title level={5}>
-          Employment Hero subscription costs
-        </Typography.Title>
-        <Typography.Text
-          fontSize={14}
-          fontWeight="regular"
-          intent="body"
-          style={{ marginBottom: theme.space.medium }}
-        >
-          The subscription costs of using Employment Hero are calculated by
+        <AboutText
+          header="Employment Hero subscription costs"
+          text="The subscription costs of using Employment Hero are calculated by
           multiplying the licensing costs per employee by the number of
           employees in the organisations, by a forecasted increase of 10% in
           licensing fees in year 2 and year 3. Note that the licensing costs per
-          employee is dependent upon the plan selected.
-        </Typography.Text>
-
-        <Typography.Title level={5}>
-          External implementation costs
-        </Typography.Title>
-        <Typography.Text
-          fontSize={14}
-          fontWeight="regular"
-          intent="body"
-          style={{ marginBottom: theme.space.medium }}
-        >
-          The external implementation cost is determined from the implementation
-          method and plan selected.
-        </Typography.Text>
-
-        <Typography.Title level={5}>
-          Internal implementation costs
-        </Typography.Title>
-        <Typography.Text
-          fontSize={14}
-          fontWeight="regular"
-          intent="body"
-          style={{ marginBottom: theme.space.medium }}
-        >
-          The upfront internal implementation cost is calculated by adding the
+          employee is dependent upon the plan selected."
+        />
+        <AboutText
+          header="External implementation costs"
+          text="The external implementation cost is determined from the implementation
+          method and plan selected."
+        />
+        <AboutText
+          header="Internal implementation costs"
+          text="The upfront internal implementation cost is calculated by adding the
           number of guided workshops attended and the time taken to set up data
           and debrief with customer service, multiplying this by the number of
           people in the employment team, by the average hourly rate of the
@@ -183,8 +139,8 @@ const AboutPage = () => {
           the employment team, by the average hourly rate of the employment
           team, by the number of months in a year, plus 20% to account for
           differences in organisation capability to self implement. We estimate
-          that 2 hours per month will be required for platform maintenance.
-        </Typography.Text>
+          that 2 hours per month will be required for platform maintenance."
+        />
       </Box>
       <PageHeader title="The Research" />
       <Box
@@ -197,52 +153,41 @@ const AboutPage = () => {
           borderColor: "rgb(218, 219, 222)",
         }}
       >
-        <Typography.Text
-          fontSize={14}
-          fontWeight="regular"
-          intent="body"
-          style={{ marginBottom: theme.space.medium }}
-        >
-          This calculator is based on market research Employment Hero performed
+        <AboutText
+          text="This calculator is based on market research Employment Hero performed
           among customers to understand the return on investment organisations
           could achieve by using Employment Hero. The research identified four
           key areas of financial benefit and three key areas of financial cost
           which were used to model the return on investment customers experience
-          by rolling out Employment Hero.
-        </Typography.Text>
-        <Typography.Text fontSize={14} fontWeight="bold" intent="body">
-          Benefits
-        </Typography.Text>
+          by rolling out Employment Hero."
+        />
+        <AboutText text="Benefits" fontWeight="bold" />
         <ul style={{ marginLeft: theme.space.large }}>
           <li key={1}>
-            <Typography.Text fontSize={14} fontWeight="regular" intent="body">
-              Employment team (HR/Payroll professionals) financial gains from
+            <AboutText
+              text="Employment team (HR/Payroll professionals) financial gains from
               streamlining numerous employment tasks such as onboarding, leave
-              request, payroll, performance reviews and much more.
-            </Typography.Text>
+              request, payroll, performance reviews and much more."
+            />
           </li>
           <li key={2}>
-            <Typography.Text fontSize={14} fontWeight="regular" intent="body">
-              Organisations financial gains from the time saved by managers and
-              employees with dealing with their employment admin.
-            </Typography.Text>
+            <AboutText
+              text="Organisations financial gains from the time saved by managers and
+              employees with dealing with their employment admin."
+            />
           </li>
           <li key={3}>
-            <Typography.Text fontSize={14} fontWeight="regular" intent="body">
-              Costs saved in service providers used such as lawyers, training
+            <AboutText
+              text="Costs saved in service providers used such as lawyers, training
               providers and agencies, and costs saved by replacing current
-              software.
-            </Typography.Text>
+              software."
+            />
           </li>
           <li key={4}>
-            <Typography.Text fontSize={14} fontWeight="regular" intent="body">
-              Reduction in printing financial benefits
-            </Typography.Text>
+            <AboutText text="Reduction in printing financial benefits" />
           </li>
         </ul>
-        <Typography.Text fontSize={14} fontWeight="bold" intent="body">
-          Costs
-        </Typography.Text>
+        <AboutText text="Costs" fontWeight="bold" />
         <ul
           style={{
             marginLeft: theme.space.large,
@@ -250,24 +195,21 @@ const AboutPage = () => {
           }}
         >
           <li key={1}>
-            <Typography.Text fontSize={14} fontWeight="regular" intent="body">
-              Licensing costs based on the plan of choice and number of
-              employees within the organisation
-            </Typography.Text>
+            <AboutText
+              text="Licensing costs based on the plan of choice and number of
+              employees within the organisation"
+            />
           </li>
           <li key={2}>
-            <Typography.Text fontSize={14} fontWeight="regular" intent="body">
-              Implementation costs based on the preferred implementation method
-            </Typography.Text>
+            <AboutText text="Implementation costs based on the preferred implementation method" />
           </li>
           <li key={3}>
-            <Typography.Text fontSize={14} fontWeight="regular" intent="body">
-              Internal implementation costs and maintenance of the Employment
-              Hero platform
-            </Typography.Text>
+            <AboutText
+              text="Internal implementation costs and maintenance of the Employment
+              Hero platform"
+            />
           </li>
         </ul>
-
         <Button.Link
           href={reportLandingPage}
           text="Click here to view the full report"

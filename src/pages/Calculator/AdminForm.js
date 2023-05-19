@@ -1,16 +1,8 @@
 import { useEffect } from "react";
-import {
-  Box,
-  Typography,
-  Input,
-  theme,
-  Grid,
-  Select,
-  Tooltip,
-} from "@hero-design/react";
+import { Box, Typography, theme, Grid, Select } from "@hero-design/react";
 import StatisticCard from "../../components/Statistic";
-import { AiOutlineQuestionCircle } from "react-icons/ai";
 import useStore from "../../context/store";
+import NumberFormInput from "../../components/NumberFormInput";
 
 const payrollFrequency = [
   { value: "weekly", text: "Weekly" },
@@ -100,114 +92,45 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
       <Grid>
         <Grid.Row gutter={["large", "large"]}>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Box style={{ marginBottom: theme.space.medium }}>
-              <Typography.Text
-                tagName="label"
-                htmlFor="onboardsPerYear"
-                fontWeight="bold"
-                intent={adminErrors.onboardsPerYear ? "danger" : null}
-              >
-                Number of onboards per year
-              </Typography.Text>
-              <Input
-                type="number"
-                value={adminDetails.onboardsPerYear}
-                onChange={handleInputChange}
-                id="onboardsPerYear"
-                style={{
-                  marginTop: theme.space.small,
-                }}
-                invalid={adminErrors.onboardsPerYear}
-                min={0}
-              />
-              {adminErrors.onboardsPerYear && (
-                <Typography.Text fontSize={12} intent="danger">
-                  Required
-                </Typography.Text>
-              )}
-            </Box>
+            <NumberFormInput
+              title="Number of onboards per year"
+              htmlFor="onboardsPerYear"
+              value={adminDetails.onboardsPerYear}
+              id="onboardsPerYear"
+              handleInputChange={handleInputChange}
+              intent={adminErrors.onboardsPerYear && "danger"}
+              invalid={adminErrors.onboardsPerYear}
+            />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Box style={{ alignItems: "center", display: "flex" }}>
-              <Typography.Text
-                tagName="label"
-                htmlFor="hoursSpentPerOnboard"
-                fontWeight="bold"
-              >
-                Hours spent per onboard
-              </Typography.Text>
-              <Tooltip
-                style={{
-                  marginLeft: theme.space.small,
-                  paddingTop: "2px",
-                }}
-                target={
-                  <AiOutlineQuestionCircle style={{ color: "#7622d7" }} />
-                }
-                content="Time spent preparing new employees in your organisation, from collecting employment details, organising and printing documents, induction content, ordering equipment etc."
-              />
-            </Box>
-            <Input
-              type="number"
+            <NumberFormInput
+              title="Hours spent per onboard"
+              htmlFor="hoursSpentPerOnboard"
               value={adminDetails.hoursSpentPerOnboard}
-              onChange={handleInputChange}
               id="hoursSpentPerOnboard"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
+              toolTipContent="Time spent preparing new employees in your organisation, from collecting employment details, organising and printing documents, induction content, ordering equipment etc."
             />
           </Grid.Col>
         </Grid.Row>
         <Grid.Row gutter={["large", "large"]}>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Typography.Text
-              tagName="label"
+            <NumberFormInput
+              title="Number of timesheets per month"
               htmlFor="timeSheetsPerMonth"
-              fontWeight="bold"
-            >
-              Number of timesheets per month
-            </Typography.Text>
-            <Input
-              type="number"
               value={adminDetails.timeSheetsPerMonth}
-              onChange={handleInputChange}
               id="timeSheetsPerMonth"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
             />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Box style={{ alignItems: "center", display: "flex" }}>
-              <Typography.Text
-                tagName="label"
-                htmlFor="hoursSpentPerTimesheet"
-                fontWeight="bold"
-              >
-                Hours spent per timesheet
-              </Typography.Text>
-              <Tooltip
-                style={{ marginLeft: theme.space.small, paddingTop: "2px" }}
-                target={
-                  <AiOutlineQuestionCircle style={{ color: "#7622d7" }} />
-                }
-                content="Time spent checking, filing and processing timesheets, seeking managers for approvals etc."
-              />
-            </Box>
-            <Input
-              type="number"
+            <NumberFormInput
+              title="Hours spent per timesheet"
+              htmlFor="hoursSpentPerTimesheet"
               value={adminDetails.hoursSpentPerTimesheet}
-              onChange={handleInputChange}
               id="hoursSpentPerTimesheet"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
+              toolTipContent="Time spent checking, filing and processing timesheets, seeking managers for approvals etc."
             />
           </Grid.Col>
         </Grid.Row>
@@ -234,114 +157,46 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
             />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Box style={{ alignItems: "center", display: "flex" }}>
-              <Typography.Text
-                tagName="label"
-                htmlFor="hoursSpentPerPayroll"
-                fontWeight="bold"
-              >
-                Hours spent per pay run
-              </Typography.Text>
-              <Tooltip
-                style={{ marginLeft: theme.space.small, paddingTop: "2px" }}
-                target={
-                  <AiOutlineQuestionCircle style={{ color: "#7622d7" }} />
-                }
-                content="Time spent processing pay for employees, such as finalising leave and entitlements, finalising expenses, processing bonuses and allowances, and finalising company journals"
-              />
-            </Box>
-            <Input
-              type="number"
+            <NumberFormInput
+              title="Hours spent per pay run"
+              htmlFor="hoursSpentPerPayroll"
               value={adminDetails.hoursSpentPerPayroll}
-              onChange={handleInputChange}
               id="hoursSpentPerPayroll"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
+              toolTipContent="Time spent processing pay for employees, such as finalising leave and entitlements, finalising expenses, processing bonuses and allowances, and finalising company journals"
             />
           </Grid.Col>
         </Grid.Row>
         <Grid.Row gutter={["large", "large"]}>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Typography.Text
-              tagName="label"
+            <NumberFormInput
+              title="Number of performance review cycles per year"
               htmlFor="performanceReviewCycles"
-              fontWeight="bold"
-            >
-              Number of performance review cycles per year
-            </Typography.Text>
-            <Input
-              type="number"
               value={adminDetails.performanceReviewCycles}
-              onChange={handleInputChange}
               id="performanceReviewCycles"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
             />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Box style={{ alignItems: "center", display: "flex" }}>
-              <Typography.Text
-                tagName="label"
-                htmlFor="hoursSpentPerPerformanceReview"
-                fontWeight="bold"
-              >
-                Hours spent per performance review
-              </Typography.Text>
-              <Tooltip
-                style={{ marginLeft: theme.space.small, paddingTop: "2px" }}
-                target={
-                  <AiOutlineQuestionCircle style={{ color: "#7622d7" }} />
-                }
-                content="Time spent organising, filing and recording performance reviews on behalf of the organisation"
-              />
-            </Box>
-            <Input
-              type="number"
+            <NumberFormInput
+              title="Hours spent per performance review"
+              htmlFor="hoursSpentPerPerformanceReview"
               value={adminDetails.hoursSpentPerPerformanceReview}
-              onChange={handleInputChange}
               id="hoursSpentPerPerformanceReview"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
+              toolTipContent="Time spent organising, filing and recording performance reviews on behalf of the organisation"
             />
           </Grid.Col>
         </Grid.Row>
         <Grid.Row gutter={["large", "large"]}>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Box style={{ alignItems: "center", display: "flex" }}>
-              <Typography.Text
-                tagName="label"
-                htmlFor="additionalTasks"
-                fontWeight="bold"
-              >
-                Hours spent on any additional admin tasks per month
-              </Typography.Text>
-              <Tooltip
-                style={{ marginLeft: theme.space.small, paddingTop: "2px" }}
-                target={
-                  <AiOutlineQuestionCircle style={{ color: "#7622d7" }} />
-                }
-                content="E.g. organising and delivering employee training, carrying out engagement surveys, organising and updating rosters, offboarding staff, preparing administrative reports etc."
-              />
-            </Box>
-            <Input
-              type="number"
+            <NumberFormInput
+              title="Hours spent on any additional admin tasks per month"
+              htmlFor="additionalTasks"
               value={adminDetails.additionalTasks}
-              onChange={handleInputChange}
               id="additionalTasks"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.xlarge,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
+              toolTipContent="E.g. organising and delivering employee training, carrying out engagement surveys, organising and updating rosters, offboarding staff, preparing administrative reports etc."
             />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
