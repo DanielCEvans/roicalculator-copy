@@ -1,20 +1,15 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import {
   Box,
   Typography,
   Button,
   Modal,
   theme,
-  Input,
   Select,
-  Tooltip,
 } from "@hero-design/react";
-import { AiOutlineQuestionCircle } from "react-icons/ai";
 import useStore from "../../context/store";
-import {
-  countryFormatter,
-  countryPrefixFormatter,
-} from "../../utils/countryFormatter";
+import { CountryContext } from "../../utils/countryFormatter";
+import NumberFormInput from "../../components/NumberFormInput";
 
 const researchData = require("../../data/data.json");
 
@@ -28,8 +23,9 @@ const AdditionalForm = ({ runCalculations }) => {
   const { formData, setFormData, hasCalculated } = useStore();
   const [openImplementation, setOpenImplementation] = useState(false);
 
-  const formatter = countryFormatter(formData.country);
-  const countryPrefix = countryPrefixFormatter(formData.country);
+  const countryInfo = useContext(CountryContext);
+  const formatter = countryInfo[formData.country].currencyFormatter;
+  const countryPrefix = countryInfo[formData.country].currencyPrefix;
 
   const handleInputChange = (e, selectElement) => {
     // This is required because of the select input type
@@ -110,140 +106,56 @@ const AdditionalForm = ({ runCalculations }) => {
         If left unselected, guided implementation method will be used
       </Typography.Text>
 
-      <Typography.Text
-        tagName="label"
-        htmlFor="hrBurdenedRate"
-        fontWeight="bold"
-      >
-        Average hourly rate of HR/Payroll administrator
-      </Typography.Text>
-      <Input
-        type="number"
-        value={formData.hrBurdenedRate}
-        onChange={handleInputChange}
-        id="hrBurdenedRate"
-        prefix={<span>{countryPrefix}</span>}
-        style={{
-          marginTop: theme.space.small,
-          marginBottom: "2px",
-        }}
-        min={0}
-      />
-      <Typography.Text
-        fontSize={10}
-        fontWeight="light"
-        intent="subdued"
-        style={{ marginBottom: theme.space.medium }}
-      >
-        {`If left blank, hourly rate of ${countryPrefix}${researchData[
+      <NumberFormInput
+        title="Average hourly rate of HR/Payroll administrator"
+        subTitle={`If left blank, hourly rate of ${countryPrefix}${researchData[
           formData.country
         ]["hr_hourly_rate"].toFixed(
           2
         )} will be used - determined from research`}
-      </Typography.Text>
-      <Typography.Text
-        tagName="label"
-        htmlFor="employeeBurdenedRate"
-        fontWeight="bold"
-      >
-        Average hourly rate of an employee
-      </Typography.Text>
-      <Input
-        type="number"
-        value={formData.employeeBurdenedRate}
-        onChange={handleInputChange}
-        id="employeeBurdenedRate"
-        prefix={<span>{countryPrefix}</span>}
-        style={{
-          marginTop: theme.space.small,
-          marginBottom: "2px",
-        }}
-        min={0}
+        htmlFor="hrBurdenedRate"
+        value={formData.hrBurdenedRate}
+        id="hrBurdenedRate"
+        handleInputChange={handleInputChange}
+        countryPrefix={countryPrefix}
       />
-      <Typography.Text
-        fontSize={10}
-        fontWeight="light"
-        intent="subdued"
-        style={{ marginBottom: theme.space.medium }}
-      >
-        {`If left blank, hourly rate of ${countryPrefix}${researchData[
+      <NumberFormInput
+        title="Average hourly rate of an employee"
+        subTitle={`If left blank, hourly rate of ${countryPrefix}${researchData[
           formData.country
         ]["employee_hourly_rate"].toFixed(
           2
         )} will be used - determined from research`}
-      </Typography.Text>
-      <Box style={{ alignItems: "center", display: "flex" }}>
-        <Typography.Text
-          tagName="label"
-          htmlFor="costsSavedOnTech"
-          fontWeight="bold"
-        >
-          Annual cost of current software being replaced or discontinued
-        </Typography.Text>
-        <Tooltip
-          style={{ marginLeft: theme.space.small, paddingTop: "2px" }}
-          target={<AiOutlineQuestionCircle style={{ color: "#7622d7" }} />}
-          content="Costs currently being paid for technology such as Seek, Tanda, Deputy etc."
-        />
-      </Box>
-      <Input
-        type="number"
-        value={formData.costsSavedOnTech}
-        onChange={handleInputChange}
-        id="costsSavedOnTech"
-        prefix={<span>{countryPrefix}</span>}
-        style={{
-          marginTop: theme.space.small,
-          marginBottom: "2px",
-        }}
-        min={0}
+        htmlFor="employeeBurdenedRate"
+        value={formData.employeeBurdenedRate}
+        id="employeeBurdenedRate"
+        handleInputChange={handleInputChange}
+        countryPrefix={countryPrefix}
       />
-      <Typography.Text
-        fontSize={10}
-        fontWeight="light"
-        intent="subdued"
-        style={{ marginBottom: theme.space.medium }}
-      >
-        {`If left blank, current cost of software of ${formatter.format(
+      <NumberFormInput
+        title="Annual cost of current software being replaced or discontinued"
+        subTitle={`If left blank, current cost of software of ${formatter.format(
           researchData[formData.country]["costs_saved_on_tech"]
         )} will be used - determined from research`}
-      </Typography.Text>
-      <Box style={{ alignItems: "center", display: "flex" }}>
-        <Typography.Text
-          tagName="label"
-          htmlFor="annualServicesSpend"
-          fontWeight="bold"
-        >
-          Annual costs of service providers used
-        </Typography.Text>
-        <Tooltip
-          style={{ marginLeft: theme.space.small, paddingTop: "2px" }}
-          target={<AiOutlineQuestionCircle style={{ color: "#7622d7" }} />}
-          content="E.g. Employment Laywers, Advisers etc."
-        />
-      </Box>
-      <Input
-        type="number"
-        value={formData.annualServicesSpend}
-        onChange={handleInputChange}
-        id="annualServicesSpend"
-        prefix={<span>{countryPrefix}</span>}
-        style={{
-          marginTop: theme.space.small,
-          marginBottom: "2px",
-        }}
-        min={0}
+        htmlFor="costsSavedOnTech"
+        value={formData.costsSavedOnTech}
+        id="costsSavedOnTech"
+        handleInputChange={handleInputChange}
+        countryPrefix={countryPrefix}
+        toolTipContent="Costs currently being paid for technology such as Seek, Tanda, Deputy etc."
       />
-      <Typography.Text
-        fontSize={10}
-        fontWeight="light"
-        intent="subdued"
-        style={{ marginBottom: theme.space.medium }}
-      >
-        {`If left blank, annual cost of service providers of ${formatter.format(
+      <NumberFormInput
+        title="Annual costs of service providers used"
+        subTitle={`If left blank, annual cost of service providers of ${formatter.format(
           researchData[formData.country]["annual_services_spend"]
         )} will be used - determined from research`}
-      </Typography.Text>
+        htmlFor="annualServicesSpend"
+        value={formData.annualServicesSpend}
+        id="annualServicesSpend"
+        handleInputChange={handleInputChange}
+        countryPrefix={countryPrefix}
+        toolTipContent="e.g. Employment Laywers, Advisers etc."
+      />
     </Box>
   );
 };

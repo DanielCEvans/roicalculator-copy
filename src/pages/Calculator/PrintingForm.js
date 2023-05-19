@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { Box, Typography, Input, theme, Grid } from "@hero-design/react";
+import { Box, Typography, theme, Grid } from "@hero-design/react";
 import StatisticCard from "../../components/Statistic";
 import useStore from "../../context/store";
+import NumberFormInput from "../../components/NumberFormInput";
 
 const PrintingForm = ({ runCalculations }) => {
   const {
@@ -57,149 +58,72 @@ const PrintingForm = ({ runCalculations }) => {
       <Grid>
         <Grid.Row gutter={["large", "large"]}>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Typography.Text
-              tagName="label"
+            <NumberFormInput
+              title="Contracts generated per year"
               htmlFor="contractsPerYear"
-              fontWeight="bold"
-            >
-              Contracts generated per year
-            </Typography.Text>
-            <Input
-              type="number"
               value={printingDetails.contractsPerYear}
-              onChange={handleInputChange}
               id="contractsPerYear"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
             />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Typography.Text
-              tagName="label"
+            <NumberFormInput
+              title="Pages printed per contract"
               htmlFor="pagesPerContract"
-              fontWeight="bold"
-            >
-              Pages printed per contract
-            </Typography.Text>
-            <Input
-              type="number"
               value={printingDetails.pagesPerContract}
-              onChange={handleInputChange}
               id="pagesPerContract"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
             />
           </Grid.Col>
         </Grid.Row>
         <Grid.Row gutter={["large", "large"]}>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Typography.Text
-              tagName="label"
+            <NumberFormInput
+              title="Leave forms per year"
               htmlFor="leaveFormsPerYear"
-              fontWeight="bold"
-            >
-              Leave forms per year
-            </Typography.Text>
-            <Input
-              type="number"
               value={printingDetails.leaveFormsPerYear}
-              onChange={handleInputChange}
               id="leaveFormsPerYear"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
             />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Typography.Text
-              tagName="label"
+            <NumberFormInput
+              title="Pages printed per leave form"
               htmlFor="pagesPerLeaveForm"
-              fontWeight="bold"
-            >
-              Pages printed per leave form
-            </Typography.Text>
-            <Input
-              type="number"
               value={printingDetails.pagesPerLeaveForm}
-              onChange={handleInputChange}
               id="pagesPerLeaveForm"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
             />
           </Grid.Col>
         </Grid.Row>
         <Grid.Row gutter={["large", "large"]}>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Typography.Text
-              tagName="label"
+            <NumberFormInput
+              title="Number of reviews per year"
               htmlFor="reviewsPerYear"
-              fontWeight="bold"
-            >
-              Number of reviews per year
-            </Typography.Text>
-            <Input
-              type="number"
               value={printingDetails.reviewsPerYear}
-              onChange={handleInputChange}
               id="reviewsPerYear"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
             />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Typography.Text
-              tagName="label"
+            <NumberFormInput
+              title="Pages printed per performance review"
               htmlFor="pagesPerReview"
-              fontWeight="bold"
-            >
-              Pages printed per performance review
-            </Typography.Text>
-            <Input
-              type="number"
               value={printingDetails.pagesPerReview}
-              onChange={handleInputChange}
               id="pagesPerReview"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
             />
           </Grid.Col>
         </Grid.Row>
         <Grid.Row gutter={["large", "large"]}>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Typography.Text
-              tagName="label"
+            <NumberFormInput
+              title="Pages printed per year for any additional tasks"
               htmlFor="otherPrintingTasks"
-              fontWeight="bold"
-            >
-              Pages printed per year for any additional tasks
-            </Typography.Text>
-            <Input
-              type="number"
               value={printingDetails.otherPrintingTasks}
-              onChange={handleInputChange}
               id="otherPrintingTasks"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.xlarge,
-              }}
-              min={0}
+              handleInputChange={handleInputChange}
             />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>

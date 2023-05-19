@@ -1,4 +1,6 @@
 import { useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { CountryContext } from "../../utils/countryFormatter";
 import { Grid, InPageNavigation, Box, Button, theme } from "@hero-design/react";
 import GeneralForm from "./GeneralForm";
 import AdminForm from "./AdminForm";
@@ -28,7 +30,10 @@ const PageNavigation = () => {
     setFormSelectedItemId,
   } = useStore();
 
-  const formatter = countryFormatter(formData.country);
+  const countryInfo = useContext(CountryContext);
+  const formatter = formData.country
+    ? countryInfo[formData.country].currencyFormatter
+    : countryInfo["AU"].currencyFormatter;
 
   const items = {
     "": [
@@ -217,7 +222,7 @@ const PageNavigation = () => {
               value={
                 totalTable.year1NetBenefits
                   ? `${formatter.format(totalTable.year1NetBenefits)}`
-                  : "$0.00"
+                  : `${formatter.format(0)}`
               }
               backgroundColor={savingsBackgroundColor}
               fontColor={savingsFontColour}
