@@ -32,7 +32,9 @@ const AboutPage = () => {
 
   const countryInfo = useContext(CountryContext);
 
-  const reportLandingPage = countryInfo[formData.country].reportLandingPage;
+  const reportLandingPage = formData.country
+    ? countryInfo[formData.country].reportLandingPage
+    : countryInfo["AU"].reportLandingPage;
 
   return (
     <>

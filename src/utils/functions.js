@@ -4,6 +4,7 @@ export default function calculateROI(formData, adminDetails) {
   const NUMBER_OF_YEARS = 3;
   const MONTHS_PER_YEAR = 12;
   const BENEFIT_FACTOR = 0.8;
+  const IMPLEMENTATION_FACTOR = 1.2;
 
   function calculateGrowthRate(onboardsPerYear, orgSize) {
     return onboardsPerYear / orgSize + 1;
@@ -12,41 +13,18 @@ export default function calculateROI(formData, adminDetails) {
   // partTimeCasualEmployees however may be empty string as these fields aren't required and
   // the default state is an empty string "" to avoid displaying '0' when the user first sees the form
   const partTimeCasualEmployees = formData.partTimeCasualEmployees || 0;
-  const orgSizeYear1 = formData.fullTimeEmployees + partTimeCasualEmployees;
-  const growthRate = calculateGrowthRate(
-    adminDetails.onboardsPerYear,
-    orgSizeYear1
-  );
-
-  const orgSizeYear2 = orgSizeYear1 * growthRate;
-  const orgSizeYear3 = orgSizeYear2 * growthRate;
-
-  const adminsYear2 = formData.admins * growthRate;
-  const adminsYear3 = adminsYear2 * growthRate;
-
-  const fullTimeEmployeesYear2 = formData.fullTimeEmployees * growthRate;
-  const fullTimeEmployeesYear3 = fullTimeEmployeesYear2 * growthRate;
-
-  const partTimeEmployeesYear2 = partTimeCasualEmployees * growthRate;
-  const partTimeEmployeesYear3 = partTimeEmployeesYear2 * growthRate;
+  const orgSize = formData.fullTimeEmployees + partTimeCasualEmployees;
+  const growthRate = calculateGrowthRate(adminDetails.onboardsPerYear, orgSize);
 
   // Add above values to formData object
   formData = {
     ...formData,
     partTimeCasualEmployees,
+    orgSize,
     growthRate,
-    orgSizeYear1,
-    orgSizeYear2,
-    orgSizeYear3,
-    adminsYear2,
-    adminsYear3,
-    fullTimeEmployeesYear2,
-    fullTimeEmployeesYear3,
-    partTimeEmployeesYear2,
-    partTimeEmployeesYear3,
   };
 
-  // Add non-mandatory form fields to formData object
+  // Add non-mandatory form fields to formData object using resarch data
   formData = {
     ...formData,
     hrBurdenedRate:
@@ -68,373 +46,177 @@ export default function calculateROI(formData, adminDetails) {
     implementationType: formData.implementationType || "guided",
   };
 
-  // This currenlty has to be outside the formData object as it is passed to another object later on?
-  const upfrontImplementationCost =
-    formData.implementationType === "guided"
-      ? researchData[formData.country][formData.plan]["cost_2"]["upfront"]
-      : formData.implementationType === "managed"
-      ? researchData[formData.country][formData.plan]["cost_2"]["managed"]
-      : 0;
-
-  // **********************
-  // BENEFIT 1
-  // **********************
-  function calculateBenefit1(formData) {
-    const TIME_SAVED_YEAR_ONE = 0.39;
-    const TIME_SAVED_YEAR_TWO = 0.405;
-    const TIME_SAVED_YEAR_THREE = 0.42;
-    const timeSavedYear1 =
+  function calculateEmploymentBenefit(formData, year) {
+    // Time saved determined from Nat's research.
+    // Currently limited to 3 years.
+    const TIME_SAVED_RESEARCH_VALUES = {
+      1: 0.39,
+      2: 0.405,
+      3: 0.42,
+    };
+    const timeSaved =
       (formData.hoursSpentOnEmploymentTasks / formData.admins) *
-      TIME_SAVED_YEAR_ONE;
-    const timeSavedYear2 =
-      (formData.hoursSpentOnEmploymentTasks / formData.admins) *
-      TIME_SAVED_YEAR_TWO;
-    const timeSavedYear3 =
-      (formData.hoursSpentOnEmploymentTasks / formData.admins) *
-      TIME_SAVED_YEAR_THREE;
-
-    const year1Benefit1 =
+      TIME_SAVED_RESEARCH_VALUES[year];
+    const employmentBenefit =
       formData.admins *
-      timeSavedYear1 *
+      timeSaved *
       formData.hrBurdenedRate *
       MONTHS_PER_YEAR *
       BENEFIT_FACTOR;
-    const year2Benefit1 =
-      formData.adminsYear2 *
-      timeSavedYear2 *
-      formData.hrBurdenedRate *
-      MONTHS_PER_YEAR *
-      BENEFIT_FACTOR;
-    const year3Benefit1 =
-      formData.adminsYear3 *
-      timeSavedYear3 *
-      formData.hrBurdenedRate *
-      MONTHS_PER_YEAR *
-      BENEFIT_FACTOR;
-
-    return {
-      year1Benefit1: year1Benefit1,
-      year2Benefit1: year2Benefit1,
-      year3Benefit1: year3Benefit1,
-    };
+    return employmentBenefit;
   }
-  // **********************
-  // BENEFIT 2
-  // **********************
-  const calculateBenefit2 = (formData) => {
+  const calculateOrganisationBenefit = (formData, year) => {
     const EMPLOYMENT_ADMIN_HOURS_PER_DAY = 0.05;
-
-    const calcFinancialGainsAdjustment = (
-      fullTime,
-      partTime,
-      year,
-      efficiencyAdjustment
-    ) => {
-      const employmentAdminHoursPerYearFullTime =
-        EMPLOYMENT_ADMIN_HOURS_PER_DAY * 5 * 52.18 * fullTime;
-      const employmentAdminHoursPerYearPartTime =
-        EMPLOYMENT_ADMIN_HOURS_PER_DAY * 2.5 * 52.18 * partTime;
-      const orgReductionAdminReductionTimeSinceEH =
-        researchData[formData.country][formData.plan]["benefit_2"][
-          `year_${year - 1}`
-        ];
-
-      const totalHoursSavedPerYear =
-        (employmentAdminHoursPerYearFullTime +
-          employmentAdminHoursPerYearPartTime) *
-        orgReductionAdminReductionTimeSinceEH;
-      const totalHoursSavedAdjusted =
-        efficiencyAdjustment * totalHoursSavedPerYear;
-      const orgOverallFincancialGainsAdjusted =
-        formData.employeeBurdenedRate *
-        totalHoursSavedAdjusted *
-        BENEFIT_FACTOR;
-      return orgOverallFincancialGainsAdjusted;
+    const EFFICIENCY_ADJUSTMENTS_RESEARCH_VALUES = {
+      1: 0.515,
+      2: 0.575,
+      3: 0.634,
     };
-
-    const EFFICIENCY_ADJUSTMENTS = [0.515, 0.575, 0.634];
-    const orgOverallFincancialGainsAdjustedValues = [];
-
-    for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
-      const efficiencyAdjustment = EFFICIENCY_ADJUSTMENTS[year - 1];
-      const fullTimeEmployees =
-        formData[`fullTimeEmployeesYear${year}`] || formData.fullTimeEmployees;
-      const partTimeEmployees =
-        formData[`partTimeEmployeesYear${year}`] ||
-        formData.partTimeCasualEmployees;
-
-      const orgOverallFincancialGainsAdjusted = calcFinancialGainsAdjustment(
-        fullTimeEmployees,
-        partTimeEmployees,
-        year,
-        efficiencyAdjustment
-      );
-      orgOverallFincancialGainsAdjustedValues.push(
-        orgOverallFincancialGainsAdjusted
-      );
-    }
-    return orgOverallFincancialGainsAdjustedValues;
+    const adminHoursFullTime =
+      EMPLOYMENT_ADMIN_HOURS_PER_DAY * 5 * 52.18 * formData.fullTimeEmployees;
+    const adminHoursPartTime =
+      EMPLOYMENT_ADMIN_HOURS_PER_DAY *
+      2.5 *
+      52.18 *
+      formData.partTimeCasualEmployees;
+    const adminReductionTimeSinceEH =
+      researchData[formData.country][formData.plan]["benefit_2"][
+        `year_${year - 1}`
+      ];
+    const totalHoursSaved =
+      (adminHoursFullTime + adminHoursPartTime) * adminReductionTimeSinceEH;
+    const totalHoursSavedAdjusted =
+      EFFICIENCY_ADJUSTMENTS_RESEARCH_VALUES[year] * totalHoursSaved;
+    const organisationBenefit =
+      formData.employeeBurdenedRate * totalHoursSavedAdjusted * BENEFIT_FACTOR;
+    return organisationBenefit;
   };
-  // **********************
-  // BENEFIT 3
-  // **********************
-  const calculateBenefit3 = (formData) => {
+  const calculateTechBenefit = (formData, year) => {
     const AVG_PERC_SAVED_IN_SERVICE_PROVIDER_COSTS = 0.246;
 
+    // This doesn't need to be calculated every iteration of the loop
     const costSavedInServiceProviders =
       formData.annualServicesSpend * AVG_PERC_SAVED_IN_SERVICE_PROVIDER_COSTS;
 
-    const costSavedInServicesAndTechnology = [];
-
-    for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
-      if (year === 1) {
-        costSavedInServicesAndTechnology.push(
-          costSavedInServiceProviders * BENEFIT_FACTOR
-        );
-      } else {
-        costSavedInServicesAndTechnology.push(
-          (costSavedInServiceProviders + formData.costsSavedOnTech) *
-            BENEFIT_FACTOR
-        );
-      }
-    }
-    return costSavedInServicesAndTechnology;
+    const techBenefit =
+      year === 1
+        ? costSavedInServiceProviders * BENEFIT_FACTOR
+        : (costSavedInServiceProviders + formData.costsSavedOnTech) *
+          BENEFIT_FACTOR;
+    return techBenefit;
   };
-  // **********************
-  // BENEFIT 4
-  // **********************
-  const calculateBenefit4 = (formData, researchData) => {
+  const calculatePrintingBenefit = (formData, year) => {
     const PERC_PAPER = 0.684;
-    const avgReductionInPaper = [0.492, 0.563, 0.653];
-    const costSavedInPrinting = [];
+    const avgReductionInPaper = {
+      1: 0.492,
+      2: 0.563,
+      3: 0.653,
+    };
 
-    for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
-      const employeeDocs =
-        formData.pagesPerYear * formData[`orgSizeYear${year}`];
-      const printingCosts =
-        employeeDocs * researchData[formData.country]["printing_costs"];
-      const totalPrintingCosts = PERC_PAPER * printingCosts;
+    const employeeDocs = formData.pagesPerYear * formData.orgSize;
+    const printingCosts =
+      employeeDocs * researchData[formData.country]["printing_costs"];
+    const totalPrintingCosts = PERC_PAPER * printingCosts;
 
-      const totalSaved = totalPrintingCosts * avgReductionInPaper[year - 1];
-      const reductionPrintingAdjusted = totalSaved * BENEFIT_FACTOR;
+    const totalSaved = totalPrintingCosts * avgReductionInPaper[year];
+    const printingBenefit = totalSaved * BENEFIT_FACTOR;
 
-      costSavedInPrinting.push(reductionPrintingAdjusted);
-    }
-    return costSavedInPrinting;
+    return printingBenefit;
   };
+  const calculateSubscriptionCost = (formData, year) => {
+    const subscriptionCost =
+      researchData[formData.country][formData.plan]["cost_1"][
+        `year_${year - 1}`
+      ] *
+      formData.orgSize *
+      MONTHS_PER_YEAR;
 
-  // **********************
-  // COST 1 - Subscription Costs
-  // **********************
-  const calculateCost1 = (formData, researchData) => {
-    const subscriptionCosts = [];
-
-    for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
-      const orgSize = formData[`orgSizeYear${year}`];
-      const cost =
-        researchData[formData.country][formData.plan]["cost_1"][
-          `year_${year - 1}`
-        ];
-      const subscriptionCost = orgSize * cost * MONTHS_PER_YEAR;
-
-      subscriptionCosts.push(subscriptionCost);
-    }
-
-    return subscriptionCosts;
+    return subscriptionCost;
   };
-  // **********************
-  // COST 2 - Internal Implementation Costs
-  // **********************
-  const calculateInternalImplementationCosts = (formData) => {
-    const IMPLEMENTATION_FACTOR = 1.2;
-    const HOURS_SPENT_ON_MAINTENANCE_PER_MONTH = 2;
-    const internalImplementationCosts = [];
-    // Upfront
-    const internalImplementationCostUpfront =
+  const calculateImplementationCost = (formData) => {
+    const externalImplementationCost =
+      formData.implementationType === "guided"
+        ? researchData[formData.country][formData.plan]["cost_2"]["upfront"]
+        : formData.implementationType === "managed"
+        ? researchData[formData.country][formData.plan]["cost_2"]["managed"]
+        : 0;
+
+    const internalImplementationCost =
       formData.plan.includes("HR") && formData.plan.includes("Payroll")
         ? 20 * formData.admins * formData.hrBurdenedRate * IMPLEMENTATION_FACTOR
         : 10 *
           formData.admins *
           formData.hrBurdenedRate *
           IMPLEMENTATION_FACTOR;
-    internalImplementationCosts.push(internalImplementationCostUpfront);
-    // Ongoing
-    for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
-      const admins =
-        year === 1 ? formData.admins : formData[`adminsYear${year}`];
-      const internalImplementationCost =
-        HOURS_SPENT_ON_MAINTENANCE_PER_MONTH *
-        formData.hrBurdenedRate *
-        admins *
-        IMPLEMENTATION_FACTOR *
-        MONTHS_PER_YEAR;
+    return [internalImplementationCost, externalImplementationCost];
+  };
+  const calculateOngoingCosts = (formData) => {
+    const HOURS_SPENT_ON_MAINTENANCE_PER_MONTH = 2;
+    const onGoingCost =
+      HOURS_SPENT_ON_MAINTENANCE_PER_MONTH *
+      formData.hrBurdenedRate *
+      formData.admins *
+      IMPLEMENTATION_FACTOR *
+      MONTHS_PER_YEAR;
 
-      internalImplementationCosts.push(internalImplementationCost);
-    }
-
-    return internalImplementationCosts;
+    return onGoingCost;
   };
 
-  // Execture all calculations
-  const { year1Benefit1, year2Benefit1, year3Benefit1 } =
-    calculateBenefit1(formData);
-  const [
-    orgOverallFincancialGainsAdjustedYear1,
-    orgOverallFincancialGainsAdjustedYear2,
-    orgOverallFincancialGainsAdjustedYear3,
-  ] = calculateBenefit2(formData);
+  const employmentBenefits = [];
+  const organisationBenefits = [];
+  const techBenefits = [];
+  const printingBenefits = [];
+  const subscriptionCosts = [];
+  const implementationCosts = calculateImplementationCost(formData);
+  const onGoingCosts = [];
+  const netBenefits = [];
+  const ROIs = [];
 
-  const [
-    costSavedInServicesAndTechnologyYear1,
-    costSavedInServicesAndTechnologyYear2,
-    costSavedInServicesAndTechnologyYear3,
-  ] = calculateBenefit3(formData);
-  const [
-    reductionPrintingAdjustedYear1,
-    reductionPrintingAdjustedYear2,
-    reductionPrintingAdjustedYear3,
-  ] = calculateBenefit4(formData, researchData);
+  for (let year = 1; year <= NUMBER_OF_YEARS; year++) {
+    const employmentBenefit = calculateEmploymentBenefit(formData, year);
+    const organisationBenefit = calculateOrganisationBenefit(formData, year);
+    const techBenefit = calculateTechBenefit(formData, year);
+    const printingBenefit = calculatePrintingBenefit(formData, year);
+    const subscriptionCost = calculateSubscriptionCost(formData, year);
+    const onGoingCost = calculateOngoingCosts(formData);
+    const netBenefit =
+      employmentBenefit +
+      organisationBenefit +
+      techBenefit +
+      printingBenefit -
+      subscriptionCost -
+      onGoingCost;
+    const roi = (netBenefit / (subscriptionCost + onGoingCost)) * 100;
 
-  const [subscriptionCostYear1, subscriptionCostYear2, subscriptionCostYear3] =
-    calculateCost1(formData, researchData);
-  const [
-    internalImplementationCostUpfront,
-    internalImplementationCostYear1,
-    internalImplementationCostYear2,
-    internalImplementationCostYear3,
-  ] = calculateInternalImplementationCosts(formData);
+    employmentBenefits.push(employmentBenefit);
+    organisationBenefits.push(organisationBenefit);
+    techBenefits.push(techBenefit);
+    printingBenefits.push(printingBenefit);
+    subscriptionCosts.push(subscriptionCost);
+    onGoingCosts.push(onGoingCost);
+    netBenefits.push(netBenefit);
+    ROIs.push(roi);
 
-  // Total benefits
-  const totalBenefitsYear1 =
-    year1Benefit1 +
-    orgOverallFincancialGainsAdjustedYear1 +
-    costSavedInServicesAndTechnologyYear1 +
-    reductionPrintingAdjustedYear1;
+    // After each iteration, update the org size, admins, full time employees, and part time/casual employees
+    // based on the growth rate
+    formData = {
+      ...formData,
+      orgSize: formData.orgSize * growthRate,
+      admins: formData.admins * growthRate,
+      fullTimeEmployees: formData.fullTimeEmployees * growthRate,
+      partTimeCasualEmployees: formData.partTimeCasualEmployees * growthRate,
+    };
+  }
 
-  const totalBenefitsYear2 =
-    year2Benefit1 +
-    orgOverallFincancialGainsAdjustedYear2 +
-    costSavedInServicesAndTechnologyYear2 +
-    reductionPrintingAdjustedYear2;
-
-  const totalBenefitsYear3 =
-    year3Benefit1 +
-    orgOverallFincancialGainsAdjustedYear3 +
-    costSavedInServicesAndTechnologyYear3 +
-    reductionPrintingAdjustedYear3;
-
-  const threeYeartotalbenefit1 = year1Benefit1 + year2Benefit1 + year3Benefit1;
-  const threeYeartotalbenefit2 =
-    orgOverallFincancialGainsAdjustedYear1 +
-    orgOverallFincancialGainsAdjustedYear2 +
-    orgOverallFincancialGainsAdjustedYear3;
-  const threeYeartotalbenefit3 =
-    costSavedInServicesAndTechnologyYear1 +
-    costSavedInServicesAndTechnologyYear2 +
-    costSavedInServicesAndTechnologyYear3;
-  const threeYeartotalbenefit4 =
-    reductionPrintingAdjustedYear1 +
-    reductionPrintingAdjustedYear2 +
-    reductionPrintingAdjustedYear3;
-
-  const threeYeartotalbenefits =
-    totalBenefitsYear1 + totalBenefitsYear2 + totalBenefitsYear3;
-
-  // Total Costs
-  const totalUpfront =
-    upfrontImplementationCost + internalImplementationCostUpfront;
-  const totalCostYear1 =
-    subscriptionCostYear1 + internalImplementationCostYear1;
-  const totalCostYear2 =
-    subscriptionCostYear2 + internalImplementationCostYear2;
-  const totalCostYear3 =
-    subscriptionCostYear3 + internalImplementationCostYear3;
-  const threeYearTotalCost =
-    totalUpfront + totalCostYear1 + totalCostYear2 + totalCostYear3;
-
-  const subscriptionCostYearTotal =
-    subscriptionCostYear1 + subscriptionCostYear2 + subscriptionCostYear3;
-  const internalImplementationCostTotal =
-    internalImplementationCostUpfront +
-    internalImplementationCostYear1 +
-    internalImplementationCostYear2 +
-    internalImplementationCostYear3;
-
-  // Net benefits
-  const upfrontNetBenefits = -totalUpfront;
-  const year1NetBenefits = totalBenefitsYear1 - totalCostYear1;
-  const year2NetBenefits = totalBenefitsYear2 - totalCostYear2;
-  const year3NetBenefits = totalBenefitsYear3 - totalCostYear3;
-  const threeYearTotalNetBenefits =
-    upfrontNetBenefits + year1NetBenefits + year2NetBenefits + year3NetBenefits;
-
-  // ROI
-  const year1Roi = (year1NetBenefits / totalCostYear1) * 100;
-  const year2Roi = (year2NetBenefits / totalCostYear2) * 100;
-  const year3Roi = (year3NetBenefits / totalCostYear3) * 100;
-  const threeYearTotalROI =
-    (threeYearTotalNetBenefits / threeYearTotalCost) * 100;
-
-  const totalTable = {
-    totalBenefitsYear1,
-    totalBenefitsYear2,
-    totalBenefitsYear3,
-    threeYeartotalbenefits,
-    totalUpfront,
-    totalCostYear1,
-    totalCostYear2,
-    totalCostYear3,
-    threeYearTotalCost,
-    upfrontNetBenefits,
-    year1NetBenefits,
-    year2NetBenefits,
-    year3NetBenefits,
-    threeYearTotalNetBenefits,
-    year1Roi,
-    year2Roi,
-    year3Roi,
-    threeYearTotalROI,
-  };
-
-  const benefitsTable = {
-    year1Benefit1,
-    year2Benefit1,
-    year3Benefit1,
-    threeYeartotalbenefit1,
-    orgOverallFincancialGainsAdjustedYear1,
-    orgOverallFincancialGainsAdjustedYear2,
-    orgOverallFincancialGainsAdjustedYear3,
-    threeYeartotalbenefit2,
-    costSavedInServicesAndTechnologyYear1,
-    costSavedInServicesAndTechnologyYear2,
-    costSavedInServicesAndTechnologyYear3,
-    threeYeartotalbenefit3,
-    reductionPrintingAdjustedYear1,
-    reductionPrintingAdjustedYear2,
-    reductionPrintingAdjustedYear3,
-    threeYeartotalbenefit4,
-    totalBenefitsYear1,
-    totalBenefitsYear2,
-    totalBenefitsYear3,
-    threeYeartotalbenefits,
-  };
-
-  const costsTable = {
-    subscriptionCostYear1,
-    subscriptionCostYear2,
-    subscriptionCostYear3,
-    subscriptionCostYearTotal,
-    upfrontImplementationCost,
-    internalImplementationCostUpfront,
-    internalImplementationCostYear1,
-    internalImplementationCostYear2,
-    internalImplementationCostYear3,
-    internalImplementationCostTotal,
-    totalCostYear1,
-    totalCostYear2,
-    totalCostYear3,
-    threeYearTotalCost,
-  };
-
-  return { totalTable, benefitsTable, costsTable };
+  return [
+    employmentBenefits,
+    organisationBenefits,
+    techBenefits,
+    printingBenefits,
+    subscriptionCosts,
+    implementationCosts,
+    onGoingCosts,
+    netBenefits,
+    ROIs,
+  ];
 }

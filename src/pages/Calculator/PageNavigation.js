@@ -9,7 +9,6 @@ import AdditionalForm from "./AdditionalForm";
 import StatisticCard from "../../components/Statistic";
 import calculateROI from "../../utils/functions";
 import useStore from "../../context/store";
-import { countryFormatter } from "../../utils/countryFormatter";
 
 const PageNavigation = () => {
   const navigate = useNavigate();
@@ -21,13 +20,20 @@ const PageNavigation = () => {
     setAdminErrors,
     hasCalculated,
     setHasCalculated,
-    totalTable,
-    setTotalTable,
-    setBenefitsTable,
-    setCostsTable,
     setSidebarSelectedItemId,
     formSelectedItemId,
     setFormSelectedItemId,
+    setEmploymentBenefits,
+    setOrganisationBenefits,
+    setTechBenefits,
+    setPrintingBenefits,
+    setSubscriptionCosts,
+    setImplementationCost,
+    setOngoingCosts,
+    netBenefits,
+    setNetBenefits,
+    ROIs,
+    setRoi,
   } = useStore();
 
   const countryInfo = useContext(CountryContext);
@@ -56,13 +62,28 @@ const PageNavigation = () => {
   // This function will calculate the ROI when the user clicks the 'Calculate' button
   // The required fields for calculating the ROI are checked prior to this function being called
   const runCalculations = () => {
-    const { totalTable, benefitsTable, costsTable } = calculateROI(
-      formData,
-      adminDetails
-    );
-    setTotalTable(totalTable);
-    setBenefitsTable(benefitsTable);
-    setCostsTable(costsTable);
+    const [
+      employmentBenefits,
+      organisationBenefits,
+      techBenefits,
+      printingBenefits,
+      subscriptionCosts,
+      implementationCosts,
+      onGoingCosts,
+      netBenefits,
+      ROIs,
+    ] = calculateROI(formData, adminDetails);
+
+    // Set the state of the benefits and costs
+    setEmploymentBenefits(employmentBenefits);
+    setOrganisationBenefits(organisationBenefits);
+    setTechBenefits(techBenefits);
+    setPrintingBenefits(printingBenefits);
+    setSubscriptionCosts(subscriptionCosts);
+    setImplementationCost(implementationCosts);
+    setOngoingCosts(onGoingCosts);
+    setNetBenefits(netBenefits);
+    setRoi(ROIs);
   };
 
   // This function will change the forms in the InpageNavigation component
@@ -130,15 +151,15 @@ const PageNavigation = () => {
     navigate("/results");
   };
 
-  const savingsBackgroundColor = !totalTable.year1NetBenefits
+  const savingsBackgroundColor = !hasCalculated
     ? "white"
-    : totalTable.year1NetBenefits > 0
+    : netBenefits[0] > 0
     ? theme.colors.palette.grotesqueGreenLight75
     : theme.colors.palette.pinkLight75;
 
-  const savingsFontColour = !totalTable.year1NetBenefits
+  const savingsFontColour = !hasCalculated
     ? theme.colors.palette.violetDark45
-    : totalTable.year1NetBenefits > 0
+    : netBenefits[0] > 0
     ? theme.colors.palette.grotesqueGreenDark45
     : theme.colors.palette.pinkDark45;
   return (
@@ -205,12 +226,8 @@ const PageNavigation = () => {
           <Grid.Col span={[8, 8, 8, 8, 8]}>
             <StatisticCard
               title="Return On Investment"
-              subtitle="3 Year Total"
-              value={
-                totalTable.threeYearTotalROI
-                  ? `${totalTable.threeYearTotalROI.toFixed(0)}%`
-                  : "0%"
-              }
+              subtitle="Year 3"
+              value={hasCalculated ? `${ROIs[2].toFixed(0)}%` : "0%"}
               backgroundColor="white"
               fontColor={theme.colors.palette.violetDark45}
             />
@@ -220,8 +237,8 @@ const PageNavigation = () => {
               title="Net Savings"
               subtitle="Year 1"
               value={
-                totalTable.year1NetBenefits
-                  ? `${formatter.format(totalTable.year1NetBenefits)}`
+                hasCalculated
+                  ? `${formatter.format(netBenefits[0])}`
                   : `${formatter.format(0)}`
               }
               backgroundColor={savingsBackgroundColor}

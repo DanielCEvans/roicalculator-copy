@@ -1,21 +1,17 @@
 import { useEffect, useContext } from "react";
 import { CountryContext } from "../../utils/countryFormatter";
-import { Box, theme, Typography, Select } from "@hero-design/react/lib";
+import { Box } from "@hero-design/react/lib";
 import countries from "../../data/countries.json";
 import NumberFormInput from "../../components/NumberFormInput";
+import SelectFormInput from "../../components/SelectFormInput";
 
 import useStore from "../../context/store";
 
 const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
   const { formData, setFormData, generalErrors, hasCalculated } = useStore();
 
-  const handleInputChange = (e, selectElement) => {
-    // This is required because of the select input type
-    if (selectElement) {
-      setFormData(selectElement, e);
-    } else {
-      setFormData(e.target.id, +e.target.value);
-    }
+  const handleInputChange = (e) => {
+    setFormData(e.target.id, +e.target.value);
   };
 
   useEffect(() => {
@@ -41,64 +37,30 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
       }}
     >
       <form>
-        <Box style={{ marginBottom: theme.space.medium }}>
-          <Typography.Text
-            tagName="label"
-            htmlFor="country"
-            fontWeight="bold"
-            intent={generalErrors.country ? "danger" : null}
-          >
-            Country
-          </Typography.Text>
-          <Select
-            options={countries}
-            value={formData.country}
-            onChange={(e) => handleInputChange(e, "country")}
-            placeholder="Select..."
-            id="country"
-            name="country"
-            style={{
-              marginTop: theme.space.small,
-            }}
-            invalid={generalErrors.country}
-          />
-          {generalErrors.country && (
-            <Typography.Text fontSize={12} intent="danger">
-              Required
-            </Typography.Text>
-          )}
-        </Box>
-        <Box style={{ marginBottom: theme.space.medium }}>
-          <Typography.Text
-            tagName="label"
-            htmlFor="plan"
-            fontWeight="bold"
-            intent={generalErrors.plan ? "danger" : null}
-          >
-            Plan
-          </Typography.Text>
-          <Select
-            options={
-              formData.country
-                ? countryInfo[formData.country].plans
-                : countryInfo["AU"].plans
-            }
-            value={formData.plan}
-            onChange={(e) => handleInputChange(e, "plan")}
-            placeholder="Select..."
-            id="plan"
-            style={{
-              marginTop: theme.space.small,
-            }}
-            invalid={generalErrors.plan}
-          />
-          {generalErrors.plan && (
-            <Typography.Text fontSize={12} intent="danger">
-              Required
-            </Typography.Text>
-          )}
-        </Box>
-
+        <SelectFormInput
+          title="Country"
+          htmlFor="country"
+          options={countries}
+          value={formData.country}
+          id="country"
+          intent={generalErrors.country && "danger"}
+          invalid={generalErrors.country}
+          handleInputChangeFunction={setFormData}
+        />
+        <SelectFormInput
+          title="Plan"
+          htmlFor="plan"
+          options={
+            formData.country
+              ? countryInfo[formData.country].plans
+              : countryInfo["AU"].plans
+          }
+          value={formData.plan}
+          id="plan"
+          intent={generalErrors.plan && "danger"}
+          invalid={generalErrors.plan}
+          handleInputChangeFunction={setFormData}
+        />
         <NumberFormInput
           title="Number of full time employees"
           htmlFor="fullTimeEmployees"

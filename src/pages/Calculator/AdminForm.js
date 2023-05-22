@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { Box, Typography, theme, Grid, Select } from "@hero-design/react";
+import { Box, Typography, theme, Grid } from "@hero-design/react";
 import StatisticCard from "../../components/Statistic";
 import useStore from "../../context/store";
 import NumberFormInput from "../../components/NumberFormInput";
+import SelectFormInput from "../../components/SelectFormInput";
 
 const payrollFrequency = [
   { value: "weekly", text: "Weekly" },
@@ -52,13 +53,8 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
     hasCalculated,
   } = useStore();
 
-  const handleInputChange = (e, selectElement) => {
-    // This is required because of the select input type
-    if (selectElement) {
-      setAdminDetails(selectElement, e);
-    } else {
-      setAdminDetails(e.target.id, +e.target.value);
-    }
+  const handleInputChange = (e) => {
+    setAdminDetails(e.target.id, +e.target.value);
   };
 
   // When any of the values in the Admin form change, the total hours spent on employment
@@ -136,24 +132,13 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
         </Grid.Row>
         <Grid.Row gutter={["large", "large"]}>
           <Grid.Col span={[12, 12, 12, 12, 12]}>
-            <Typography.Text
-              tagName="label"
+            <SelectFormInput
+              title="Frequency of payroll"
               htmlFor="frequencyOfPayroll"
-              fontWeight="bold"
-            >
-              Frequency of payroll
-            </Typography.Text>
-            <Select
               options={payrollFrequency}
               value={adminDetails.frequencyOfPayroll}
-              // onChange={handleInputChange}
-              onChange={(e) => handleInputChange(e, "frequencyOfPayroll")}
-              placeholder="Select..."
               id="frequencyOfPayroll"
-              style={{
-                marginTop: theme.space.small,
-                marginBottom: theme.space.medium,
-              }}
+              handleInputChangeFunction={setAdminDetails}
             />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>

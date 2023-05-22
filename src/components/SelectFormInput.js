@@ -19,13 +19,17 @@ const SelectFormInput = ({
   id,
   intent,
   invalid,
-  handleInputChange,
   toolTipContent,
   buttonText,
   modalTitle,
   modalBody,
+  handleInputChangeFunction,
 }) => {
   const [openModal, setOpenModal] = useState(false);
+
+  const handleInputChange = (e) => {
+    handleInputChangeFunction(id, e);
+  };
   return (
     <>
       <Box style={{ marginBottom: theme.space.medium }}>
