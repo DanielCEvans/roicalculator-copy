@@ -56,6 +56,9 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
   const handleInputChange = (e) => {
     setAdminDetails(e.target.id, +e.target.value);
   };
+  const handleSelectInputChange = (e, id) => {
+    setAdminDetails(id, e);
+  };
 
   // When any of the values in the Admin form change, the total hours spent on employment
   // tasks will be calculated and the value will be set in the formData state.
@@ -138,7 +141,7 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
               options={payrollFrequency}
               value={adminDetails.frequencyOfPayroll}
               id="frequencyOfPayroll"
-              handleInputChangeFunction={setAdminDetails}
+              handleInputChange={handleSelectInputChange}
             />
           </Grid.Col>
           <Grid.Col span={[12, 12, 12, 12, 12]}>

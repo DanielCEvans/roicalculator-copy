@@ -14,6 +14,10 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
     setFormData(e.target.id, +e.target.value);
   };
 
+  const handleSelectInputChange = (e, id) => {
+    setFormData(id, e);
+  };
+
   useEffect(() => {
     // When the formData state changes for this General Page, the errors will be updated AFTER the state of formData has been updated.
     // This means that if an error message is displayed, it will disappear when a user enters a valid value which is the desired behaviour
@@ -45,7 +49,7 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
           id="country"
           intent={generalErrors.country && "danger"}
           invalid={generalErrors.country}
-          handleInputChangeFunction={setFormData}
+          handleInputChange={handleSelectInputChange}
         />
         <SelectFormInput
           title="Plan"
@@ -59,7 +63,7 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
           id="plan"
           intent={generalErrors.plan && "danger"}
           invalid={generalErrors.plan}
-          handleInputChangeFunction={setFormData}
+          handleInputChange={handleSelectInputChange}
         />
         <NumberFormInput
           title="Number of full time employees"

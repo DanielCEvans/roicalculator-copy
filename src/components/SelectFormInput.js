@@ -23,13 +23,10 @@ const SelectFormInput = ({
   buttonText,
   modalTitle,
   modalBody,
-  handleInputChangeFunction,
+  handleInputChange,
 }) => {
   const [openModal, setOpenModal] = useState(false);
 
-  const handleInputChange = (e) => {
-    handleInputChangeFunction(id, e);
-  };
   return (
     <>
       <Box style={{ marginBottom: theme.space.medium }}>
@@ -83,7 +80,9 @@ const SelectFormInput = ({
         <Select
           options={options}
           value={value}
-          onChange={handleInputChange}
+          onChange={(e) => {
+            handleInputChange(e, id);
+          }}
           placeholder="Select..."
           id={id}
           style={{
