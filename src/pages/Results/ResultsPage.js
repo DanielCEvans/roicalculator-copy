@@ -6,10 +6,211 @@ import Disclaimer from "../../components/Disclaimer";
 import useStore from "../../context/store";
 
 const ResultsPage = () => {
-  const { formData, totalTable, benefitsTable, costsTable } = useStore();
+  const {
+    formData,
+    employmentBenefits,
+    organisationBenefits,
+    techBenefits,
+    printingBenefits,
+    subscriptionCosts,
+    implementationCosts,
+    onGoingCosts,
+    hasCalculated,
+    netBenefits,
+    ROIs,
+  } = useStore();
 
   const countryInfo = useContext(CountryContext);
-  const formatter = countryInfo[formData.country].currencyFormatter;
+  const formatter = formData.country
+    ? countryInfo[formData.country].currencyFormatter
+    : countryInfo["AU"].currencyFormatter;
+
+  // Calculate the total benefits, costs and net benefits
+  const totalEmploymentBenefits =
+    hasCalculated && employmentBenefits.reduce((a, b) => a + b, 0);
+  const totalOrganisationBenefits =
+    hasCalculated && organisationBenefits.reduce((a, b) => a + b, 0);
+  const totalTechBenefits =
+    hasCalculated && techBenefits.reduce((a, b) => a + b, 0);
+  const totalPrintingBenefits =
+    hasCalculated && printingBenefits.reduce((a, b) => a + b, 0);
+
+  const totalImplementationCost =
+    hasCalculated && implementationCosts.reduce((a, b) => a + b, 0);
+  const totalSubscriptionCosts =
+    hasCalculated && subscriptionCosts.reduce((a, b) => a + b, 0);
+  const totalOngoingCosts =
+    hasCalculated && onGoingCosts.reduce((a, b) => a + b, 0);
+
+  const totalNetBenefits =
+    hasCalculated && netBenefits.reduce((a, b) => a + b, 0);
+  const totalRoi =
+    ((totalNetBenefits - totalImplementationCost) /
+      (totalSubscriptionCosts + totalOngoingCosts + totalImplementationCost)) *
+    100;
+
+  const totalTableData = hasCalculated
+    ? [
+        {
+          columnType: "Total Benefits",
+          upfront: "",
+          year1: formatter.format(
+            employmentBenefits[0] +
+              techBenefits[0] +
+              printingBenefits[0] +
+              organisationBenefits[0]
+          ),
+          year2: formatter.format(
+            employmentBenefits[1] +
+              techBenefits[1] +
+              printingBenefits[1] +
+              organisationBenefits[1]
+          ),
+          year3: formatter.format(
+            employmentBenefits[2] +
+              techBenefits[2] +
+              printingBenefits[2] +
+              organisationBenefits[2]
+          ),
+          total: formatter.format(
+            totalEmploymentBenefits +
+              totalTechBenefits +
+              totalPrintingBenefits +
+              totalOrganisationBenefits
+          ),
+        },
+        {
+          columnType: "Total Costs",
+          upfront: formatter.format(totalImplementationCost),
+          year1: formatter.format(subscriptionCosts[0] + onGoingCosts[0]),
+          year2: formatter.format(subscriptionCosts[1] + onGoingCosts[1]),
+          year3: formatter.format(subscriptionCosts[2] + onGoingCosts[2]),
+          total: formatter.format(
+            totalSubscriptionCosts + totalOngoingCosts + totalImplementationCost
+          ),
+        },
+        {
+          columnType: "Net Benefits",
+          upfront: formatter.format(-totalImplementationCost),
+          year1: formatter.format(netBenefits[0]),
+          year2: formatter.format(netBenefits[1]),
+          year3: formatter.format(netBenefits[2]),
+          total: formatter.format(totalNetBenefits - totalImplementationCost),
+        },
+        {
+          columnType: "ROI",
+          upfront: "",
+          year1: `${ROIs[0].toFixed(0)}%`,
+          year2: `${ROIs[1].toFixed(0)}%`,
+          year3: `${ROIs[2].toFixed(0)}%`,
+          total: `${totalRoi.toFixed(0)}%`,
+        },
+      ]
+    : [];
+
+  const benefitsTableData = hasCalculated
+    ? [
+        {
+          columnType: `Employment team financial benefits`,
+          upfront: "",
+          year1: formatter.format(employmentBenefits[0]),
+          year2: formatter.format(employmentBenefits[1]),
+          year3: formatter.format(employmentBenefits[2]),
+          total: formatter.format(totalEmploymentBenefits),
+        },
+        {
+          columnType: "Organisation financial benefits",
+          upfront: "",
+          year1: formatter.format(organisationBenefits[0]),
+          year2: formatter.format(organisationBenefits[1]),
+          year3: formatter.format(organisationBenefits[2]),
+          total: formatter.format(totalOrganisationBenefits),
+        },
+        {
+          columnType: "Replacing existing technology financial benefits",
+          upfront: "",
+          year1: formatter.format(techBenefits[0]),
+          year2: formatter.format(techBenefits[1]),
+          year3: formatter.format(techBenefits[2]),
+          total: formatter.format(totalTechBenefits),
+        },
+        {
+          columnType: "Reduction in printing financial benefits",
+          upfront: "",
+          year1: formatter.format(printingBenefits[0]),
+          year2: formatter.format(printingBenefits[1]),
+          year3: formatter.format(printingBenefits[2]),
+          total: formatter.format(totalPrintingBenefits),
+        },
+        {
+          columnType: "Total financial benefits",
+          upfront: "",
+          year1: formatter.format(
+            employmentBenefits[0] +
+              techBenefits[0] +
+              printingBenefits[0] +
+              organisationBenefits[0]
+          ),
+          year2: formatter.format(
+            employmentBenefits[1] +
+              techBenefits[1] +
+              printingBenefits[1] +
+              organisationBenefits[1]
+          ),
+          year3: formatter.format(
+            employmentBenefits[2] +
+              techBenefits[2] +
+              printingBenefits[2] +
+              organisationBenefits[2]
+          ),
+          total: formatter.format(
+            totalEmploymentBenefits +
+              totalTechBenefits +
+              totalPrintingBenefits +
+              totalOrganisationBenefits
+          ),
+        },
+      ]
+    : [];
+
+  const costsTableData = hasCalculated
+    ? [
+        {
+          columnType: "Employment Hero subscription costs",
+          upfront: "",
+          year1: formatter.format(subscriptionCosts[0]),
+          year2: formatter.format(subscriptionCosts[1]),
+          year3: formatter.format(subscriptionCosts[2]),
+          total: formatter.format(totalSubscriptionCosts),
+        },
+        {
+          columnType: "External implementation costs",
+          upfront: formatter.format(implementationCosts[1]),
+          year1: "",
+          year2: "",
+          year3: "",
+          total: formatter.format(implementationCosts[1]),
+        },
+        {
+          columnType: "Internal implementation costs",
+          upfront: formatter.format(implementationCosts[0]),
+          year1: formatter.format(onGoingCosts[0]),
+          year2: formatter.format(onGoingCosts[1]),
+          year3: formatter.format(onGoingCosts[2]),
+          total: formatter.format(totalOngoingCosts + implementationCosts[0]),
+        },
+        {
+          columnType: "Total financial costs",
+          upfront: "",
+          year1: formatter.format(subscriptionCosts[0] + onGoingCosts[0]),
+          year2: formatter.format(subscriptionCosts[1] + onGoingCosts[1]),
+          year3: formatter.format(subscriptionCosts[2] + onGoingCosts[2]),
+          total: formatter.format(
+            totalOngoingCosts + totalSubscriptionCosts + totalImplementationCost
+          ),
+        },
+      ]
+    : [];
 
   const columns = useMemo(
     () => [
@@ -25,43 +226,6 @@ const ResultsPage = () => {
     ],
     []
   );
-  const totalTableData =
-    Object.keys(totalTable).length !== 0
-      ? [
-          {
-            columnType: "Total Benefits",
-            upfront: "",
-            year1: formatter.format(totalTable.totalBenefitsYear1),
-            year2: formatter.format(totalTable.totalBenefitsYear2),
-            year3: formatter.format(totalTable.totalBenefitsYear3),
-            total: formatter.format(totalTable.threeYeartotalbenefits),
-          },
-          {
-            columnType: "Total Costs",
-            upfront: formatter.format(totalTable.totalUpfront),
-            year1: formatter.format(totalTable.totalCostYear1),
-            year2: formatter.format(totalTable.totalCostYear2),
-            year3: formatter.format(totalTable.totalCostYear3),
-            total: formatter.format(totalTable.threeYearTotalCost),
-          },
-          {
-            columnType: "Net Benefits",
-            upfront: formatter.format(totalTable.upfrontNetBenefits),
-            year1: formatter.format(totalTable.year1NetBenefits),
-            year2: formatter.format(totalTable.year2NetBenefits),
-            year3: formatter.format(totalTable.year3NetBenefits),
-            total: formatter.format(totalTable.threeYearTotalNetBenefits),
-          },
-          {
-            columnType: "ROI",
-            upfront: "",
-            year1: `${totalTable.year1Roi.toFixed(0)}%`,
-            year2: `${totalTable.year2Roi.toFixed(0)}%`,
-            year3: `${totalTable.year3Roi.toFixed(0)}%`,
-            total: `${totalTable.threeYearTotalROI.toFixed(0)}%`,
-          },
-        ]
-      : [];
 
   // Adding green background to ROI row
   const TableWrapper = styled(Table)`
@@ -82,110 +246,6 @@ const ResultsPage = () => {
       return undefined;
     },
   };
-
-  const benefitsTableData =
-    Object.keys(benefitsTable).length !== 0
-      ? [
-          {
-            columnType: `Employment team financial benefits`,
-            upfront: "",
-            year1: formatter.format(benefitsTable.year1Benefit1),
-            year2: formatter.format(benefitsTable.year2Benefit1),
-            year3: formatter.format(benefitsTable.year3Benefit1),
-            total: formatter.format(benefitsTable.threeYeartotalbenefit1),
-          },
-          {
-            columnType: "Organisation financial benefits",
-            upfront: "",
-            year1: formatter.format(
-              benefitsTable.orgOverallFincancialGainsAdjustedYear1
-            ),
-            year2: formatter.format(
-              benefitsTable.orgOverallFincancialGainsAdjustedYear2
-            ),
-            year3: formatter.format(
-              benefitsTable.orgOverallFincancialGainsAdjustedYear3
-            ),
-            total: formatter.format(benefitsTable.threeYeartotalbenefit2),
-          },
-          {
-            columnType: "Replacing existing technology financial benefits",
-            upfront: "",
-            year1: formatter.format(
-              benefitsTable.costSavedInServicesAndTechnologyYear1
-            ),
-            year2: formatter.format(
-              benefitsTable.costSavedInServicesAndTechnologyYear2
-            ),
-            year3: formatter.format(
-              benefitsTable.costSavedInServicesAndTechnologyYear3
-            ),
-            total: formatter.format(benefitsTable.threeYeartotalbenefit3),
-          },
-          {
-            columnType: "Reduction in printing financial benefits",
-            upfront: "",
-            year1: formatter.format(
-              benefitsTable.reductionPrintingAdjustedYear1
-            ),
-            year2: formatter.format(
-              benefitsTable.reductionPrintingAdjustedYear2
-            ),
-            year3: formatter.format(
-              benefitsTable.reductionPrintingAdjustedYear3
-            ),
-            total: formatter.format(benefitsTable.threeYeartotalbenefit4),
-          },
-          {
-            columnType: "Total financial benefits",
-            upfront: "",
-            year1: formatter.format(benefitsTable.totalBenefitsYear1),
-            year2: formatter.format(benefitsTable.totalBenefitsYear2),
-            year3: formatter.format(benefitsTable.totalBenefitsYear3),
-            total: formatter.format(benefitsTable.threeYeartotalbenefits),
-          },
-        ]
-      : [];
-
-  const costsTableData =
-    Object.keys(costsTable).length !== 0
-      ? [
-          {
-            columnType: "Employment Hero subscription costs",
-            upfront: "",
-            year1: formatter.format(costsTable.subscriptionCostYear1),
-            year2: formatter.format(costsTable.subscriptionCostYear2),
-            year3: formatter.format(costsTable.subscriptionCostYear3),
-            total: formatter.format(costsTable.subscriptionCostYearTotal),
-          },
-          {
-            columnType: "External implementation costs",
-            upfront: formatter.format(costsTable.upfrontImplementationCost),
-            year1: "",
-            year2: "",
-            year3: "",
-            total: formatter.format(costsTable.upfrontImplementationCost),
-          },
-          {
-            columnType: "Internal implementation costs",
-            upfront: formatter.format(
-              costsTable.internalImplementationCostUpfront
-            ),
-            year1: formatter.format(costsTable.internalImplementationCostYear1),
-            year2: formatter.format(costsTable.internalImplementationCostYear2),
-            year3: formatter.format(costsTable.internalImplementationCostYear3),
-            total: formatter.format(costsTable.internalImplementationCostTotal),
-          },
-          {
-            columnType: "Total financial costs",
-            upfront: "",
-            year1: formatter.format(costsTable.totalCostYear1),
-            year2: formatter.format(costsTable.totalCostYear2),
-            year3: formatter.format(costsTable.totalCostYear3),
-            total: formatter.format(costsTable.threeYearTotalCost),
-          },
-        ]
-      : [];
 
   return (
     <>

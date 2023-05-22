@@ -83,24 +83,68 @@ const useStore = create((set) => ({
       hasCalculated: true,
     })),
 
-  totalTable: {},
-  setTotalTable: (newTable) =>
+  employmentBenefits: [],
+  setEmploymentBenefits: (newBenefits) =>
     set((state) => ({
       ...state,
-      totalTable: newTable,
+      employmentBenefits: newBenefits,
     })),
-  benefitsTable: {},
-  setBenefitsTable: (newTable) =>
+
+  organisationBenefits: [],
+  setOrganisationBenefits: (newBenefits) =>
     set((state) => ({
       ...state,
-      benefitsTable: newTable,
+      organisationBenefits: newBenefits,
     })),
-  costsTable: {},
-  setCostsTable: (newTable) =>
+
+  techBenefits: [],
+  setTechBenefits: (newBenefits) =>
     set((state) => ({
       ...state,
-      costsTable: newTable,
+      techBenefits: newBenefits,
     })),
+
+  printingBenefits: [],
+  setPrintingBenefits: (newBenefits) =>
+    set((state) => ({
+      ...state,
+      printingBenefits: newBenefits,
+    })),
+
+  subscriptionCosts: [],
+  setSubscriptionCosts: (newBenefits) =>
+    set((state) => ({
+      ...state,
+      subscriptionCosts: newBenefits,
+    })),
+
+  implementationCosts: [],
+  setImplementationCost: (newBenefits) =>
+    set((state) => ({
+      ...state,
+      implementationCosts: newBenefits,
+    })),
+  onGoingCosts: [],
+  setOngoingCosts: (newBenefits) =>
+    set((state) => ({
+      ...state,
+      onGoingCosts: newBenefits,
+    })),
+
+  netBenefits: [],
+  setNetBenefits: (newBenefits) =>
+    set((state) => ({
+      ...state,
+      netBenefits: newBenefits,
+    })),
+
+  ROIs: [],
+  setRoi: (newBenefits) =>
+    set((state) => ({
+      ...state,
+      ROIs: newBenefits,
+    })),
+
   sidebarSelectedItemId: "calculator",
   setSidebarSelectedItemId: (newId) =>
     set((state) => ({
