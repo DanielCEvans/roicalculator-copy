@@ -23,6 +23,9 @@ const AdditionalForm = ({ runCalculations }) => {
   const handleInputChange = (e) => {
     setFormData(e.target.id, +e.target.value);
   };
+  const handleSelectInputChange = (e, id) => {
+    setFormData(id, e);
+  };
 
   // This will re-run the calculations when any of the inputs on this page change and if the user has already calculated
   // This allows for a better UX as the user can see the results change as they change the inputs
@@ -46,7 +49,7 @@ const AdditionalForm = ({ runCalculations }) => {
         options={implementation}
         value={formData.implementationType}
         id="implementationType"
-        handleInputChangeFunction={setFormData}
+        handleInputChange={handleSelectInputChange}
         buttonText="Need help with implementation method?"
         modalTitle="Implementation Method"
         modalBody="Every business has different people management needs. By selecting the most appropriate implementation method for your business, you ensure your Employment Hero account is set up to suit your specific needs. A Guided HR Implementation will lead you through a 30-day implementation journey via regular live, interactive workshops that will help you set up your HR Platform and meet all your HR needs. This costs around $500-$750 AUD (our calculator assumes $750). For organisations with more specific or complex needs, a Managed HR Implementation is recommended. A hyper-personalised implementation with your own project manager that has an upfront cost of approximately $7,500 AUD (our calculator assumes $7,500). A self implementation has no upfront cost and is fully managed by yourself. "
