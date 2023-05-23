@@ -9,6 +9,21 @@ const sumArray = (array) => {
   return array.reduce((a, b) => a + b, 0);
 };
 
+const TitleText = ({ children }) => {
+  return (
+    <>
+      <Typography.Title
+        level={3}
+        style={{
+          marginBottom: theme.space.medium,
+        }}
+      >
+        {children}
+      </Typography.Title>
+    </>
+  );
+};
+
 const ResultsPage = () => {
   const {
     formData,
@@ -254,43 +269,26 @@ const ResultsPage = () => {
           borderColor: "rgb(218, 219, 222)",
         }}
       >
-        <Typography.Title
-          level={3}
-          style={{
-            marginBottom: theme.space.medium,
-          }}
-        >
-          Total Benefits
-        </Typography.Title>
+        <TitleText>Total benefits</TitleText>
         <TableWrapper
           data={totalTableData}
           columns={columns}
           noData="No calculations have been made"
           rows={rowsConfig}
-        />
-        <Typography.Title
-          level={3}
           style={{
-            marginTop: theme.space.xxlarge,
-            marginBottom: theme.space.medium,
+            marginBottom: theme.space.xxlarge,
           }}
-        >
-          Benefits
-        </Typography.Title>
+        />
+        <TitleText>Benefits</TitleText>
         <Table
           data={benefitsTableData}
           columns={columns}
           noData="No calculations have been made"
-        />
-        <Typography.Title
-          level={3}
           style={{
-            marginTop: theme.space.xxlarge,
-            marginBottom: theme.space.medium,
+            marginBottom: theme.space.xxlarge,
           }}
-        >
-          Costs
-        </Typography.Title>
+        />
+        <TitleText>Costs</TitleText>
         <Table
           data={costsTableData}
           columns={columns}
