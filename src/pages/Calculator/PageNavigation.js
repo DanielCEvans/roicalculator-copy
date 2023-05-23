@@ -9,6 +9,25 @@ import AdditionalForm from "./AdditionalForm";
 import StatisticCard from "../../components/Statistic";
 import calculateROI from "../../utils/functions";
 import useStore from "../../context/store";
+import { BsCurrencyDollar } from "react-icons/bs";
+
+const items = {
+  "": [
+    {
+      id: "general",
+      text: "General",
+    },
+    {
+      id: "adminDetails",
+      text: "Admin",
+    },
+    { id: "pagesPrinted", text: "Printing" },
+    {
+      id: "additional",
+      text: "Additional",
+    },
+  ],
+};
 
 const PageNavigation = () => {
   const navigate = useNavigate();
@@ -40,24 +59,6 @@ const PageNavigation = () => {
   const formatter = formData.country
     ? countryInfo[formData.country].currencyFormatter
     : countryInfo["AU"].currencyFormatter;
-
-  const items = {
-    "": [
-      {
-        id: "general",
-        text: "General",
-      },
-      {
-        id: "adminDetails",
-        text: "Admin",
-      },
-      { id: "pagesPrinted", text: "Printing" },
-      {
-        id: "additional",
-        text: "Additional",
-      },
-    ],
-  };
 
   // This function will calculate the ROI when the user clicks the 'Calculate' button
   // The required fields for calculating the ROI are checked prior to this function being called
@@ -130,8 +131,7 @@ const PageNavigation = () => {
     return Object.values(currentGeneralErrors).some((error) => error);
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     // If the user tries to calculate immediately without filling in requried fields, error messages will be shown
     const generalErrors = checkGeneralPageErrors();
     const adminErrors = checkAdminPageErrors();
@@ -162,6 +162,7 @@ const PageNavigation = () => {
     : netBenefits[0] > 0
     ? theme.colors.palette.grotesqueGreenDark45
     : theme.colors.palette.pinkDark45;
+
   return (
     <Box
       sx={{
@@ -243,7 +244,12 @@ const PageNavigation = () => {
               }
               backgroundColor={savingsBackgroundColor}
               fontColor={savingsFontColour}
-              type="money"
+              icon={
+                <BsCurrencyDollar
+                  size={30}
+                  style={{ color: savingsFontColour }}
+                />
+              }
             />
           </Grid.Col>
         </Grid.Row>

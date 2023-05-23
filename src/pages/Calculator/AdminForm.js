@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Box, Typography, theme, Grid } from "@hero-design/react";
 import StatisticCard from "../../components/Statistic";
+import { BsHourglassSplit } from "react-icons/bs";
 import useStore from "../../context/store";
 import NumberFormInput from "../../components/NumberFormInput";
 import SelectFormInput from "../../components/SelectFormInput";
@@ -193,7 +194,12 @@ const AdminForm = ({ checkAdminPageErrors, runCalculations }) => {
               value={formData.hoursSpentOnEmploymentTasks.toFixed(2)}
               backgroundColor={theme.colors.palette.violetLight90}
               fontColor={theme.colors.palette.violetDark45}
-              type="time"
+              icon={
+                <BsHourglassSplit
+                  size={35}
+                  style={{ color: theme.colors.palette.violetDark45 }}
+                />
+              }
               style={{ borderColor: "red" }}
               borderColor={
                 adminErrors.hoursSpentOnEmploymentTasks ? "red" : null

@@ -5,6 +5,10 @@ import styled from "styled-components";
 import Disclaimer from "../../components/Disclaimer";
 import useStore from "../../context/store";
 
+const sumArray = (array) => {
+  return array.reduce((a, b) => a + b, 0);
+};
+
 const ResultsPage = () => {
   const {
     formData,
@@ -26,24 +30,14 @@ const ResultsPage = () => {
     : countryInfo["AU"].currencyFormatter;
 
   // Calculate the total benefits, costs and net benefits
-  const totalEmploymentBenefits =
-    hasCalculated && employmentBenefits.reduce((a, b) => a + b, 0);
-  const totalOrganisationBenefits =
-    hasCalculated && organisationBenefits.reduce((a, b) => a + b, 0);
-  const totalTechBenefits =
-    hasCalculated && techBenefits.reduce((a, b) => a + b, 0);
-  const totalPrintingBenefits =
-    hasCalculated && printingBenefits.reduce((a, b) => a + b, 0);
-
-  const totalImplementationCost =
-    hasCalculated && implementationCosts.reduce((a, b) => a + b, 0);
-  const totalSubscriptionCosts =
-    hasCalculated && subscriptionCosts.reduce((a, b) => a + b, 0);
-  const totalOngoingCosts =
-    hasCalculated && onGoingCosts.reduce((a, b) => a + b, 0);
-
-  const totalNetBenefits =
-    hasCalculated && netBenefits.reduce((a, b) => a + b, 0);
+  const totalEmploymentBenefits = sumArray(employmentBenefits);
+  const totalOrganisationBenefits = sumArray(organisationBenefits);
+  const totalTechBenefits = sumArray(techBenefits);
+  const totalPrintingBenefits = sumArray(printingBenefits);
+  const totalImplementationCost = sumArray(implementationCosts);
+  const totalSubscriptionCosts = sumArray(subscriptionCosts);
+  const totalOngoingCosts = sumArray(onGoingCosts);
+  const totalNetBenefits = sumArray(netBenefits);
   const totalRoi =
     ((totalNetBenefits - totalImplementationCost) /
       (totalSubscriptionCosts + totalOngoingCosts + totalImplementationCost)) *

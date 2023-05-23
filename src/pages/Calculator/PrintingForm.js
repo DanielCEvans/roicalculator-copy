@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Box, Typography, theme, Grid } from "@hero-design/react";
 import StatisticCard from "../../components/Statistic";
+import { AiOutlinePrinter } from "react-icons/ai";
 import useStore from "../../context/store";
 import NumberFormInput from "../../components/NumberFormInput";
 
@@ -132,7 +133,12 @@ const PrintingForm = ({ runCalculations }) => {
               value={formData.pagesPerYear}
               backgroundColor={theme.colors.palette.violetLight90}
               fontColor={theme.colors.palette.violetDark45}
-              type="print"
+              icon={
+                <AiOutlinePrinter
+                  size={40}
+                  style={{ color: theme.colors.palette.violetDark45 }}
+                />
+              }
             />
             <Typography.Text
               fontSize={10}
