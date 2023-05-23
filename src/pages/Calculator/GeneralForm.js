@@ -40,61 +40,59 @@ const GeneralForm = ({ checkGeneralPageErrors, runCalculations }) => {
         borderRadius: "10px",
       }}
     >
-      <form>
-        <SelectFormInput
-          title="Country"
-          htmlFor="country"
-          options={countries}
-          value={formData.country}
-          id="country"
-          intent={generalErrors.country && "danger"}
-          invalid={generalErrors.country}
-          handleInputChange={handleSelectInputChange}
-        />
-        <SelectFormInput
-          title="Plan"
-          htmlFor="plan"
-          options={
-            formData.country
-              ? countryInfo[formData.country].plans
-              : countryInfo["AU"].plans
-          }
-          value={formData.plan}
-          id="plan"
-          intent={generalErrors.plan && "danger"}
-          invalid={generalErrors.plan}
-          handleInputChange={handleSelectInputChange}
-        />
-        <NumberFormInput
-          title="Number of full time employees"
-          htmlFor="fullTimeEmployees"
-          value={formData.fullTimeEmployees}
-          id="fullTimeEmployees"
-          handleInputChange={handleInputChange}
-          intent={generalErrors.fullTimeEmployees && "danger"}
-          invalid={generalErrors.fullTimeEmployees}
-        />
-        <NumberFormInput
-          title="Number of part time and casual employees (optional)"
-          htmlFor="partTimeCasualEmployees"
-          value={formData.partTimeCasualEmployees}
-          id="partTimeCasualEmployees"
-          handleInputChange={handleInputChange}
-          buttonText="How do part time and casual employee numbers affect the ROI?"
-          modalTitle="Part time and Casual Employees"
-          modalBody="When determining the financial gains from the enhanced efficiency of all employees within the organisation by using Employment Hero's products, the total hours spent per year on employment administration across the entire organisation is first calculated. Our research indicates that on average, 5% of each hour is spent on employment administration. We multiply this percentage by the hours worked by each employee per week, the number of employees in the organisation (excluding HR and Payroll), and the number of weeks in a year. To estimate the return on investment accurately, we differentiate between full time, part time, and casual employees, assuming full time employees work 5 days a week and part time and casual employees work 2.5 days a week."
-        />
-        <NumberFormInput
-          title="Number of people overseeing the employment function (including HR
+      <SelectFormInput
+        title="Country"
+        htmlFor="country"
+        options={countries}
+        value={formData.country}
+        id="country"
+        intent={generalErrors.country && "danger"}
+        invalid={generalErrors.country}
+        handleInputChange={handleSelectInputChange}
+      />
+      <SelectFormInput
+        title="Plan"
+        htmlFor="plan"
+        options={
+          formData.country
+            ? countryInfo[formData.country].plans
+            : countryInfo["AU"].plans
+        }
+        value={formData.plan}
+        id="plan"
+        intent={generalErrors.plan && "danger"}
+        invalid={generalErrors.plan}
+        handleInputChange={handleSelectInputChange}
+      />
+      <NumberFormInput
+        title="Number of full time employees"
+        htmlFor="fullTimeEmployees"
+        value={formData.fullTimeEmployees}
+        id="fullTimeEmployees"
+        handleInputChange={handleInputChange}
+        intent={generalErrors.fullTimeEmployees && "danger"}
+        invalid={generalErrors.fullTimeEmployees}
+      />
+      <NumberFormInput
+        title="Number of part time and casual employees (optional)"
+        htmlFor="partTimeCasualEmployees"
+        value={formData.partTimeCasualEmployees}
+        id="partTimeCasualEmployees"
+        handleInputChange={handleInputChange}
+        buttonText="How do part time and casual employee numbers affect the ROI?"
+        modalTitle="Part time and Casual Employees"
+        modalBody="When determining the financial gains from the enhanced efficiency of all employees within the organisation by using Employment Hero's products, the total hours spent per year on employment administration across the entire organisation is first calculated. Our research indicates that on average, 5% of each hour is spent on employment administration. We multiply this percentage by the hours worked by each employee per week, the number of employees in the organisation (excluding HR and Payroll), and the number of weeks in a year. To estimate the return on investment accurately, we differentiate between full time, part time, and casual employees, assuming full time employees work 5 days a week and part time and casual employees work 2.5 days a week."
+      />
+      <NumberFormInput
+        title="Number of people overseeing the employment function (including HR
             and Payroll)"
-          htmlFor="admins"
-          value={formData.admins}
-          id="admins"
-          handleInputChange={handleInputChange}
-          intent={generalErrors.admins && "danger"}
-          invalid={generalErrors.admins}
-        />
-      </form>
+        htmlFor="admins"
+        value={formData.admins}
+        id="admins"
+        handleInputChange={handleInputChange}
+        intent={generalErrors.admins && "danger"}
+        invalid={generalErrors.admins}
+      />
     </Box>
   );
 };

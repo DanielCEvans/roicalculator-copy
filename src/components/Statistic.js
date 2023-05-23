@@ -1,7 +1,11 @@
-import { Card, Typography, theme, Statistic } from "@hero-design/react/lib";
+import {
+  Card,
+  Typography,
+  theme,
+  Statistic,
+  Box,
+} from "@hero-design/react/lib";
 import styled from "styled-components";
-import { BsHourglassSplit, BsCurrencyDollar } from "react-icons/bs";
-import { AiOutlinePrinter } from "react-icons/ai";
 
 const StyledContentWrapper = styled.div`
   padding: 0;
@@ -32,29 +36,21 @@ const StatisticCard = (props) => {
             {props.title}
           </Typography.Text>
         </StyledContentWrapper>
-        <div
+        <Box
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          {props.type === "time" && (
-            <BsHourglassSplit size={35} style={{ color: props.fontColor }} />
-          )}
-          {props.type === "money" && (
-            <BsCurrencyDollar size={30} style={{ color: props.fontColor }} />
-          )}
-          {props.type === "print" && (
-            <AiOutlinePrinter size={40} style={{ color: props.fontColor }} />
-          )}
+          {props.icon}
           <Statistic
             value={props.value}
             title={props.subtitle}
             intent="inherit"
             style={{ color: props.fontColor }}
           />
-        </div>
+        </Box>
       </Card.Content>
     </Card>
   );
