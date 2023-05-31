@@ -7,8 +7,12 @@ import CalculatorPage from "./pages/Calculator/CalculatorPage";
 import ResultsPage from "./pages/Results/ResultsPage";
 import AboutPage from "./pages/About/AboutPage";
 import { CountryProvider } from "./utils/countryFormatter";
+import { useEffect } from "react";
 
 const App = () => {
+  useEffect(() => {
+    localStorage.setItem("EH_staff_member", true);
+  }, []);
   return (
     <>
       <ThemeProvider theme={theme}>
